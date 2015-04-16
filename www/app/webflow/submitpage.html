@@ -1,0 +1,169 @@
+<ion-modal-view>
+  <ion-header-bar class="bar bar-header bar-positive">
+    <button class="button button-icon button-clear indi-fanhui" ng-click="cancelSubmit()"></button>
+    <h1 class="title">提交</h1>
+    <button class="button" ng-click="submitForm()">确定</button>
+  </ion-header-bar>
+  <ion-content ng-show="actionType=='submit'">
+    <div class="list card next-node" ng-class="{selected: isSelected($index)}" ng-repeat="item in form.nodeList">
+    <!-- <pre>{{item | json}}</pre> -->
+      <label class="item item-divider item-icon-right" ng-class="{'item-divider-selected': isSelected($index)}">
+        <input type="radio" name="selected" ng-model="form.nextNode" value="{{$index}}">
+        <i class="radio-icon positive" ng-class="{'indi-xuanze-1-':!isSelected($index), 'indi-xuanze-1':isSelected($index)}"></i>
+        {{item.name}}
+        <i class="icon " ng-class="{'ion-ios7-arrow-down': isSelected($index),'ion-ios7-arrow-up': !isSelected($index)}"></i>
+      </label>
+      <a ng-show="itemShown(item) && isSelected($index)" class="item item-input" >
+         <i selectpeople bindid="$scope.form.nodeList[{{$index}}].submitto" ></i>
+        <span class="input-label">处理人</span>
+        <!-- <div class="item-note sd-input">{{item.submitto | domUser}}</div> -->
+         <div show-Select-People selectedsource="item.submitto" class="item-note sd-input sd-input-newline" ></div>
+      </a>
+      <a ng-show="itemShown(item) && isSelected($index)" class="item item-input" >
+               <i selectpeople bindid="$scope.form.nodeList[{{$index}}].notifyto" ></i>
+        <span class="input-label">知会人</span>
+        <!-- <div class="item-note sd-input">{{item.notifyto | domUser}}</div> -->
+         <div show-Select-People selectedsource="item.notifyto" class="item-note sd-input sd-input-newline" ></div>
+      </a>
+      <div ng-show="itemShown(item) && isSelected($index)" class="item item-input" >
+        <span class="input-label">通知</span>
+        <div class="item-note notify-type">
+          <label>
+
+            <input type="checkbox" ng-model="item.mail">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.mail, 'indi-xuanzhong':item.mail}"></i>
+            邮件
+          </label>
+          <label>
+            <input type="checkbox" ng-model="item.sms">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.sms, 'indi-xuanzhong':item.sms}"></i>
+            短信
+          </label>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+
+   <ion-content ng-show="actionType=='forward'" >
+   <div class="list card next-node selected">
+      <a  class=" item item-input">
+         <i selectpeople bindid="$scope.form.forwardUser" ></i>
+        <span class="input-label">处理人</span>
+<!--         <div class="item-note sd-input">{{form.forwardUser |  domUser}}</div> -->
+<div show-Select-People selectedsource="form.forwardUser" class="item-note sd-input sd-input-newline" ></div>
+      </a>
+      <div  class="item item-input">
+        <span class="input-label">通知</span>
+        <div class="item-note notify-type">
+          <label>
+            <input type="checkbox" ng-model="form.forward.mail">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.forward.mail, 'indi-xuanzhong':form.forward.mail}"></i>
+            邮件
+          </label>
+          <label>
+            <input type="checkbox" ng-model="form.forward.sms">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.forward.sms, 'indi-xuanzhong':form.forward.sms}"></i>
+            短信
+          </label>
+        </div>
+      </div>
+   </div>
+  </ion-content>
+  <ion-content ng-show="actionType=='goutongstart'" >
+   <div class="list card next-node selected">
+      <a  class=" item item-input">
+         <i selectpeople bindid="$scope.form.goutongUser" ></i>
+        <span class="input-label">处理人</span>
+        <!-- <div class="item-note sd-input">{{form.goutongUser |  domUser}}</div> -->
+        <div show-Select-People selectedsource="form.goutongUser" class="item-note sd-input sd-input-newline" ></div>
+      </a>
+      <div  class="item item-input">
+        <span class="input-label">通知</span>
+        <div class="item-note notify-type">
+          <label>
+            <input type="checkbox" ng-model="item.mail">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.mail, 'indi-xuanzhong':item.mail}"></i>
+            邮件
+          </label>
+          <label>
+            <input type="checkbox" ng-model="item.sms">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.sms, 'indi-xuanzhong':item.sms}"></i>
+            短信
+          </label>
+        </div>
+      </div>
+   </div>
+  </ion-content>
+  <ion-content ng-show="actionType=='zhihui'" >
+   <div class="list card next-node selected">
+      <a  class=" item item-input">
+         <i selectpeople bindid="$scope.form.zhihuiUser" ></i>
+        <span class="input-label">被知会人</span>
+        <!-- <div class="item-note sd-input">{{form.zhihuiUser |  domUser}}</div> -->
+         <div show-Select-People selectedsource="form.zhihuiUser" class="item-note sd-input sd-input-newline" ></div>
+      </a>
+      <div  class="item item-input">
+        <span class="input-label">知会意见</span>
+        <div class="item-note notify-type">
+          <label>
+            <input type="checkbox" ng-model="form.zhihuiflag">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.zhihuiflag, 'indi-xuanzhong':form.zhihuiflag}"></i>
+            关注意见反馈
+          </label>
+        </div>
+      </div>
+   </div>
+  </ion-content>
+
+    <ion-content ng-show="actionType=='bohui'">
+    
+    <div class="list card next-node" ng-class="{selected: true}" >
+          <label  class="item item-input item-divider" style="padding-left:16px">
+             驳回后提交选项
+          </label>
+          <label class="item item-divider" style="background-color: transparent">
+          <input type="radio" ng-model="form.denyBackWay" name="denyBack" value="0">
+             <i class="radio-icon positive" ng-class="{'indi-xuanze-1-':form.denyBackWay=='1', 'indi-xuanze-1':form.denyBackWay=='0'}"></i>
+            重走流程
+          </label>
+             <label class="item item-divider" style="background-color: transparent">
+            <input type="radio" ng-model="form.denyBackWay" name="denyBack" value="1">
+              <i class="radio-icon positive" ng-class="{'indi-xuanze-1-':form.denyBackWay=='0', 'indi-xuanze-1':form.denyBackWay=='1'}"></i>
+            直接提交到本环节
+          </label>
+    </div>
+    <div class="card list next-node"  >
+          <label  class="item item-input item-divider" style="padding-left:16px">
+             驳回环节
+          </label>
+        <div  ng-class="{selected: isSelected($index)}" ng-repeat="item in form.denyNodeList" >
+        <!-- <pre>{{item | json}}</pre> -->
+          <label class="item item-divider" style="background-color: transparent">
+            <input type="radio" name="selected" ng-model="form.nextNode" value="{{$index}}">
+            <i class="radio-icon positive" ng-class="{'indi-xuanze-1-':!isSelected($index), 'indi-xuanze-1':isSelected($index)}"></i>
+            {{item.name}}
+          </label>
+          <a  class="item item-input" ng-show="isSelected($index)">
+            <span class="input-label">驳回环节审批人</span>
+            {{item.nodeuser |  domUser}}
+          </a>
+           <div  class="item item-input" ng-show="isSelected($index)">
+            <span class="input-label">通知</span>
+            <div class="item-note notify-type">
+              <label>
+                <input type="checkbox" ng-model="item.mail" >
+                <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.mail, 'indi-xuanzhong':item.mail}"></i>
+                邮件
+              </label>
+              <label>
+                <input type="checkbox" ng-model="item.sms">
+                <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.sms, 'indi-xuanzhong':item.sms}"></i>
+                短信
+              </label>
+            </div>
+          </div>
+        </div>      
+    </div>
+  
+  </ion-content>
+</ion-modal-view>

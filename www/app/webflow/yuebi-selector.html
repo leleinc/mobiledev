@@ -1,0 +1,18 @@
+<ion-modal-view>
+  <ion-header-bar class="bar bar-header bar-positive">
+    <button class="button button-icon button-clear indi-fanhui" ng-click="modalCtrl.cancel()"></button>
+    <h1 class="title">办毕</h1>
+    <button class="button" ng-click="modalCtrl.submit()">确定</button>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list card next-node">
+      <label class="item sd-checkbox" ng-repeat="item in modalCtrl.data">
+        <input type="checkbox" ng-model="item.checked" ng-checked="item.checked">
+        <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.checked, 'indi-xuanzhong':item.checked}"></i>
+        {{ item.from | domUser }}
+      </label>
+    </div>
+    </div>
+  </ion-content>
+
+</ion-modal-view>

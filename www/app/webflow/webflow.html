@@ -1,0 +1,159 @@
+<ion-view title="审批">
+  <ion-nav-buttons side="right">
+    <button class="button icon button-clear indi-gengduo" ng-click="moreAction()" ></button>
+  </ion-nav-buttons>
+
+  <ion-tabs class="tabs-striped tabs-top">
+
+    <ion-tab title="表单">
+      <ion-content ng-show="formData" class="webflow-wrap" ng-class="{'has-footer':isNextline}">
+        <div class="list card formData webflow" ng-repeat="item in formData.formdetail">
+          <div ng-if="!item.dync">
+            <a class="item item-input cardback">
+              <span class="input-label">{{item.name}}:</span>
+              <span class="input-content">{{item.value | list}}</span>
+            </a>
+          </div>
+          <div ng-if="item.dync">
+            <a class="item item-input cardback">
+              <span class="input-label">{{item.name}}:</span>
+            </a>
+            <div>
+              <table class="webflow-inner" my-touch>
+                <thead>
+                  <tr>
+                    <th ng-repeat="th in item.dync.items"><span ng-bind="th.name"></span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="tds in item.value.items">
+                    <td ng-repeat="th in item.dync.items">
+                      <span ng-bind="tds[th.field]"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+<!-- <div class="list card ">
+  <div class="item item-divider">
+    流转信息
+  </div>
+  <a class="item cardback" ng-repeat="lzxx in lzs">
+          <h2>{{lzxx.stat}}</h2>
+          <p class="row">
+            <i class="col">{{lzxx.user | domUser}}</i>
+            <i class="col text-right">{{lzxx.time | amCalendar}}</i>
+          </p>
+        </a>
+</div>
+ -->  </ion-content>
+    <ion-footer-bar align-title="left" class=" yj-bar bar-stable item-input-inset" ng-show="isNextline">
+       <!--  <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
+        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()"></button>
+        <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
+          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear">{{form.comments || "请输入意见"}}</button>
+        </div>
+<!--         <div class="item-input-wrapper item-input-mic-wrapper" ng-show="commentsType=='mic'">
+          <button on-hold="Record('start')" on-release="Record('finish')" ng-show="RecordInfo.wavFullPath==''" id="record-comment" class="button button-block">{{RecordInfo.isRecording?"松开结束":"按住说话"}}</button>
+          <button ng-click="Record('show')" ng-show="RecordInfo.wavFullPath!=''" class="button button-small">重听语音</button>
+          <button ng-click="Record('remove')" ng-show="RecordInfo.wavFullPath!=''" class="button button-small">删除语音</button>
+        </div> -->
+        <button class="button button-positive" ng-show="commentsType!=='mic'||(commentsType=='mic'&&RecordInfo.wavFullPath!='')" ng-click="submit()">提交</button>
+    </ion-footer-bar>  
+  </ion-tab>
+  <ion-tab title="流转({{lzs.length}})">
+    <ion-content ng-class="{'has-footer':isNextline, 'empty':!yjs.length}">
+    <div class="cur-info">
+      <div class="cur-stat">
+        <span class="label"> 当前环节：</span><span class="value">{{curinfo.stat}}</span>
+      </div>
+      <div class="cur-user">
+        <span class="label"> 当前处理人：</span><span class="value">{{curinfo.alldealer | domUser}}</span>
+      </div>
+    </div>
+    <div class="lzxxlist">
+      <a class="lzxxitem" ng-repeat="lzxx in lzs">
+          <div class="lzxx-time">{{lzxx.time | amDateFormat:'YYYY-MM-DD'}}<br>{{lzxx.time | amDateFormat:'h:mm'}}</div>
+          <div class="lzxx-stat">{{lzxx.stat}}</div>
+          <div class="lzxx-user">{{lzxx.user | domUser}}</div>
+        </a>
+    </div>
+    <div class="lzxxblank"></div>
+    </ion-content>
+    <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline">
+        <!-- <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
+        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()"></button>
+        <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
+          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear">{{form.comments || "请输入意见"}}</button>
+        </div>
+<!--         <div class="item-input-wrapper item-input-mic-wrapper" ng-show="commentsType=='mic'">
+          <button on-hold="Record('start')" on-release="Record('finish')" ng-show="RecordInfo.wavFullPath==''" id="record-comment" class="button button-block">{{RecordInfo.isRecording?"松开结束":"按住说话"}}</button>
+          <button ng-click="Record('show')" ng-show="RecordInfo.wavFullPath!=''" class="button button-small">重听语音</button>
+          <button ng-click="Record('remove')" ng-show="RecordInfo.wavFullPath!=''" class="button button-small">删除语音</button>
+        </div> -->
+        <button class="button button-positive" ng-show="commentsType!=='mic'||(commentsType=='mic'&&RecordInfo.wavFullPath!='')" ng-click="submit()">提交</button>
+    </ion-footer-bar> 
+  </ion-tab>
+  <ion-tab title="意见({{yjs.length}})" on-select="getAvatars()">
+    <ion-content ng-class="{'has-footer':isNextline, 'empty':!yjs.length}">
+      <div class='yjlist'>
+        <div class='yjitem' ng-repeat="yj in yjs">
+          <div class="user">
+            <img ng-src='{{yj.contact.avatar}}'>
+            <p>{{yj.user | domUser}}</p>
+          </div>
+          <div class='content'>
+            <div class="yj-text" ng-class="{empty:yj.yj == 'NoAttitude_Handler'}">{{yj.yj}}</div>
+            <img ng-if="!!yj.yjtp" ng-src="{{yj.yjtp}}"/>
+            <!-- <div ng-if="!!yj.yjatt" class="att"><i class="icon indi-fujian"></i>{{yj.yjatt.attname}}</div> -->
+          </div>
+          <div class='time'>{{yj.time | amCalendar}}&nbsp;&nbsp;{{yj.stat}}
+          </div>
+        </div>
+      </div>
+    </ion-content>
+    <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline">
+        <!-- <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
+        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()"></button>
+        <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
+          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear">{{form.comments || "请输入意见"}}</button>
+        </div>
+<!--         <div class="item-input-wrapper item-input-mic-wrapper" ng-show="commentsType=='mic'">
+          <button on-hold="Record('start')" on-release="Record('finish')" ng-show="RecordInfo.wavFullPath==''" id="record-comment" class="button button-block">{{RecordInfo.isRecording?"松开结束":"按住说话"}}</button>
+          <button ng-click="Record('show')" ng-show="RecordInfo.wavFullPath!=''" class="button button-small">重听语音</button>
+          <button ng-click="Record('remove')" ng-show="RecordInfo.wavFullPath!=''" class="button button-small">删除语音</button>
+        </div> -->
+        <button class="button button-positive" ng-show="commentsType!=='mic'||(commentsType=='mic'&&RecordInfo.wavFullPath!='')" ng-click="submit()">提交</button>
+    </ion-footer-bar> 
+  </ion-tab>
+
+  <ion-tab title="正文" ng-init="zwflesh=1" on-select="zwflesh=zwflesh+1">
+   <div ref="zwurl" catnum="-1" flesh='zwflesh' att-view></div>
+  </ion-tab>
+  <ion-tab title="附件({{fjlength}})" on-select="attform.attViewershow='attlist';zwflesh=zwflesh+1">
+     <ion-content   ng-show="attform.attViewershow=='attlist'" ng-class="{'empty':!formData.idxfiles.length}">
+        <div class="list " ng-show="formData.idxfiles.length"  >
+            <a class="item item-avatar item-icon-right item-button-right" ng-repeat="file in formData.idxfiles"  ng-click="openFile(file.url,'0');attform.attViewershow=''" ng-show="file.url!=zwurl">
+                
+              <i class="icon " att-Tubiao="file.name" style="right: inherit;left: 15px;font-size:60px;" ></i>
+                <span class="step size-32" >
+                  <i class="icon " style="font-size:16px;color:#4b77be" >查看</i>
+                </span>
+                <h2 style="font-size:16px;">  {{file.name}}</h2>
+                <p  style="font-size:13px;">{{file.size}}</p>
+             </a>
+    </div>
+  </ion-content>
+  <div  ng-show="attform.attViewershow!='attlist'" class="doc-viewer" flesh='zwflesh' att-View>
+  </div>
+  </ion-tab>
+</ion-tabs>
+</ion-view>
+<script id="HAModal.html" type="text/ng-template">
+  <ion-modal-view>
+   <div hand-attitude></div>
+  </ion-modal-view>
+</script>

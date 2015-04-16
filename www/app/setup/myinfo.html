@@ -1,0 +1,47 @@
+<ion-view title="个人信息" >
+    <ion-nav-buttons side="right">
+        <button class="button" ng-click="fnEditMyinfo()" type="button" ng-cloak ng-if="showEditBtn==true">编辑</button>
+        <button class="button" ng-click="fnSaveMyinfo()" type="button" ng-cloak ng-if="showSaveBtn==true">保存</button>
+    </ion-nav-buttons>
+    <ion-content>
+        <div class="list">
+            <a class="item item-thumbnail-left item-avatar" 
+              style="padding-top:13px;background: rgb(249, 249, 249);">
+                <img src="{{person.img}}" style="max-width:60px;max-height:60px;top:17px;left:23px;"/>
+                <h3>{{person.user |domUser}}</h3>
+                <p>{{person.dep}} {{person.JobTitle}}</p>
+                <p ng-repeat="x in person.fldSubDepsInfo">隶属部门:{{x.SubDep}} {{x.SubDepJob}}</p>
+            </a>
+            <label class="item item-input">
+              <span class="input-label">手机</span>
+              <span class="input-view" ng-cloak ng-show="showEditBtn==true">{{person.MobilePhone}}</span>
+              <input type="text" value="{{person.MobilePhone}}" ng-model="person.MobilePhone" ng-cloak ng-show="showSaveBtn==true" placeholder="请输入手机号码"/>
+            </label>
+            <label class="item item-input">
+              <span class="input-label">电话</span>
+              <span class="input-view" ng-cloak ng-show="showEditBtn==true">{{person.OfficeTel}}</span>
+              <input type="text" value="{{person.OfficeTel}}" ng-model="person.OfficeTel" ng-cloak ng-show="showSaveBtn==true" placeholder="请输入电话">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">邮箱</span>
+              <span class="input-view" ng-cloak ng-show="showEditBtn==true">{{person.InternetAddress}}</span>
+              <input type="text" value="{{person.InternetAddress}}" ng-model="person.InternetAddress" ng-cloak ng-show="showSaveBtn==true" placeholder="请输入邮箱">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">传真</span>
+              <span class="input-view" ng-cloak ng-show="showEditBtn==true">{{person.Fax}}</span>
+              <input type="text" value="{{person.Fax}}" ng-model="person.Fax" ng-cloak ng-show="showSaveBtn==true"  placeholder="请输入传真">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">工号</span>
+              <span class="input-view" ng-cloak ng-show="showEditBtn==true">{{person.employeeNumber}}</span>
+              <input type="text" value="{{person.employeeNumber}}" ng-model="person.employeeNumber" ng-cloak ng-show="showSaveBtn==true" placeholder="请输入工号">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">办公地点</span>
+              <span class="input-view" ng-cloak ng-show="showEditBtn==true">{{person.location}}</span>
+              <input type="text" value="{{person.location}}" ng-model="person.location" ng-cloak ng-show="showSaveBtn==true" placeholder="请输入办公地点">
+            </label>
+        </div>
+    </ion-content>
+</ion-view  >

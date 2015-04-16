@@ -1,0 +1,24 @@
+
+<ion-view title="公告详情">
+    
+    <ion-content ng-show="attform.attViewershow=='attlist'">
+     	<div  class="item new"  type="item-text-wrap" style="border:none">    
+            <h2 style="font-weight:bold;white-space: normal; font-size: 18px;" >{{new.title[0]}}</h2> 
+            <h3 style="font-size:13px;color:rgb(141,141,141);margin-top:18px">{{new.date |amCalendar}}</h3>         
+             <div  sd-html-viewer="new.content[0]" style="white-space: normal;color:black;padding-top:20px;word-break:break-all"></div>       
+        </div>
+        <div class="card" ng-if="new.idxfiles.length">
+		      <a class="item item-avatar item-icon-right item-button-right "  ng-repeat="file in new.idxfiles"   ng-click="openFile(file.url,'0');attform.attViewershow=''">         
+		                <i class="icon  attach-tb1"  att-Tubiao="file.name"></i>
+		                <span class="step size-32" >
+		                  <i class="icon attach-tb2">查看</i>
+		                </span>
+		                <h2> {{file.name}}</h2>
+		                <p  >{{file.size}}</p>     
+		      </a>
+      	</div>
+      </ion-content>
+      <div  ng-cloak ng-show="attform.attViewershow!='attlist'" class="doc-viewer" att-View>
+</ion-view>
+
+

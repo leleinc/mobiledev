@@ -1,0 +1,101 @@
+
+<ion-view title="新邮件"  hide-back-button="true">   
+ <ion-nav-buttons >
+          <button class="button button-clear contact"  ng-click="goback()">
+          <i class="icon indi-fanhui " ></i>
+          </button>
+    </ion-nav-buttons>
+<ion-nav-buttons side="right">
+       <button class="button" ng-click="send()" type="submit" >发送</button>
+</ion-nav-buttons>
+
+ <ion-content ng-show="attform.attViewershow=='attlist'"  >
+ <div class="list " >
+  <div class="item item-input mail" >
+    <i selectpeople bindid="$scope.formData.sendTo" ng-show="mailcontent.sendtype!='reply'"></i>
+    <span class="input-label">收件人:</span>
+    <div class="compose_form_item_cnt" ng-init="formData.delInsendTo=''" style="margin-right: 30%;">
+      <div ng-repeat="user in formData.sendTo" class="selectedItemcontent" ng-click="removeSeletct('$scope.formData.sendTo',user,'$scope.formData.delInsendTo')">
+        <label  ng-class="{'item-del':formData.delInsendTo==user}" class="selectedinputItem"  >
+            {{user | domUser}}
+        </label>
+        <label ng-if="formData.delInsendTo==user" class="item-del2 ion-ios-close-empty"></label>
+      </div>
+      <input type="text"  ng-model="formData.tmpsendTo" class="compose_form_item_input" ng-keydown="inputDown($event,'$scope.formData.sendTo','$scope.formData.tmpsendTo')" ng-change="valueChange('$scope.formData.sendTo','$scope.formData.tmpsendTo')">
+    </div>
+  </div>
+  <div class="item item-input mail">
+    <i selectpeople bindid="$scope.formData.copyTo"></i>
+    <span class="input-label">抄送:</span>
+    <div class="compose_form_item_cnt" ng-init="formData.delIncopyTo=''" style="margin-right: 30%;">
+        <div  ng-repeat="user in formData.copyTo" ng-click="removeSeletct('$scope.formData.copyTo',user,'$scope.formData.delIncopyTo')" class="selectedItemcontent">
+      <label  ng-class="{'item-del':formData.delIncopyTo==user}" class="selectedinputItem" >
+        {{user | domUser}}
+      </label>
+      <label ng-if="formData.delIncopyTo==user" class="item-del2 ion-ios-close-empty"></label>
+    </div>
+      <input type="text"  ng-model="formData.tmpcopyTo" class="compose_form_item_input" ng-keydown="inputDown($event,'$scope.formData.copyTo','$scope.formData.tmpcopyTo')" ng-change="valueChange('$scope.formData.copyTo','$scope.formData.tmpcopyTo')">
+    </div>
+  </div>
+  <div class="item item-input mail">
+    <i selectpeople bindid="$scope.formData.blindCopyTo"></i>
+    <span class="input-label" >密送:</span>
+    <div class="compose_form_item_cnt" ng-init="formData.delInblindCopyTo=''" style="margin-right: 30%;">
+      <div ng-repeat="user in formData.blindCopyTo" ng-click="removeSeletct('$scope.formData.blindCopyTo',user,'$scope.formData.delInblindCopyTo')" class="selectedItemcontent" >
+        <label  ng-class="{'item-del':formData.delInblindCopyTo==user}" class="selectedinputItem"  >
+          {{user | domUser}}
+        </label>
+        <label ng-if="formData.delInblindCopyTo==user" class="item-del2 ion-ios-close-empty"></label>
+      </div>
+      <input type="text"  ng-model="formData.tmpblindCopyTo" class="compose_form_item_input" ng-keydown="inputDown($event,'$scope.formData.blindCopyTo','$scope.formData.tmpblindCopyTo')" ng-change="valueChange('$scope.formData.blindCopyTo','$scope.formData.tmpblindCopyTo')">
+    </div>
+  </div>
+ 
+      <div class="item item-input mail">
+        <span class="input-label">主题:</span>
+        <input type="text" ng-model="formData.subject">
+      </div>
+    </div>
+    <div class="mailbody" >
+          <textarea type="text"  msd-elastic placeholder="写信" ng-model="formData.Body" style="width:100%"></textarea>
+    </div>
+    <div class="item mailcontent-show" ng-if="type!=''">  
+          <div class="fgx">邮件原文----------------------------</div>
+          收件人: {{mailcontent.from | domUser}}<br>
+          发件人: {{mailcontent.sendto| domUser}}<br>
+          日期:   {{mailcontent.date}}<br>
+          主题:  {{mailcontent.subject}}  
+    </div>
+    <style ng-bind="mailcontent.conent.split('</style>')[0].replace('<style>','')"></style>
+    <!-- <div class="item mailcontent-show" ng-if="mailcontent.conent.indexOf('</style>')>0"  sd-html-viewer="mailcontent.conent.split('</style>')[1]"></div> 
+    <div class="item mailcontent-show" ng-if="mailcontent.conent.indexOf('</style>')<=0"  sd-html-viewer="mailcontent.conent"></div>  -->
+          <div class="item mailcontent-show"   sd-html-viewer="mailcontent.conent"></div> 
+    <div class="card" ng-if="mailcontent.attachs!=0 && type=='forword'">
+      <div class="item item-divider">
+        是否转发附件
+        <label >
+            <input type="checkbox" ng-model="formData.isNotAttachment" ng-true-value="1" style="display:none">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':formData.isNotAttachment=='0', 'indi-xuanzhong':formData.isNotAttachment=='1'}"></i>
+            是
+          </label>
+          <label>
+            <input type="checkbox" ng-model="formData.isNotAttachment" ng-true-value="0" style="display:none">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':formData.isNotAttachment=='1', 'indi-xuanzhong':formData.isNotAttachment=='0'}"></i>
+            否
+          </label>
+      </div>
+      <a class="item item-avatar item-icon-right item-button-right"  ng-repeat="attach in mailcontent.attachs"   ng-click="openFile(attach['ATTACHLINK']);attform.attViewershow=''">         
+      <i class="icon " style="right: inherit;left: 15px;font-size:60px;color: rgb(45, 167, 231)" att-Tubiao="attach['ATTACHNAME']"></i>
+                <span class="step size-32" >
+                  <i class="icon " style="font-size:16px;color:#4b77be" >查看</i>
+                </span>
+                <h2 style="font-size:16px;"> {{attach['ATTACHNAME']}}</h2>
+                <p  style="font-size:13px;">1234KB</p>     
+        </a>
+    </div>
+</ion-content>
+<div class="tabs" ng-show="attform.attViewershow=='attlist'&&isDraft">
+        <a class="tab-item "  ng-click="delMail(mailcontent.unid)"> 删除</a>
+</div>
+<div  ng-show="attform.attViewershow!='attlist'" style="height:100%" att-View ng-cloak></div>
+</ion-view>

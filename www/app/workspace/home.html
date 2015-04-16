@@ -1,0 +1,15 @@
+<ion-view title="首页">
+  <ion-tabs ng-class="{'tabs-item-hide': $root.hideTabs}" class="tabs-striped tabs-top">
+
+    <ion-tab title="待办 ({{context.userinfo.count.todo}})" href="#/tab/home/todo" badge="context.userinfo.count.todo" badge-style="badge-assertive">
+      <ion-nav-view name="todo-tab"></ion-nav-view>
+    </ion-tab>
+
+    <ion-tab title="待阅 ({{context.userinfo.count.toread}})" href="#/tab/home/toread" badge="context.userinfo.count.toread" badge-style="badge-assertive">
+      <ion-nav-view name="toread-tab"></ion-nav-view>
+    </ion-tab>
+    <ion-tab title="公告" href="#/tab/home/news">
+      <ion-nav-view name="news-tab"></ion-nav-view>
+    </ion-tab>
+  </ion-tabs>
+</ion-view>

@@ -1,0 +1,72 @@
+<style type="text/css">
+  .ng-cloak {
+    display: none !important;
+  }
+</style>
+<ion-view title="{{tmpMailetype.text}}" >
+    <ion-content ng-show="attform.attViewershow=='attlist'" class="has-footer">
+      <ion-item  class="item "  type="item-text-wrap" ng-init="form.isDetail=false">   
+          <span ng-class="{'mailinfo-f':form.isDetail,'mailinfo-f-':!form.isDetail}">
+            <i ng-if="form.isDetail">发件人:</i>
+            <i >{{mailcontent.from | domUser}}
+              <span class="icon indi-jiantou " ng-if="form.isDetail"></span>
+            </i>
+            <button ng-if="form.isDetail" class="button button-light button-icon icon " ng-click="showSimple()" >隐藏</button>
+          </span> 
+          <p  ng-class="{'mailinfo-s':form.isDetail,'mailinfo-s-':!form.isDetail}">
+            <i>收件人:</i>
+            <i ng-repeat="user in mailcontent.sendto" ng-if="form.isDetail">
+                {{user | domUser}}
+                <span class="icon indi-jiantou "></span>
+            </i>
+            <i ng-if="!form.isDetail">
+                {{mailcontent.sendto | domUser |limitTo:10}}
+            </i>
+             <button ng-if="!form.isDetail"  class="button button-light button-icon icon " ng-click="showSimple()">
+               其他人员
+            </button>
+          </p>
+          <p  class="mailinfo-s" ng-if="mailcontent.copyto!=''&&form.isDetail">
+            <i>抄送:</i>
+            <i ng-repeat="p in mailcontent.copyto">
+              {{p | domUser}}
+              <span class="icon indi-jiantou "></span>
+            </i>
+          </p> 
+           <p  class="mailinfo-s" ng-if="mailcontent.blindcopyto!=''&&form.isDetail">
+            <i>密送:</i>
+            <i ng-repeat="p in mailcontent.blindcopyto">
+              {{p | domUser}}
+              <span class="icon indi-jiantou "></span>
+            </i>
+          </p> 
+      </ion-item>
+      <ion-item  class="item mailinfo-title"  type="item-text-wrap" >  
+                <i class="icon  ng-cloak " style="color:red;float:right;line-height:1"  ng-class="{'indi-jindu':mailcontent.unmailread}" ng-if="mailcontent.unmailread" ng-cloak></i>   
+          <h3>{{mailcontent.subject}}</h3>
+          <span>{{mailcontent.date}}</span>
+      </ion-item>
+      <style ng-if="mailcontent.conent.indexOf('</style>')>0" ng-bind="mailcontent.conent.split('</style>')[0].replace('<style>','')"></style>
+ <!--      <div class="item mailcontent-show" ng-if="mailcontent.conent.indexOf('</style>')>=0"  sd-html-viewer="mailcontent.conent.split('</style>')[1]"></div> 
+      <div class="item mailcontent-show" ng-if="mailcontent.conent.indexOf('</style>')<0"  sd-html-viewer="mailcontent.conent"></div>  -->
+      <div class="item mailcontent-show"   sd-html-viewer="mailcontent.conent"></div> 
+      <div class="card" ng-if="mailcontent.attachs.length>0" ng-cloak>
+      <a class="item item-avatar item-icon-right item-button-right "  ng-repeat="attach in mailcontent.attachs"   ng-click="openFile(attach['ATTACHLINK']);attform.attViewershow=''">         
+                <i class="icon  attach-tb1" att-Tubiao="attach['ATTACHNAME']" ></i>
+                <span class="step size-32" >
+                  <i class="icon attach-tb2">查看</i>
+                </span>
+                <h2> {{attach['ATTACHNAME']}}</h2>
+                <p  >{{attach['ATTACHLENGTH']}}</p>     
+      </a>
+      </div>
+      </ion-content>   
+    <div class="tabs" ng-show="attform.attViewershow=='attlist'">
+        <a class="tab-item "  ng-click="mark(mailcontent.unid)" ng-if="tmpMailetype.value!='mailjunk'">标记</a>
+        <a class="tab-item "  ng-click="move(mailcontent.unid)" ng-if="tmpMailetype.value!='mailjunk'"> 移动</a>
+        <a class="tab-item "  ng-click="reply()" ng-if="tmpMailetype.value!='mailjunk'">回复</a>
+        <a class="tab-item " href="#/writemail/{{mailcontent.unid}}/forword/" ng-if="tmpMailetype.value!='mailjunk'">转发</a>
+        <a class="tab-item "  ng-click="delMail(mailcontent.unid)">删除</a>
+    </div>
+    <div ng-cloak ng-show="attform.attViewershow!='attlist'" class="doc-viewer ng-cloak" att-View>
+</ion-view>

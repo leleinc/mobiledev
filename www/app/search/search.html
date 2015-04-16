@@ -1,0 +1,111 @@
+
+<ion-view title=""  hide-back-button="true" >
+
+ <ion-nav-title>
+           <button class="button button-clear search" ng-click="setSearchtype('todos')">
+            <p>搜工作</p>
+             <i class="ion-arrow-up-b" ng-if="searchtype=='todos'" ></i>
+          </button>
+           <button class="button button-clear search" ng-click="setSearchtype('news')" >
+            <p>搜新闻</p>
+             <i class="ion-arrow-up-b" ng-if="searchtype=='news'" ></i>
+          </button>
+           <button class="button button-clear search" ng-click="setSearchtype('mails')" >
+            <p>搜邮件</p>
+             <i class="ion-arrow-up-b" ng-if="searchtype=='mails'" ></i>
+          </button>
+           <button class="button button-clear search" ng-click="setSearchtype('contact')" >
+           <p> 搜同事</p>
+            <i class="ion-arrow-up-b" ng-if="searchtype=='contact'" ></i>
+          </button> 
+ </ion-nav-title>
+                  <form action="">    
+    <div class="item item-input-inset has-header search">
+          <label class="item-input-wrapper">
+            <i class="icon indi-sousuo placeholder-icon"></i>
+            <input type="search" ng-model="searchkey[searchtype]"  ng-keypress="enter($event)" auto-focus ng-change="ifshowhistory()" ng-click="ifshowhistory()" style="width:100%" clear-Input>
+          </label>
+          <button class="button button-small" type="button" ng-click="goback()">
+            取消
+          </button>
+
+    </div>
+                        </form>
+     <ion-content ng-show="showhistory" ng-cloak class="has-header" style="position: relative" >
+            <ion-list>
+              <ion-item class="item searchhistory" ng-repeat="item in searchhistory" type="item-text-wrap" >
+              <i class="icon indi-lishisousuo " style="float:left"></i>
+              <div style="float: left;width: 80%;padding-left:10px" ng-click="dosearch('{{item}}')">{{item}}</div>
+             <i style="float:right;color:red" ng-if="showedit" ng-click="rmovehistory(item)">删除</i>
+              </ion-item>
+               <ion-item class="item searchhistory"  type="item-text-wrap" style="text-align: center" ng-if="searchhistory.length>0">
+                    <span ng-click="edithistory(true)" style="color:blue;margin-right:15px" ng-if="!showedit" ng-cloak> 编辑记录</span>  
+                    <span ng-click="clearhistory()" style="color:blue;margin-left:15px" ng-if="!showedit" ng-cloak> 清除搜索记录</span>
+                    <span ng-click="edithistory(false)" style="color:blue" ng-if="showedit" ng-cloak> 完成</span>
+              </ion-item>
+            </ion-list>
+      </ion-content>
+   
+    <div  class="doc-viewer" ng-show="!showhistory" style="position: relative" >
+      <div>
+      <ion-content  class="has-searchitem" ng-show="searchtype=='todos'"  >
+        <div ng-if="nothing" class="searchnothing">没有找到"<span >{{searchkey[searchtype]}}</span>"相关结果</div>
+        <ion-list>
+          <ion-item class="item" ng-repeat="todo in todos" type="item-text-wrap" nav-direction="forward" href="#/webflow/{{todo.dbpath}}/{{todo.unid}}">
+            <h3  ng-bind-html="todo.title"></h3>
+            <p>
+              <span ng-bind-html="todo.from"></span>
+              <span  ng-bind-html="todo.type"></span>
+              <span class="item-note">{{todo.receivetime | amCalendar}}</span>
+            </p>
+          </ion-item>
+        </ion-list>
+        <ion-infinite-scroll  on-infinite="searchjob('more')"  ng-if="searchtype=='todos'&&morecanload"  distance="1%"></ion-infinite-scroll>
+      </ion-content>
+    </div>
+    <div>
+      <ion-content class="has-searchitem" ng-show="searchtype=='news'" >
+        <div ng-if="nothing" class="searchnothing">没有找到"<span >{{searchkey[searchtype]}}</span>"相关结果</div>
+        <ion-list>
+          <ion-item class="item" ng-repeat="new in news" type="item-text-wrap" nav-direction="forward" href="#/new/{{new.newid}}">
+            <h3  ng-bind-html="new.newtitle"></h3>
+            <p>
+              <span >{{new.newtime| amCalendar}}</span>
+            </p>
+          </ion-item>
+        </ion-list>
+        <ion-infinite-scroll  on-infinite="searchnews('more')"  ng-if="searchtype=='news'&&morecanload"  distance="1%"></ion-infinite-scroll>
+      </ion-content>
+    </div>
+      <div>
+          <ion-content class="has-searchitem" ng-show="searchtype=='mails'" > <!--mail-->
+              <div ng-if="nothing" class="searchnothing">没有找到"<span >{{searchkey[searchtype]}}</span>"相关结果</div>
+              <ion-list>
+                    <a class="item item-icon-left" style="padding-left:45px;height:100px" ng-repeat="mail in mails" ng-click="modifyMailinfo({{$index}})" href="#/{{isDraft?'writemail':'mailcontent'}}/{{mail.mailhref.substring(mail.mailhref.indexOf(')/')+2)|limitTo :32}}{{isDraft?'/draft':''}}">     
+                    <i class="icon indi-jindu" style="font-size: 12px;top: 16px;height: 19px;color:red"  ng-show="mail.mailread=='false'"></i>
+                       <h2>  <span ng-bind-html="mail.mailfrom" style="font-weight:bold"></span>
+                            <span class="indi-fujian ng-binding" ng-show="mail.mailattach=='true'"></span>
+                            <span  class="item-note">{{mail.mailtime| amCalendar}}</span>
+                      </h2>
+                            <p class="row">
+                              <i class="col" style="font-size:12px;color:black" ng-bind-html="mail.mailtitle"></i> 
+                            </p>
+                            <p class="row">
+                                <i class="col" style="font-size:12px"  ng-bind-html="mail.mailcntent"></i>  
+                            </p>
+                    </a>
+              </ion-list>
+              <ion-infinite-scroll  on-infinite="searchmail('more')"  ng-if="searchtype=='mails'&&morecanload"  distance="1%"></ion-infinite-scroll>
+           </ion-content>
+      </div>
+      <ion-content  class="contact has-searchitem"  ng-show="searchtype=='contact'" >
+              <div ng-if="nothing" class="searchnothing">没有找到"<span >{{searchkey[searchtype]}}</span>"相关结果</div>                               
+              <a ng-if="contact.length>0" class="item item-avatar" ng-repeat="person in contact" type="item-text-wrap"  style="border-left:none;border-right:none;" ui-sref="person({name:person.AbbName})"  >    
+                    <img ng-src={{person.imgpath==""?defaultimage:(ROOT+person.imgpath)}} >
+                    <span   ng-bind-html="person._name"></span>
+              </a>                   
+      </ion-content>
+     
+    </div >
+   
+</ion-view>

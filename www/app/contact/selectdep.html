@@ -1,0 +1,69 @@
+
+
+
+
+<ion-modal-view >
+<ion-view title="选择部门"  ng-controller="selectdepCtrl">
+
+<ion-header-bar class="bar bar-header bar-positive contact" >
+  <button class="button button-clear " ng-if="isrootnode" ng-click="closePeople(false)">
+    <i class="icon indi-fanhui" style="font-size:14px"></i>
+  </button>
+  <button class="button button-clear"  ng-if="!isrootnode" ng-click="backFather()">
+    <i class="icon indi-shangyiji" style="font-size:14px">上级目录</i>
+  </button>
+  <h1 class="title">选择部门  </h1>
+  <button class="button"  ng-click="closePeople(true)">确定</button>
+</ion-header-bar>
+<div class="bar bar-subheader selected-peodep" >
+      <div class="title" >
+            <span class="selected">已选</span>
+            <span class="badge badge-assertive selectednum" >{{namelist.length}}</span>
+            <ion-scroll zooming="true" direction="x" class="selectedItems" has-bouncing="false">
+             <div><span class="selectedItem" ng-repeat=" name in namelist" ng-click="remove($index)" >{{name }}</span></div> 
+            </ion-scroll>
+			 <span ng-click="remove()" style="height:100%;width:10%;"><span  class="badge badge-assertive ng-binding selecteddel ">x</span></span>
+      </div>
+</div>
+
+  <div class="item item-input-inset has-header has-subheader search" style="z-index:1;background-color: rgb(250, 250, 250);padding-top:0px">
+    <label class="item-input-wrapper" style="border: 1px solid rgb(201, 201, 201)" >
+       <input type="text" placeholder="请输入人名" ng-model="searchkey" ng-change="searchpeople()">
+    </label>
+    <i ng-click="clearsearch()" class="icon indi-quxiao placeholder-icon " style="right:20px"></i>
+  </div>
+  <div  style="position: relative;height:100%" ng-show="searchkey!=''" >
+ 
+  </div>
+  <ion-slide-box  on-release="release()"  style="height:100%" delegate-handle="select">
+      <ion-slide  ng-repeat= " obj in Slide2" ng-show="searchkey==''">
+         <ion-content  class="  has-header has-subheader contact"    style="width:40%;float:left;background-color: rgb(240, 240, 240);" >
+              <label class="item item-radio"  ng-repeat="dep in obj.depNodes" ng-click="showChilds(dep.DepartmentCode,'left')" style="border:none">
+        <input type="radio" name={{"groupleftsele"+dep.ParentDepCode}} value={{dep.DepartmentCode}}  ng-checked="!islocal&&dep.DepartmentCode==checkedradio.names['radio'+dep.ParentDepCode]" ng-model="checkedradio.names['radio'+dep.ParentDepCode]">
+                 <div class="item-content" style="background-color: rgb(240, 240, 240);">
+                  {{dep.DepName}}
+                 </div>
+                  <i class="radio-icon ion-checkmark" style="padding:0;color:white;padding-top:8px;"></i>
+              </label>         
+         </ion-content >
+      <ion-content  style="width:60%;left:40%;"  class=" has-header has-subheader has-mysearch contact" ng-show="!islocal" >
+        <div class="list"   class="scroll" > 
+            <div ng-repeat="dep in obj.childdeps" >
+                <label class="checkbox" style="z-index: 100;right: 40px;top:initial;margin-top:8px" >
+                  <input type="checkbox"  ng-model="selected.names[dep.DepartmentCode]"  ng-true-value="'{{dep.DepName}}'"
+                         ng-change="showchecked(dep.DepartmentCode)">
+                </label>                            
+                <label class="item item-radio"  ng-click="showChilds(dep.DepartmentCode,'right')" style="border-left:none;border-right:none">
+                  <input type="radio"  name={{"groupsele"+dep.ParentDepCode}} value={{dep.DepartmentCode}}  ng-checked="dep.DepartmentCode==checkedradio.names['radio'+dep.ParentDepCode]" ng-model="checkedradio.names['radio'+dep.ParentDepCode]">
+                   <div class="item-content item-icon-right" >
+                      {{dep.DepName}}
+                    <i class="icon  ion-ios-arrow-right" ></i>
+                  </div>
+                </label>
+            </div>
+        </div >
+        </ion-content >
+         </ion-slide>
+  </ion-slide-box>
+</ion-view> 
+</ion-modal-view >

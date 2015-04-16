@@ -1,0 +1,46 @@
+<ion-side-menu side="left" width="250">
+    <ion-header-bar class="bar-dark">
+      <div class="content">
+        <a class="item item-dark item-avatar" ng-click="toggleLeft()" href="#/myinfo">
+          <img ng-src="{{context.userinfo.avatar}}">
+          <h2>{{context.userinfo.fullname | domUser}}</h2>
+          <p>{{context.userinfo.jobtitle}}</p>
+        </a>
+      </div>     
+    </ion-header-bar>
+  <ion-content>
+    <div class="list">
+      <!-- <a class="item item-dark item-icon-left">
+        <i class="icon indi-xiaoxitongzhi"></i>
+        消息通知
+        <span class="badge badge-assertive">5</span>
+      </a> -->
+      <a class="item item-dark item-icon-left" ng-click="toggleLeft()" href="#/mydone">
+        <i class="icon indi-yiban"></i>
+        我的已办
+      </a>
+      <a class="item item-dark item-icon-left" ng-click="toggleLeft()" href="#/myread">
+        <i class="icon indi-yiyue"></i>
+        我的已阅
+      </a>
+      <a class="item item-dark item-icon-left" ng-click="toggleLeft()" href="#/myattention">
+        <i class="icon indi-guanzhu"></i>
+        我的关注
+      </a>
+      <a class="item item-dark item-icon-left" ng-click="toggleLeft()" href="#/mydraft">
+        <i class="icon indi-daiban"></i>
+        待办草稿
+      </a>
+      <a class="item item-dark item-icon-left" ng-click="toggleLeft()" href="#/changepw">
+        <i class="icon indi-mima"></i>
+        修改密码
+      </a>
+
+    </div>  
+
+  </ion-content>
+    <ion-footer-bar class="bar-dark">
+        <a class="button button-clear button-stable icon-left indi-shezhi" ng-click="toggleLeft()" href="#/setup">设置</a>
+        <a class="button button-clear button-stable icon-left indi-zhuxiao" href="#/logout" menu-close>注销</a>
+    </ion-footer-bar>  
+</ion-side-menu>

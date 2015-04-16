@@ -1,0 +1,138 @@
+<ion-view title="邮件">
+ <ion-nav-buttons side="left">
+      <button class="button button-clear icon indi-shouxie"  ui-sref="writemail" ></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear icon indi-sousuo" ui-sref="search({type:'mails'})"></button>
+  </ion-nav-buttons>
+  <ion-tabs ng-class="{'tabs-item-hide': $root.hideTabs}" class="tabs-striped tabs-top">
+    <ion-tab title="收件箱"   badge="context.userinfo.count.unread_mail" badge-style="badge-assertive" on-select="getMaillist('($Inbox)','mailinbox')">
+          <div>
+            <ion-content ng-class="{'empty': initialized && maillist.mailinbox.length === 0}" >
+                <div class="refresh-icon" ng-show="!initialized">
+                  <ion-spinner icon="spiral"></ion-spinner>
+                  <br>
+                   正在加载...
+                </div>
+                <ion-refresher ng-show="initialized" on-refresh="doRefresh()"
+                               pulling-text="下拉刷新..."
+                               refreshing-text="正在加载..."
+                               spinner="spiral">           
+                </ion-refresher>
+                <ion-list>
+                  <a class="item item-icon-left" style="padding-left:45px;height:100px" ng-repeat="mail in maillist.mailinbox" ng-click="modifyMailinfo({{$index}},'收件箱')" href="#/{{isDraft?'writemail':'mailcontent'}}/{{mail.mailhref.substring(mail.mailhref.indexOf(')/')+2)|limitTo :32}}{{isDraft?'//':''}}">     
+                  <i class="icon indi-jindu" style="font-size: 12px;top: 16px;height: 19px;color:red"  ng-show="mail.mailread=='false'"></i>
+                     <h2> <font style="font-weight:bold"> {{mail.mailfrom}} </font>
+                          <span class="indi-fujian ng-binding" ng-show="mail.mailattach=='true'"></span>
+                          <span  class="item-note">{{mail.mailtime |  amCalendar}}</span>
+                    </h2>
+                          <p class="row">
+                            <i class="col" style="font-size:12px;color:black">{{mail.mailtitle}}</i> 
+                          </p>
+                          <p class="row">
+                              <i class="col" style="font-size:12px">{{mail.mailcntent}}</i>  
+                          </p>
+                  </a>
+                </ion-list>
+                <ion-infinite-scroll  on-infinite="loadMore()"  ng-if="param.folderName=='($Inbox)'&&moreDataCanBeLoaded"  distance="10%"></ion-infinite-scroll>
+            </ion-content>
+          </div>
+    </ion-tab>
+    <ion-tab title="发件箱" on-select="getMaillist('($Sent)','mailsent')">
+          <div>
+            <ion-content ng-class="{'empty': initialized && maillist.mailsent.length === 0}">
+                <div class="refresh-icon" ng-show="!initialized">
+                  <ion-spinner icon="spiral"></ion-spinner>
+                  <br>
+                   正在加载...
+                </div>
+                <ion-refresher ng-show="initialized" on-refresh="doRefresh()"
+                               pulling-text="下拉刷新..."
+                               refreshing-text="正在加载..."
+                               spinner="spiral">           
+                </ion-refresher>
+                <ion-list>
+                  <a class="item item-icon-left" style="padding-left:45px;height:100px" ng-repeat="mail in maillist.mailsent" ng-click="modifyMailinfo({{$index}},'发件箱')" href="#/{{isDraft?'writemail':'mailcontent'}}/{{mail.mailhref.substring(mail.mailhref.indexOf(')/')+2)|limitTo :32}}{{isDraft?'//':''}}">     
+                  <i class="icon indi-jindu" style="font-size: 12px;top: 16px;height: 19px;color:red"  ng-show="mail.mailread=='false'"></i>
+                     <h2> <font style="font-weight:bold"> {{mail.mailfrom}} </font>
+                          <span class="indi-fujian ng-binding" ng-show="mail.mailattach=='true'"></span>
+                          <span  class="item-note">{{mail.mailtime |  amCalendar}}</span>
+                    </h2>
+                          <p class="row">
+                            <i class="col" style="font-size:12px;color:black">{{mail.mailtitle}}</i> 
+                          </p>
+                          <p class="row">
+                              <i class="col" style="font-size:12px">{{mail.mailcntent}}</i>  
+                          </p>
+                  </a>
+                </ion-list>
+                <ion-infinite-scroll  on-infinite="loadMore()"  ng-if="param.folderName=='($Sent)'&&moreDataCanBeLoaded"  distance="10%"></ion-infinite-scroll>
+            </ion-content>
+          </div>
+    </ion-tab>
+    <ion-tab title="草稿箱" on-select="getMaillist('($Drafts)','maildrafts')">
+         <div>
+            <ion-content  ng-class="{'empty': initialized && maillist.maildrafts.length === 0}">
+                <div class="refresh-icon" ng-show="!initialized">
+                  <ion-spinner icon="spiral"></ion-spinner>
+                  <br>
+                   正在加载...
+                </div>
+                <ion-refresher ng-show="initialized" on-refresh="doRefresh()"
+                               pulling-text="下拉刷新..."
+                               refreshing-text="正在加载..."
+                               spinner="spiral">           
+                </ion-refresher>
+                <ion-list>
+                  <a class="item item-icon-left" style="padding-left:45px;height:100px" ng-repeat="mail in maillist.maildrafts" ng-click="modifyMailinfo({{$index}},'草稿箱')" href="#/{{isDraft?'writemail':'mailcontent'}}/{{mail.mailhref.substring(mail.mailhref.indexOf(')/')+2)|limitTo :32}}{{isDraft?'//':''}}">     
+                  <i class="icon indi-jindu" style="font-size: 12px;top: 16px;height: 19px;color:red"  ng-show="mail.mailread=='false'&&false"></i>
+                     <h2> <font style="font-weight:bold"> {{mail.mailsendto}} </font>
+                          <span class="indi-fujian ng-binding" ng-show="mail.mailattach=='true'"></span>
+                          <span  class="item-note">{{mail.mailtime |  amCalendar}}</span>
+                    </h2>
+                          <p class="row">
+                            <i class="col" style="font-size:12px;color:black">{{mail.mailtitle}}</i> 
+                          </p>
+                          <p class="row">
+                              <i class="col" style="font-size:12px">{{mail.mailcntent}}</i>  
+                          </p>
+                  </a>
+                </ion-list>
+                <ion-infinite-scroll  on-infinite="loadMore()"  ng-if="param.folderName=='($Drafts)'&&moreDataCanBeLoaded"  distance="10%"></ion-infinite-scroll>
+            </ion-content>
+          </div>
+    </ion-tab>
+    <ion-tab title="废件箱" on-select="getMaillist('($SoftDeletions)','mailjunk')">
+        <div>
+            <ion-content  ng-class="{'empty': initialized && maillist.mailjunk.length === 0}">
+                <div class="refresh-icon" ng-show="!initialized">
+                  <ion-spinner icon="spiral"></ion-spinner>
+                  <br>
+                   正在加载...
+                </div>
+                <ion-refresher ng-show="initialized" on-refresh="doRefresh()"
+                               pulling-text="下拉刷新..."
+                               refreshing-text="正在加载..."
+                               spinner="spiral">           
+                </ion-refresher>
+                <ion-list>
+                  <a class="item item-icon-left" style="padding-left:45px;height:100px" ng-repeat="mail in maillist.mailjunk" ng-click="modifyMailinfo({{$index}},'废件箱')"href="#/{{isDraft?'writemail':'mailcontent'}}/{{mail.mailhref.substring(mail.mailhref.indexOf('noteid=')+7)}}{{isDraft?'//':''}}">     
+                  <i class="icon indi-jindu" style="font-size: 12px;top: 16px;height: 19px;color:red"  ng-show="mail.mailread=='false'"></i>
+                     <h2> <font style="font-weight:bold"> {{mail.mailfrom}} </font>
+                          <span class="indi-fujian ng-binding" ng-show="mail.mailattach=='true'"></span>
+                          <span  class="item-note">{{mail.mailtime |  amCalendar}}</span>
+                    </h2>
+                          <p class="row">
+                            <i class="col" style="font-size:12px;color:black">{{mail.mailtitle}}</i> 
+                          </p>
+                          <p class="row">
+                              <i class="col" style="font-size:12px">{{mail.mailcntent}}</i>  
+                          </p>
+                  </a>
+                </ion-list>
+                <ion-infinite-scroll  on-infinite="loadMore()"  ng-if="param.folderName=='($SoftDeletions)'&&moreDataCanBeLoaded"  distance="10%"></ion-infinite-scroll>
+            </ion-content>
+          </div>
+    </ion-tab>
+  </ion-tabs>
+</ion-view>

@@ -1,0 +1,27 @@
+<ion-view title="我的已办">
+  <ion-nav-buttons side="right">
+    <button class="button button-clear icon indi-sousuo" ui-sref="search({type:'todos'})"></button>
+  </ion-nav-buttons>
+  <ion-content ng-class="{'empty': initialized && toreads.length === 0}">
+      <div class="refresh-icon" ng-if="!initialized">
+        <ion-spinner icon="spiral"></ion-spinner>
+        <br />
+         正在加载...
+      </div>
+      <ion-refresher ng-show="initialized" on-refresh="doRefresh(true)"
+                     pulling-text="下拉刷新..."
+                     refreshing-text="正在加载..."
+                     spinner="spiral">
+                     
+      </ion-refresher>
+    <ion-list>
+
+      <ion-item class="item" ng-repeat="todo in mydones" type="item-text-wrap" nav-direction="forward" href="#/webflow/{{todo.dbpath}}/{{todo.unid}}">
+        <h3>{{todo.title}}</h3>
+        <p>{{todo.from | domUser}}&nbsp;&nbsp;{{todo.type}}<span class="item-note">{{todo.receivetime | amCalendar}}</span></p>
+      </ion-item>
+      
+    </ion-list>
+  <ion-infinite-scroll  on-infinite="loadMore()"  ng-if="moreDataCanBeLoaded"  distance="10%"></ion-infinite-scroll>
+  </ion-content>
+</ion-view>

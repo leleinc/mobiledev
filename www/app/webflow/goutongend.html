@@ -1,0 +1,42 @@
+<ion-modal-view>
+  <ion-header-bar class="bar bar-header bar-positive">
+    <button class="button button-icon button-clear indi-fanhui" ng-click="cancelGoutong()"></button>
+    <h1 class="title">终止沟通</h1>
+    <button class="button" ng-click="endGoutong()">确定</button>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list card next-node">
+      <!-- <ion-checkbox ng-repeat="item in form.goutongdealers"
+                      ng-model="item.checked" 
+                      ng-checked="item.checked">
+          {{ item.dealer | domUser }}
+          <p ng-show="item.checked && item.extDealer.length">同时终止以下用户：<span>{{ item.extDealer | domUser }}</span></p>
+      </ion-checkbox>
+ -->      
+      <label class="item sd-checkbox" ng-repeat="item in form.goutongdealers">
+        <input type="checkbox" ng-model="item.checked" ng-checked="item.checked">
+        <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.checked, 'indi-xuanzhong':item.checked}"></i>
+        {{ item.dealer | domUser }}
+        <p ng-show="item.checked && item.extDealer.length">同时终止以下用户：<span>{{ item.extDealer | domUser }}</span></p>
+      </label>
+      <div class="item item-input" >
+        <span class="input-label">通知</span>
+        <div class="item-note notify-type">
+          <label>
+
+            <input type="checkbox" ng-model="form.goutong.mail">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.goutong.mail, 'indi-xuanzhong':form.goutong.mail}"></i>
+            邮件
+          </label>
+          <label>
+            <input type="checkbox" ng-model="form.goutong.sms">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.goutong.sms, 'indi-xuanzhong':form.goutong.sms}"></i>
+            短信
+          </label>
+        </div>
+      </div>
+    </div>
+    </div>
+  </ion-content>
+
+</ion-modal-view>

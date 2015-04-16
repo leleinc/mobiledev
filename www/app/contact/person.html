@@ -1,0 +1,23 @@
+<ion-view title="人员详情" >
+    <ion-content class="has-header">
+      <ion-item  class="item item-avatar"  type="item-text-wrap" style="background: rgb(249, 249, 249);min-height:101px">     
+      <img ng-src={{person.img}}  style="max-width: 60px;max-height: 60px;top:18px">
+       <h3 style="margin-left:12px">{{person.user||person.name |domUser}}</h3>
+       <p style="margin-left:12px">{{person.dep}} {{person.JobTitle}}</p>
+       <p  style="margin-left:12px"  ng-repeat="x in person.fldSubDepsInfo">隶属部门: {{x.SubDep}} {{x.SubDepJob}}</p>
+      </ion-item>
+      <div class="item  item-icon-right" ng-if="person.MobilePhone!=''" ng-cloak>
+       手机: {{person.MobilePhone}}
+       <a class="icon indi-shouji" ng-href="tel:{{person.MobilePhone}}" style="text-decoration: none;color: gray"></a> 
+      </div>
+      <div class="item  item-icon-right" ng-if="person.OfficeTel!=''" ng-cloak>
+       电话: {{person.OfficeTel}}
+        <a class="icon indi-dianhua" ng-href="tel:{{person.OfficeTel}}" style="text-decoration: none;color: gray"></a>
+      </div>
+      <div class="item  item-icon-right" ng-if="person.InternetAddress!=''" ng-cloak>
+       邮箱: {{person.InternetAddress}}
+       <a class="icon indi-youxiang"  href="#/writemail///?defaddress={{person.InternetAddress}}" style="text-decoration: none;color: gray" ></a>
+      </div>
+ </div>
+</ion-content>
+</ion-view  >

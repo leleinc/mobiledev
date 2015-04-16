@@ -1,0 +1,46 @@
+<ion-modal-view>
+  <ion-header-bar class="bar bar-header bar-positive">
+    <button class="button button-icon button-clear indi-fanhui" ng-click="modalCtrl.cancel()"></button>
+    <h1 class="title">分裂</h1>
+    <button class="button" ng-click="modalCtrl.submit()">确定</button>
+  </ion-header-bar>
+  <ion-content>
+    <!-- <pre>{{modalCtrl.data | json}}</pre> -->
+    <div class="list card next-node" ng-init="item.form.selected = true" ng-class="{selected: item.form.selected}" ng-repeat="item in modalCtrl.nodeList">
+      <label class="item item-divider item-icon-right" ng-class="{'item-divider-selected': item.form.selected}">
+          <input type="checkbox" ng-model="item.form.selected" ng-disabled="modalCtrl.data.rule=='1'">
+          <i class="radio-icon positive" ng-class="{'indi-xuanze-1-':!item.form.selected, 'indi-xuanze-1':item.form.selected}"></i>
+          {{item.name}}
+          <i class="icon " ng-class="{'ion-ios7-arrow-down': item.form.selected,'ion-ios7-arrow-up': !item.form.selected}"></i>
+        </label>
+        <a ng-show="item.form.selected" class="item item-input" >
+         <i selectpeople bindid="$scope.modalCtrl.nodeList[{{$index}}].form.defaultuser" ></i>
+        <span class="input-label">处理人</span>
+        <div class="item-note sd-input">{{item.form.defaultuser | domUser}}</div>
+      </a>      
+      <a ng-show="item.form.selected" class="item item-input" >
+               <i selectpeople bindid="$scope.modalCtrl.nodeList[{{$index}}].form.zhr" ></i>
+        <span class="input-label">知会人</span>
+        <div class="item-note sd-input">{{item.form.zhr | domUser}}</div>
+      </a>
+      <div ng-show="item.form.selected" class="item item-input" >
+        <span class="input-label">通知</span>
+        <div class="item-note notify-type">
+          <label>
+
+            <input type="checkbox" ng-model="item.form.mail" ng-true-value="'yes'" ng-false-value="'no'">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':item.form.mail=='no'||!item.form.mail, 'indi-xuanzhong':item.form.mail=='yes'}"></i>
+            邮件
+          </label>
+          <label>
+            <input type="checkbox" ng-model="item.form.sms" ng-true-value="'yes'" ng-false-value="'no'">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':item.form.sms=='no'||!item.form.sms, 'indi-xuanzhong':item.form.sms=='yes'}"></i>
+            短信
+          </label>
+        </div>
+      </div>
+         <!-- <pre>{{item.form | json}}</pre> -->
+    </div>
+  </ion-content>
+
+</ion-modal-view>

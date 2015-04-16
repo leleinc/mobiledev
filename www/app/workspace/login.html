@@ -1,0 +1,21 @@
+<ion-view title="" hide-nav-bar="true">
+  <ion-content has-tabs="false" scroll="false" class="login-form">
+    <form name="loginForm" ng-submit="doLogin()">
+      <div class="logo"></div>
+      <div class="list">
+        <label class="item item-input {{loginForm.name.$valid?'':'invalid'}}">
+          <i class="icon indi-yonghuming placeholder-icon"></i>
+          <input type="text" name="name" ng-model="userinfo.name" required="required" placeholder="用户名"  clear-Input>
+        </label>
+        <label class="item item-input {{loginForm.pass.$valid?'':'invalid'}}">
+          <i class="icon indi-mima placeholder-icon"></i>
+          <input type="password" name="pass" ng-model="userinfo.pass" required="required" placeholder="密码"  clear-Input>
+        </label>
+        <div class="action">
+          <ion-toggle ng-model="userinfo.savepass">记住密码</ion-toggle>
+          <input type="submit" class="button button-positive button-block" value="登录" />
+        </div>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>

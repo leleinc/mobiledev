@@ -1,0 +1,23 @@
+<ion-modal-view class="half-modal ">
+        <ion-header-bar class="bar  bar-header bar-light bar-positive">
+          <button class="button button-clear icon indi-fanhui" ng-click="cancelComment()"></button>
+          <h1 class="title">写意见</h1>
+          <button class="button  icon" ng-click="closeModal()">确定</button>
+        </ion-header-bar>
+        <ion-content>
+          <div class="yj-bar list comments-input" >
+            <div class="item item-input-inset" style="padding-top:0px;padding-bottom:0px">
+             <!--  <button class="button button-light button-icon icon indi-yuyin"></button> -->
+              <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal('commentModal')"></button>
+              <label class="item-input-wrapper" >
+                <textarea id="comment-box" ng-model="form.comments" type="text" msd-elastic clear-Input></textarea>
+              </label>
+            </div>
+          </div>
+          <div class="tag-cloud">
+            <div class="tag-wrapper" ng-repeat="cyyitem in cyy">
+              <button class="button button-small" ng-click="writeComment(cyyitem.content)">{{cyyitem.content}}</button>
+            </div>
+          </div>
+        </ion-content>
+      </ion-modal-view>

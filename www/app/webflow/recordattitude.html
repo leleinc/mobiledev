@@ -1,0 +1,13 @@
+  <div id="RecordAttitudeContainer" ng-controller="RecordAttitudeCtrl" >
+    <button id="btn-bofang" class="button button-clear indi-bofang" ng-click="playRecord()"></button>
+    <div class="bofang-time"><span>{{RecordInfo.time}}</span></div>
+	  <audio id="audio1"></audio>
+<!--     <div class="process-bar">
+       <input type='range' id='playrange' value='0' min='0' max='100'>
+    </div> -->
+    <div id="bar-bofang" class="bar">
+      <button class="button button-small button-positive" ng-click="submitRecord()">提交</button>
+      <button class="button button-small button-stable"   ng-click="saveRecord()">暂不提交</button>
+      <button class="button button-small button-stable"   ng-click="Record('remove')">删除</button>
+    </div>
+  </div>

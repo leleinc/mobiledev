@@ -1,0 +1,93 @@
+<ion-view title="设置">
+<ion-content>     
+	<div class="list">
+        <!-- 消息通知区域开始 -->
+        <div class="item item-divider">
+            消息通知
+		</div>       
+        <ion-toggle name="pushRadio" ng-repeat="item in pushList.items" ng-model="item.checked" ng-checked="item.checked" ng-change="fnPushList(item)">
+        	{{ item.text }}
+        </ion-toggle>
+        <!-- 消息通知区域结束 -->
+        <!-- 文件预览通知方式区域开始 -->
+        <div class="item item-divider">
+            文件默认预览方式
+        </div>
+        <ion-radio name="showFileRadio" ng-repeat="item in fileShowList" ng-value="item.value" ng-model="showData.showFile" ng-change="fnfileShowList(item)">
+            {{item.text}}
+        </ion-radio>
+        <!-- 文件预览通知方式区域结束 -->
+        <!-- 底部导航显示顺序 + 字体大小开始 -->
+        <a style="display:none" class="button icon-right ion-chevron-right full-width-button">底部导航显示顺序</a>  
+        <!-- 底部导航显示顺序 + 字体大小结束 -->
+        <!-- 系统皮肤开始 -->
+        <!-- <div class="item item-divider">
+            系统皮肤
+        </div>
+        <ion-radio name="showSkinRadio" ng-repeat="item in sysSkinList" ng-value="item.value" ng-model="showData.showSkin" ng-change="fnsysSkinList(item)">
+            {{item.text}}
+        </ion-radio> -->
+        <!-- 系统皮肤结束 -->
+        <!-- 手写签批start -->
+       <!--  <ion-toggle name="handWritingRadio" ng-model="showData.handWriting.checked" ng-checked="showData.handWriting.checked" ng-change="fnhandWriting(showData.handWriting)">
+            {{ showData.handWriting.text }}
+        </ion-toggle> -->
+        <!-- 手写签批end -->
+        <!-- 语音审批start -->
+        <!-- <ion-toggle name="voiceRadio" ng-model="showData.voice.checked" ng-checked="showData.voice.checked" ng-change="fnvoice(showData.voice)">
+            {{ showData.voice.text }}
+        </ion-toggle> -->
+        <!-- 语音审批end -->
+        <!-- 多语言 + 版本信息start + 检查新版本 + 关于Traveler start href="#/setup/i18n.html" -->
+        <a style="display:none" class="button icon-right ion-chevron-right full-width-button">多语言</a>
+        <!-- 多语言开始 -->
+        <!-- <div class="item item-divider">
+            多语言
+        </div>
+        <ion-radio name="showLang" ng-repeat="item in sysLangList" ng-value="item.value" ng-model="showData.showLang" ng-change="fnsysLang(item)">
+            {{item.text}}
+        </ion-radio> -->
+        <!-- 多语言结束 -->
+         <!-- 将版本信息放进关于里 zhangsl<a class="button icon-right ion-chevron-right full-width-button">版本信息</a>
+        <a class="button icon-right ion-chevron-right full-width-button" href="#/setup/checknewversion">检查新版本</a>  -->
+        <!-- 修改 “关于Traveler” 为 “关于” zhangsl -->
+        <a class="button icon-right ion-chevron-right full-width-button" href="#/setup/about">关于</a>
+        <!-- 多语言 + 版本信息start + 检查新版本 + 关于Traveler end -->
+
+        <!--
+        <div class="item item-divider"> 
+			Notifications
+        </div>       
+        <ion-toggle ng-model="pushNotification.checked" ng-change="pushNotificationChange()">
+			Push Notifications
+        </ion-toggle>        
+        <div class="item">
+			<pre ng-bind="pushNotification | json"></pre> 
+        </div> -->
+
+        <!-- <ion-toggle toggle-class="toggle-assertive" ng-model="emailNotification" ng-true-value="Subscribed" ng-false-value="Unubscribed">
+			Newsletter
+        </ion-toggle>       
+        <div class="item">
+			<pre ng-bind="emailNotification"></pre> 
+        </div>  -->      
+	</div>
+</ion-content>
+</ion-view>
+<style>
+    .full-width-button{
+        width:100%;
+        border-bottom:0;
+        border-color:#ededed;
+        background-color:#FFF;
+        text-align:left;
+        height:56px;
+        line-height: 52px;
+    }
+    .button.icon-right.full-width-button:before{
+        line-height: 52px;
+    }
+    .full-width-button.activated{
+        border-color:#ededed;
+    }
+</style>

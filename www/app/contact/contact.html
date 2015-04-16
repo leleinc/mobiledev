@@ -1,0 +1,59 @@
+<ion-view title="通讯录" >
+ 
+    <ion-nav-buttons >
+          <button class="button button-clear contact"  ng-if="!isrootnode" ng-click="backFather()">
+          <i class="icon indi-shangyiji " style="font-size:14px">上级目录</i>
+          </button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-clear icon indi-sousuo" ui-sref="search({type:'contact'})"></button>
+    </ion-nav-buttons>
+
+
+    <body  >
+  <ion-slide-box on-release="release()" style="height:100%"  delegate-handle="contact">
+      <ion-slide  ng-repeat= " obj in Slide">
+     <ion-content  class="contact  has-header has-tabs"   style="width:40%;float:left;background-color: rgb(250, 250, 250)" >           
+        <label class="item item-radio"  ng-repeat="dep in obj.depNodes" ng-click="showChilds(dep.DepartmentCode,'left')" style="border:none">
+        <input type="radio" name={{"groupleft"+dep.ParentDepCode}} value={{dep.DepartmentCode}}  ng-checked="dep.DepartmentCode==checkedradio.names['radio'+dep.ParentDepCode]"
+        ng-model="checkedradio.names['radio'+dep.ParentDepCode]"
+        >
+          <div class="item-content  " style="background-color: rgb(250, 250, 250)" >{{dep.DepName}}</div>
+           <i class=" radio-icon ion-checkmark " style="padding:0;color:white;padding-top: 8px;"></i>
+        
+        </label>
+              
+         </ion-content >
+   
+        <ion-content  style="width:60%;left:40%;" class="has-header contact"  >
+              <div class="list"  class="scroll"  ng-if="!islocal">                               
+                     
+                          <a  class="item item-avatar" ng-repeat="person in obj.concats" type="item-text-wrap"  style="border-left:none;border-right:none" ui-sref="person({name:person.AbbName})" >   
+                           <img src={{person.imgpath==""?defaultimage:(ROOT+person.imgpath)}} >
+                            <h2 >{{person._name}}</h2>
+                          </a>             
+                          <a  class="item item-avatar" ng-repeat="person in obj.concatstmp" type="item-text-wrap"  style="border-left:none;border-right:none" ui-sref="person({unid:person['@unid'],imgpath:person['imgpath']})" >   
+                           <img ng-src={{person.imgpath==""?defaultimage:(ROOT+person.imgpath)}} >
+                            <h2 >{{person._name}}</h2>
+                          </a> 
+                    <label class="item item-radio" ng-repeat="dep in obj.childdeps"  ng-click="showChilds(dep.DepartmentCode,'right')" style="border-left:none;border-right:none">
+            <input type="radio" name={{"group"+dep.ParentDepCode}} value={{dep.DepartmentCode}}  ng-model="checkedradio.names['radio'+dep.ParentDepCode]"
+              ng-checked="dep.DepartmentCode==checkedradio.names['radio'+dep.ParentDepCode]">
+                       <div class="item-content item-icon-right" >
+                        {{dep.DepName}}
+                        <i class="icon  ion-ios-arrow-right" ></i>
+                       
+                       </div>
+                    </label>
+              </div >
+         </ion-content>
+         </ion-slide>
+
+  </ion-slide-box>
+ </body>
+
+</ion-view>
+ 
+ 
+
+ 

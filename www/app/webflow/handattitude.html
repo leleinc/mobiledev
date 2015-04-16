@@ -1,0 +1,20 @@
+  <div id="HandAttitudeContainer" ng-controller="HandAttitudeCtrl" >
+  <ion-content>
+          <canvas id="canvas"></canvas>
+          <canvas id="canvas_hr" style="display:none"></canvas>
+  </ion-content>
+  <ion-footer-bar class="bar-stable">
+   <div class="button button-icon button-landscape" style="width:33%" ng-click="closeHAModal()">
+      <div class="indi-quxiao"></div>
+      <div>取消</div>
+   </div>
+   <div class="button button-icon button-landscape" style="width:33%" ng-click="saveHA()">
+      <div class="indi-baocun"></div>
+      <div>确定</div>
+   </div>
+   <div class="button button-icon button-landscape" style="width:33%" ng-click="clearCanvas()">
+      <div class="indi-xiangpica"></div>
+      <div>清空</div>
+   </div>
+  </ion-footer-bar>
+  <div>

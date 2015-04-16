@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<!--     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+ -->  <meta name="apple-touch-fullscreen" content="YES" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Indi.Mobile</title>
+
+    <!-- ionic css -->
+    <link href="css/ionic.app.min.css" rel="stylesheet">
+
+    <!-- your app's css -->
+    <link href="app/indiplatform.css" rel="stylesheet">
+
+    <!-- ionic/angularjs scripts -->
+    <script src="lib/ionic/js/ionic.bundle.min.js"></script>
+    <script src="lib/ionic/js/angular/angular-resource.min.js"></script>
+    <script src="lib/elastic.js"></script>
+    <script src="lib/x2js/xml2json.min.js"></script>
+    <script src="lib/angular-x2js.js"></script>
+    <script src="lib/dominosoap.js"></script>
+    <script src="lib/moment-with-locales.min.js"></script>
+    <script src="lib/angular-moment.min.js"></script>
+
+    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's script -->
+    <script src="app/indiplatform.js"></script>
+    <script src="app/common/common.js"></script>
+    <script src="app/common/service.js"></script>
+    <script src="app/common/directive.js"></script>
+    <script src="app/common/filter.js"></script>
+    <script src="app/workspace/workspace.js"></script>
+    <script src="app/workspace/service.js"></script>
+    <script src="app/workspace/controller.js"></script>
+    <script src="app/todo/todo.js"></script>
+    <script src="app/todo/service.js"></script>
+    <script src="app/todo/controller.js"></script>
+    <script src="app/webflow/webflow.js"></script>
+    <script src="app/webflow/service.js"></script>
+    <script src="app/webflow/controller.js"></script>
+    <script src="app/mail/mail.js"></script>
+    <script src="app/mail/service.js"></script>
+    <script src="app/mail/controller.js"></script>
+    <script src="app/contact/contact.js"></script>
+    <script src="app/contact/service.js"></script>
+    <script src="app/contact/controller.js"></script>
+    <script src="app/new/new.js"></script>
+    <script src="app/new/service.js"></script>
+    <script src="app/new/controller.js"></script>
+     <script src="app/search/search.js"></script>
+    <script src="app/search/service.js"></script>
+    <script src="app/search/controller.js"></script>
+    <script src="app/setup/setup.js"></script>
+    <script src="app/setup/service.js"></script>
+    <script src="app/setup/controller.js"></script>
+  </head>
+
+  <!-- 
+    'starter' is the name of this angular module (js/app.js)
+  -->
+  <body ng-app="indiplatform" ng-controller="MainCtrl">
+
+    <!-- 
+      The nav bar that will be updated as we navigate between views
+      Additional attributes set its look, ion-nav-bar animation and icons
+      Icons provided by Ionicons: http://ionicons.com/ 
+    -->
+
+    <!-- 
+      The views will be rendered in the <ion-nav-view> directive below
+      Templates are in the /templates folder (but you could also
+      have templates inline in this html file if you'd like).
+    -->
+
+  <ion-side-menus>  
+    <ion-side-menu-content drag-content="false">
+      <ion-nav-bar class="bar-positive">
+          <ion-nav-back-button></ion-nav-back-button>
+      </ion-nav-bar>
+      <ion-nav-view name="main-view"></ion-nav-view>
+    </ion-side-menu-content> 
+    <div ng-include src="'app/workspace/sidemenu.html'"></div>      
+  </ion-side-menus>
+  </body>
+</html>

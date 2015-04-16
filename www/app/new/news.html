@@ -1,0 +1,39 @@
+
+<ion-view title="首页" hide-back-button="true">
+ <ion-nav-buttons side="left" >
+    <button menu-toggle="left" class="button button-clear icon indi-geren"></button>
+  </ion-nav-buttons>
+ <ion-nav-buttons side="right">
+    <button class="button button-clear icon indi-sousuo" ui-sref="search({type:'news'})"></button>
+  </ion-nav-buttons>
+  <ion-content  style="background:#f8f8f8">
+
+      <div class="refresh-icon" ng-if="!initialized">
+        <ion-spinner icon="spiral"></ion-spinner>
+        <br />
+         正在加载...
+      </div>
+      <ion-refresher ng-show="initialized" on-refresh="doRefresh()"
+                     pulling-text="下拉刷新..."
+                     refreshing-text="正在加载..."
+                     spinner="spiral">
+                     
+      </ion-refresher>
+    <ion-list>
+      <div class="card news " ng-repeat="new in news " >
+       <a class="item  item-text-wrap "  href="#/new/{{new.newid}}">
+             <h2 style="color:black;">{{new.newtitle}}</h2>
+                <p style="font-size: 13px;">{{new.newtime |amCalendar}}</p>
+                 <img  ng-src={{new.newimgurl.split(',')[0]}} ng-if="new.newimgurl!=''" > 
+                   <p style="font-size: 14px;">{{new.newcontent}}</p>
+              <h2  href="#/new/{{new.newid}}">阅读全文<i class="icon  ion-ios-arrow-right" style="float:right"></i></h2>
+         <!--     <div class="item item-divider item-icon-right " style="font-size: 14px;border:none;padding-left:0px;background: rgba(0, 0, 0, 0);" href="#/new/{{new.newid}}">
+              阅读全文
+                 <i class="icon  ion-ios-arrow-right" ></i>
+             </div> -->
+      </a>
+      </div>
+    </ion-list>
+  <ion-infinite-scroll  on-infinite="loadMore()"  ng-if="moreDataCanBeLoaded"  distance="10%"></ion-infinite-scroll>
+  </ion-content>
+</ion-view>
