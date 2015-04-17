@@ -6,15 +6,15 @@
        <p style="margin-left:12px">{{person.dep}} {{person.JobTitle}}</p>
        <p  style="margin-left:12px"  ng-repeat="x in person.fldSubDepsInfo">隶属部门: {{x.SubDep}} {{x.SubDepJob}}</p>
       </ion-item>
-      <div class="item  item-icon-right" ng-if="person.MobilePhone!=''" ng-cloak>
+      <div class="item  item-icon-right" ng-if="person.MobilePhone.length>0&&person.MobilePhone!=''" ng-cloak>
        手机: {{person.MobilePhone}}
        <a class="icon indi-shouji" ng-href="tel:{{person.MobilePhone}}" style="text-decoration: none;color: gray"></a> 
       </div>
-      <div class="item  item-icon-right" ng-if="person.OfficeTel!=''" ng-cloak>
+      <div class="item  item-icon-right" ng-if="person.OfficeTel.length>0&&person.OfficeTel!=''" ng-cloak>
        电话: {{person.OfficeTel}}
         <a class="icon indi-dianhua" ng-href="tel:{{person.OfficeTel}}" style="text-decoration: none;color: gray"></a>
       </div>
-      <div class="item  item-icon-right" ng-if="person.InternetAddress!=''" ng-cloak>
+      <div class="item  item-icon-right" ng-if="person.InternetAddress.length>0&&person.InternetAddress!=''" ng-cloak>
        邮箱: {{person.InternetAddress}}
        <a class="icon indi-youxiang"  href="#/writemail///?defaddress={{person.InternetAddress}}" style="text-decoration: none;color: gray" ></a>
       </div>

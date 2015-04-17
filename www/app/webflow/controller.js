@@ -595,6 +595,13 @@ angular.module('indiplatform.webflow.controllers', [])
           .map(function(item){
             return item.form
           });
+          if(ret.length<=0) {
+            $ionicPopup.alert({
+              title: "提交失败",
+              template: "请至少选择一个分支"
+            });
+            return;
+          }
           if(ret.some(function(item){
             return item.defaultuser.length<=0
           })) {

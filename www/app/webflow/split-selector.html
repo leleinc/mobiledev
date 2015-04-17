@@ -6,7 +6,7 @@
   </ion-header-bar>
   <ion-content>
     <!-- <pre>{{modalCtrl.data | json}}</pre> -->
-    <div class="list card next-node" ng-init="item.form.selected = true" ng-class="{selected: item.form.selected}" ng-repeat="item in modalCtrl.nodeList">
+    <div class="list card next-node" ng-init="item.form.selected = modalCtrl.data.rule=='1'" ng-class="{selected: item.form.selected}" ng-repeat="item in modalCtrl.nodeList">
       <label class="item item-divider item-icon-right" ng-class="{'item-divider-selected': item.form.selected}">
           <input type="checkbox" ng-model="item.form.selected" ng-disabled="modalCtrl.data.rule=='1'">
           <i class="radio-icon positive" ng-class="{'indi-xuanze-1-':!item.form.selected, 'indi-xuanze-1':item.form.selected}"></i>

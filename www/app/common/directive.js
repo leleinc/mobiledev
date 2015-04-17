@@ -120,7 +120,20 @@ angular.module('indiplatform.common.directive', [])
 .config(function($provide) {
   // 修改actionSheet的样式
   $provide.decorator('ionActionSheetDirective', function($delegate,$rootScope) {
-    $delegate[0].template = $delegate[0].template.replace('class="action-sheet-wrapper"','class="action-sheet-wrapper" ng-class="{\'activity-style\': activityStyle}"'); 
+    var original = $delegate[0].compile;
+    $delegate[0].compile = function(element, attrs, transclude) {
+      var ret = original(element, attrs, transclude);
+      return {
+        pre :function($scope,element){
+          if($scope.activityStyle){
+            element.addClass("activity-style");
+          }
+          ret.apply(this,arguments);
+        },
+        post :function($scope){
+        }
+      };
+    };
     return $delegate;
   });
 })
