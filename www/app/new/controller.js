@@ -9,9 +9,9 @@ angular.module('indiplatform.new.controllers', [])
  $scope.param= {strstart:1,strCount:5,searchQuery:"",dbpath:$scope.context.userinfo.appName+"/ioboard.nsf"};
    if($stateParams.id){
    NewsService.get($stateParams.id,$scope.context.userinfo.appServer,$scope.context.userinfo.appName+"/ioboard.nsf",function(data){
-         if(data.imgurl[0]) {
-             data.content[0]=data.content[0].replace(new RegExp("http://"+urlReg.exec(data.imgurl[0].url)[0],"gi"),CONFIG.DOM_ROOT);
-         }
+         // if(data.imgurl[0]) {
+         //     data.content[0]=data.content[0].replace(new RegExp("http://"+urlReg.exec(data.imgurl[0].url)[0],"gi"),CONFIG.DOM_ROOT);
+         // }
          $scope.new=data;
          angular.forEach($scope.new.idxfiles,function(item){
           item.url=$scope.context.userinfo.appServer+item.url;

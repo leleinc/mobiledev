@@ -46,6 +46,8 @@ angular.module('indiplatform.common.directive', [])
 
             //$node.attr("src", baseURI + $node.attr("src"));
             $node.attr("src",  UrlService.transform(baseURI + $node.attr("src")));
+          }else{
+            $node.attr("src",  UrlService.transform($node.attr("src")));
           }
 
         });
@@ -326,7 +328,6 @@ angular.module('indiplatform.common.directive', [])
              $scope.statename = $state.current.name;
              $scope.attform = {};
              $scope.attform.attViewershow="attlist";
-             console.log($attrs.catnum);
              $scope.attform.htmlsforshowcached={};//将看过的附件cached下来，
             $scope.$watch($attrs.catnum, function(newVal, oldVal) {
                 if (!newVal) return;
@@ -350,7 +351,10 @@ angular.module('indiplatform.common.directive', [])
                     }else{
                                 $scope.attform.docViewerType = "img";
                     }
-                    if(["doc","docx"].indexOf($scope.attform.thisattname.split(".")[1])<0){//其他的则用图片方式
+                    if(["txt"].indexOf($scope.attform.thisattname.split(".")[1])>=0){//如果是txt重拍版方法
+                                $scope.attform.docViewerType = "reflow";
+                    }
+                    if(["doc","docx","txt"].indexOf($scope.attform.thisattname.split(".")[1])<0){//其他的则用图片方式
                                 $scope.attform.docViewerType = "img";
                     }
                     $scope.attform.pagecode=1;
@@ -380,7 +384,7 @@ angular.module('indiplatform.common.directive', [])
                     }                    
                     $scope.attform.docViewer = DocService(ref, {}, function(){
                       $scope.attform.noMoreItemsAvailable = false;
-                      if(!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]&&["doc","docx"].indexOf($scope.attform.thisattname.split(".")[1])>=0){
+                      if(!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]&&["doc","docx","txt"].indexOf($scope.attform.thisattname.split(".")[1])>=0){
                           $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[$scope.attform.docViewer.htmls[0]];
                       }
                       $scope.attform.docViewer.pagesforshow=[];//定义空内容的图片数组，翻页用
@@ -421,7 +425,10 @@ angular.module('indiplatform.common.directive', [])
             //     }
             // });
             var adding = false;
-            var oldIndex = 0;
+            var oldIndex ;
+            $scope.setOldIndex=function(index){
+              oldIndex = index;
+            }
             $scope.addright = function(realmaxcode){                   
                   $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[realmaxcode]);
                   $ionicSlideBoxDelegate.update();
@@ -441,10 +448,12 @@ angular.module('indiplatform.common.directive', [])
                       $scope.attform.pagecode=$scope.attform.docViewer.pagesforshow[index].pagecode;             
                       var realmaxcode=$scope.attform.docViewer.pagesforshow[$scope.attform.docViewer.pagesforshow.length-1].pagecode;
                       var realmincode=$scope.attform.docViewer.pagesforshow[0].pagecode;
-                      if(index > oldIndex && realmaxcode<$scope.attform.docViewer.pages.length){ //往前加
-                              $timeout(function(){  
+                      if(index > oldIndex ){ //往前加
+                            if(realmaxcode<$scope.attform.docViewer.pages.length){
+                                $timeout(function(){  
                                       $scope.addright(realmaxcode);
-                              },200);
+                                },200);
+                            }                            
                       }else{      //往后加
                              $timeout(function(){
                                       if (realmincode>1) {
@@ -452,7 +461,7 @@ angular.module('indiplatform.common.directive', [])
                                       };
                             },200)
                       }
-                      oldIndex = index;
+                      //oldIndex = index;
                       $ionicSlideBoxDelegate.enableSlide(false);
                       [index-1, index+1].forEach(function(i){
                               var handle = $ionicScrollDelegate.$getByHandle("page"+i);
@@ -482,17 +491,31 @@ angular.module('indiplatform.common.directive', [])
                           $ionicSlideBoxDelegate.update();
                           $scope.attform.showpagecode=false;
                           $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[index-1]);
+                          $ionicSlideBoxDelegate.update();
                           $timeout(function(){
-                               $element[0].querySelector('ion-slide').style['-webkit-transform']='translate(0px, 0px) translateZ(0px)';
+                             
                                $timeout(function(){
-                                    if(index<$scope.attform.docViewer.pages.length){
-                                        $scope.addright($scope.attform.docViewer.pages[index-1].pagecode);
+                                    if(index<$scope.attform.docViewer.pages.length){                                                                              
+                                         $scope.addright($scope.attform.docViewer.pages[index-1].pagecode);
+                                          if(index==1){//跳到第一页不知道为什么自己会跳到第2页，强制调回
+                                            adding = true;
+                                            $timeout(function(){ $ionicSlideBoxDelegate.slide(0, [0]);})
+                                            $timeout(function(){
+                                              adding = false;
+                                            },200);
+                                          }
                                     }
                                     $timeout(function(){
                                         if(index>1){
+                                            adding = true;
                                             $scope.attform.docViewer.pagesforshow.splice(0,0,$scope.attform.docViewer.pages[index-2]);
-                                            $ionicSlideBoxDelegate.slide(1, [50]);//头部增加了一页坐标会变，又走回去，不用next有延时 
-                                        }                                       
+                                            $ionicSlideBoxDelegate.update();
+                                            $timeout(function(){ $ionicSlideBoxDelegate.slide(1, [0]);},50)//头部增加了一页坐标会变，又走回去，不用next有延时                                      
+                                            $timeout(function(){
+                                              adding = false;
+                                            },200);
+                                        }   
+
                                     },200)
                               },100)    
                           },100)
@@ -500,9 +523,6 @@ angular.module('indiplatform.common.directive', [])
                           $ionicSlideBoxDelegate.enableSlide(false);
                           $ionicScrollDelegate.resize();
                   },100)
-                  $timeout(function(){
-                   // $ionicSlideBoxDelegate.slide(1,[50]);
-                  },200)
 
               }
               $scope.updatescroll=function(){
@@ -518,7 +538,6 @@ angular.module('indiplatform.common.directive', [])
                         $scope.$broadcast('scroll.infiniteScrollComplete');
                         if($scope.attform.docViewerType == "img"||!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]||$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length>=$scope.attform.docViewer.htmls.length){
                           $scope.attform.noMoreItemsAvailable =true; 
-                           console.log($scope.attform.noMoreItemsAvailable);
                           $scope.$broadcast('scroll.infiniteScrollComplete');                   
                         }
                               
@@ -663,28 +682,67 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
   }
 })
 .directive('range', function($timeout) {
+  var moving=false;
+  var allpage;
+  var perPageWidth;
+  var finalPage;
+  var rangeline;
+  var rangebutton;
   return {
       restrict: 'A',
-      link:function(scope,element){
-
+      require: '?ngModel',
+      link:function(scope,element,attrs,ngModel){
+          ngModel = ngModel || {
+              "$setViewValue" : angular.noop
+          }
           rangeline=element;
-          rangebutton=element[0].lastElementChild;
+          rangebutton=element[0].lastElementChild; 
+          $timeout(function(){
+             allpages=scope.attform.docViewer.pages.length;
+              perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
+            },500)
           rangeline.bind('touchstart',function(evt){
+              moving=true;
+              allpages=scope.attform.docViewer.pages.length;
+              perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
+          
               if(evt.touches[0].clientX-rangebutton.offsetWidth/2>=rangeline[0].offsetLeft&&(rangeline[0].offsetLeft+rangeline[0].offsetWidth)>=(evt.touches[0].clientX+rangebutton.offsetWidth/2)){
                  rangebutton.style['left']=evt.touches[0].clientX-rangebutton.offsetWidth/2+'px';
+                 var reallength=evt.touches[0].clientX-rangebutton.offsetWidth/2-rangeline[0].offsetLeft;
+                  ngModel.$setViewValue(Math.round(reallength/perPageWidth)+1);
+                  finalPage=Math.round(reallength/perPageWidth)+1;
+                  ngModel.$render();
+                  $timeout(function(){
+                      scope.showpagecode(Math.round(reallength/perPageWidth)+1);
+                  })
               }
-              console.log(scope.attform.pagecode);
+ 
           })
           rangeline.bind('touchmove',function(evt){
+              moving=true;
               if(evt.touches[0].clientX-rangebutton.offsetWidth/2>=rangeline[0].offsetLeft&&(rangeline[0].offsetLeft+rangeline[0].offsetWidth)>=(evt.touches[0].clientX+rangebutton.offsetWidth/2)){
                  rangebutton.style['left']=evt.touches[0].clientX-rangebutton.offsetWidth/2+'px';
+
+                  var reallength=evt.touches[0].clientX-rangebutton.offsetWidth/2-rangeline[0].offsetLeft;
+                  perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
+                  ngModel.$setViewValue(Math.round(reallength/perPageWidth)+1);
+                  ngModel.$render();
+                  scope.showpagecode(Math.round(reallength/perPageWidth)+1);
+                  finalPage=Math.round(reallength/perPageWidth)+1;
               }
-              
           })
           rangeline.bind('touchend',function(evt){
-              console.log('end')
+                  scope.hidepagecode(finalPage);
+                  moving=false;
           })
+   
+      },
+      controller:function($scope,$element,$attrs){
+       $scope.$watch($attrs.pagecode,function(newVal,oldVal){
+                  if(!newVal||moving||rangeline[0].offsetLeft==0) return;
+                   rangebutton.style['left']=(newVal-1)*perPageWidth+rangeline[0].offsetLeft+"px";
 
+          })
       }
   }
 })

@@ -1,4 +1,4 @@
-/*<!--     <style>
+  <style>
 .docviewrange {
 padding: 0px;
 width: 100%;
@@ -28,8 +28,9 @@ margin-top: 14px;
       border-radius: 50%;
       top: 12px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.51);
+      left:5px;
 }
-    </style> -->*/
+    </style>
     <ion-content  ng-show="attform.thisattname==''" ng-cloak ng-class="{'empty':attform.thisattname==''}">
     </ion-content>
      <ion-content ng-show="attform.docViewerType=='reflow'"  padding="true" class="has-footer">    
@@ -41,9 +42,8 @@ margin-top: 14px;
                                   on-infinite="loadMoreHtml()"  distance="1%">
           </ion-infinite-scroll>
     </ion-content>
-        <ion-slide-box ng-if="attform.docViewerType=='img'" class="doc-viewer" show-pager="true" on-slide-changed="slideChanged(index)" 
-        >
-          <ion-slide ng-repeat="page in attform.docViewer.pagesforshow track by $index" >
+        <ion-slide-box ng-if="attform.docViewerType=='img'" class="doc-viewer" show-pager="true" on-slide-changed="slideChanged(index)" >
+          <ion-slide ng-repeat="page in attform.docViewer.pagesforshow track by $index" on-touch="setOldIndex($index)" >
           <ion-content scroll="false" class="has-footer has-header " ng-class="{'has-tabs-top':statename=='webflow'}" >
             <ion-scroll delegate-handle="page{{$index}}" on-scroll="pageOnScroll($index)" zooming="true" direction="xy" min-zoom="1" class="page-content-wrapper">
               <img class="page-content" ng-src="{{page.imgURI}}"  >
@@ -52,17 +52,17 @@ margin-top: 14px;
           </ion-slide>
         </ion-slide-box>
         <ion-footer-bar class="bar-stable " ng-if="attform.attViewershow!='attlist'" >
-          <div class="range docviewrange" ng-init="attform.pagecode=1">
+     <!--      <div class="range docviewrange" ng-init="attform.pagecode=1">
             <input type="range" name="rangecode" ng-model="attform.pagecode"  min="1" max="{{attform.docViewer.pages.length}}"  on-release="hidepagecode(attform.pagecode)" ng-if="attform.docViewerType=='img'" on-drag="showpagecode()">
             <span ng-if="attform.docViewerType=='img'" >{{attform.pagecode}}/{{attform.docViewer.pages.length}}</span>
-          </div>
-         <!--  <div class=" docviewrange" ng-init="attform.pagecode=1">
-            <div class="myrange"   ng-model="attform.pagecode"   range ng-if="attform.docViewerType=='img'">
+          </div> -->
+          <div class=" docviewrange" ng-init="attform.pagecode=1">
+            <div class="myrange"   ng-model="attform.pagecode"   range ng-if="attform.docViewerType=='img'" pagecode="attform.pagecode">
                 <i class="rangeline"></i>
                 <i class="movebutton"></i>
             </div>
             <span ng-if="attform.docViewerType=='img'" style="white-space: nowrap;line-height:30px" >{{attform.pagecode}}/{{attform.docViewer.pages.length}}</span>
-          </div> -->
+          </div>
           <button ng-if="attform.docViewerType=='reflow'&&attform.thisattname.indexOf('.doc')>0" class="button pull-auto" on-tap="attform.docViewerType='img'" style="min-width:70px">原版预览</button>
           <button ng-if="attform.docViewerType=='img'&&attform.thisattname.indexOf('.doc')>0" class="button pull-auto" on-tap="attform.docViewerType='reflow';attform.noMoreItemsAvailable = false;updatescroll()" style="min-width:90px">重排版预览</button>
           <button  class="button pull-auto" ng-if="attform.attisfj" on-tap="attform.attViewershow='attlist';attform.docViewer={};attform.docViewerType=''" style="min-width:70px">返回原文</button>

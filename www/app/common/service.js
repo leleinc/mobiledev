@@ -42,6 +42,30 @@ angular.module('indiplatform.common.service', [])
     }
   }
 })
+.factory('wwwinfoService', function($q,$http,$ionicPlatform) {
+  function extractVer(str){
+    var match = str.match(/mobile_www\/.*?_v([^\/]*)/);
+    if (match != null) {
+      return match[1];
+    } else {
+      return "0";
+    }
+  }
+  return {
+    getVersion:function(){
+      return extractVer(location.href);
+    },
+    checkUpdate:function(){
+      var deferred = $q.defer();
+      $http.get("/mob_www_ver").success(function(data){
+        deferred.resolve(extractVer(data));
+      }).error(function(data){
+        deferred.reject(data);
+      });
+      return deferred.promise;
+    }
+  }
+})
 .config(function($provide) {
   // 修改对话框的默认按钮文字
   $provide.decorator('$ionicPopup', function($delegate) {

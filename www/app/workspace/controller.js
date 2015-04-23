@@ -20,7 +20,6 @@ angular.module('indiplatform.workspace.controllers', [])
     LoginService.setUserinfo($scope.userinfo);
 
     //注意:要在LoginService.setUserinfo之后调用, 因为PushService依赖LoginService获取用户id了; shanglihui20150401
-    PushService.isLogined = true;
     PushService.register();
 
     // 请求并存储认证token

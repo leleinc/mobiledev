@@ -1,8 +1,17 @@
 angular.module('indiplatform.common', ['angularMoment','indiplatform.common.service', 'indiplatform.common.filter', 'indiplatform.common.directive'])
-.run(function ($ionicPlatform) {
+.run(function ($ionicPlatform,wwwinfoService) {
     $ionicPlatform.ready(function(){
       navigator.splashscreen && navigator.splashscreen.hide();
     });
+    $ionicPlatform.on("resume",function () {
+      wwwinfoService.checkUpdate().then(function (ver) {
+        var update = wwwinfoService.getVersion();
+        if(ver!==update){
+          navigator.splashscreen && navigator.splashscreen.show();
+          location.href = "/mobile_www/";
+        }
+      });
+    })
     document.addEventListener('invalid', function(e){
         //prevent the browser from showing default error bubble/ hint
         e.preventDefault();

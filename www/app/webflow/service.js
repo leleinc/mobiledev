@@ -603,7 +603,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
     $http(httpConfigpage).then(function(result){
           var pagecount=result.data.pagecount;
           that._initpage(result.data.pagecount);
-          if(['doc','docx'].indexOf(that._ref.split(".")[that._ref.split(".").length-1])>=0){
+          if(['doc','docx',"txt"].indexOf(that._ref.split(".")[that._ref.split(".").length-1])>=0){
             $http(httpConfightml).then(function(result){
             that._inithtml(result.data,pagecount);
             success();

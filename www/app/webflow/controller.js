@@ -17,6 +17,8 @@ angular.module('indiplatform.webflow.controllers', [])
     $scope.form.comments=$scope.formData.attitude;
   }
     angular.forEach($scope.formData.formdetail,function(item){
+      item.value[0] = $filter('escape2Html')(item.value[0]);//过滤特殊字符
+      item.value[0] = $filter('removeEnter')(item.value[0]);//过滤回车符
       if(item.dync){
         try{
           item.dync = JSON.parse(item.dync);
@@ -1145,6 +1147,7 @@ angular.module('indiplatform.webflow.controllers', [])
       var ctx_hr = canvas_hr.getContext("2d");
       $scope.clearCanvas=function () {
           ctx.clearRect(0,0,canvas.width,canvas.height);
+          ctx_hr.clearRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
           $scope.HAInfo.data=""
       }
       $scope.saveHA =function(){
