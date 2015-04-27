@@ -2,7 +2,7 @@
 angular.module('indiplatform.webflow.controllers', [])
 
 
-.controller('WebflowCtrl', function($scope, $q, $state, $stateParams,$cordovaFile,$cordovaMedia,$filter,$timeout, $ionicPopup, $ionicLoading, $ionicModal,$ionicActionSheet,$ionicScrollDelegate,$ionicSlideBoxDelegate, DocService, FormDataService, NodeInfoService, CyyService,selectService,ContactService) {
+.controller('WebflowCtrl', function($rootScope, $scope, $q, $state, $stateParams,$cordovaFile,$cordovaMedia,$filter,$timeout, $ionicPopup, $ionicLoading, $ionicModal,$ionicActionSheet,$ionicScrollDelegate,$ionicSlideBoxDelegate, DocService, FormDataService, NodeInfoService, CyyService,selectService,ContactService) {
   $scope.fileinfo = {
     dbpath: $stateParams.path,
     unid: $stateParams.id
@@ -293,7 +293,8 @@ angular.module('indiplatform.webflow.controllers', [])
         return $scope.goutongendpage.hide()
       })
       .then(function(){
-        $state.go("tab.home.todo", {refresh:true});
+        $rootScope.refresh = true;
+        $state.go("tab.home.todo");
       });
     };
   });
@@ -723,7 +724,8 @@ angular.module('indiplatform.webflow.controllers', [])
             });
           })
           .then(function() {
-            $state.go("tab.home.todo", {refresh:true});
+            $rootScope.refresh = true;
+            $state.go("tab.home.todo");
           });
       } else if (data.status == "fail") {
 		data.message = $scope.getFormatUsers(data.message);
@@ -731,7 +733,8 @@ angular.module('indiplatform.webflow.controllers', [])
           title: "提交失败",
           template: data.message
         });
-        $state.go("tab.home.todo", {refresh:true});
+        $rootScope.refresh = true;
+        $state.go("tab.home.todo");
       };
     },
     submit: function() {
@@ -757,7 +760,8 @@ angular.module('indiplatform.webflow.controllers', [])
                 });
               })
               .then(function(){
-                $state.go("tab.home.todo", {refresh:true});
+                $rootScope.refresh = true;
+                $state.go("tab.home.todo");
               });
             }else if(data.status == "fail"){
 			  data.message = $scope.getFormatUsers(data.message);
@@ -795,7 +799,8 @@ angular.module('indiplatform.webflow.controllers', [])
             title: data.msg,
           }).then(function(){
             if (data.type=="success") {
-                $state.go("tab.home.todo", {refresh:true});
+              $rootScope.refresh = true;
+                $state.go("tab.home.todo");
             };   
           });
       });
@@ -807,7 +812,8 @@ angular.module('indiplatform.webflow.controllers', [])
             title: data.msg,
           }).then(function(){
             if (data.type=="success") {
-                $state.go("tab.home.todo", {refresh:true});
+              $rootScope.refresh = true;
+                $state.go("tab.home.todo");
             };   
           });
       });
@@ -848,7 +854,8 @@ angular.module('indiplatform.webflow.controllers', [])
             title: data.msg,
           }).then(function(){
             if (data.type=="success") {
-                $state.go("tab.home.todo", {refresh:true});
+              $rootScope.refresh = true;
+                $state.go("tab.home.todo");
             };   
           });
       });
@@ -864,7 +871,8 @@ angular.module('indiplatform.webflow.controllers', [])
             title: data.msg,
           }).then(function(){
             if (data.type=="success") {
-                $state.go("tab.home.todo", {refresh:true});
+              $rootScope.refresh = true;
+                $state.go("tab.home.todo");
             };   
           });
       });
@@ -876,7 +884,8 @@ angular.module('indiplatform.webflow.controllers', [])
             title: data.msg,
           }).then(function(){
             if (data.type=="success") {
-                $state.go("tab.home.todo", {refresh:true});
+              $rootScope.refresh = true;
+                $state.go("tab.home.todo");
             };   
           });
       });
@@ -898,7 +907,8 @@ angular.module('indiplatform.webflow.controllers', [])
             title: data.msg,
           }).then(function(){
             if (data.type=="success") {
-               $state.go("tab.home.todo", {refresh:true});
+              $rootScope.refresh = true;
+               $state.go("tab.home.todo");
             };   
           });
       });
@@ -911,7 +921,8 @@ angular.module('indiplatform.webflow.controllers', [])
           title: data.msg,
         }).then(function(){
           if (data.type=="success") {
-              $state.go("tab.home.todo", {refresh:true});
+            $rootScope.refresh = true;
+              $state.go("tab.home.todo");
           };   
         });
     });

@@ -46,9 +46,9 @@ angular.module('indiplatform.workspace.controllers', [])
   };
 
   $rootScope.$on( "$ionicView.enter", function( scopes, states ) {
-    if(states.stateParams && states.stateParams.refresh) {
-      states.stateParams.refresh = false;
-      if(scopes.targetScope.doRefresh){
+    if(states.stateName) {
+      if(scopes.currentScope.$root.refresh && scopes.targetScope.doRefresh){
+        delete scopes.currentScope.$root.refresh
         scopes.targetScope.doRefresh(true)
       }
     }

@@ -24,6 +24,7 @@ angular.module('indiplatform.common.filter', [])
 */
 .filter('escape2Html',function() {
     return function(str){
+        str = (str instanceof String) ? str : str.toString();
         var arrEntities = {'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"','apos':"'"};
         return str.replace(/&(lt|gt|nbsp|amp|quot|apos);/ig,function(all,t){
             return arrEntities[t];
@@ -32,6 +33,7 @@ angular.module('indiplatform.common.filter', [])
 })
 .filter('removeEnter',function() {
     return function(str){
+        str = (str instanceof String) ? str : str.toString();
         return str.replace(/\r?\n/g,"");
     } 
 })

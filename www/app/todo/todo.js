@@ -7,9 +7,6 @@ angular.module('indiplatform.todo', ['ionic', 'indiplatform.todo.services', 'ind
   $stateProvider
     .state('tab.home.todo', {
       url: "/todo",
-      params: {
-        refresh: false
-      },
       views: {
         'todo-tab': {
           templateUrl: 'app/todo/todo.html',
@@ -17,12 +14,8 @@ angular.module('indiplatform.todo', ['ionic', 'indiplatform.todo.services', 'ind
         }
       }
     })
-
     .state('tab.home.toread', {
       url: "/toread",
-      params: {
-        refresh: false
-      },
       views: {
         'toread-tab': {
           templateUrl: 'app/todo/toread.html',
