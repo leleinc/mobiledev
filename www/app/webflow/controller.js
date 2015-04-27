@@ -12,6 +12,13 @@ angular.module('indiplatform.webflow.controllers', [])
   $scope.form.denyBackWay="0";
   FormDataService.get($scope.fileinfo).then(function(FormData) {
 
+  angular.forEach(FormData.form.formdetail,function(item){
+      angular.forEach(FormData.YjList,function(i){
+          if(i._writetofield != undefined && item.id.toUpperCase() == i._writetofield.toUpperCase()){
+            item.value.push(i);
+          }
+      })
+  })
   $scope.formData = FormData.form;
   if($scope.formData.attitude){
     $scope.form.comments=$scope.formData.attitude;

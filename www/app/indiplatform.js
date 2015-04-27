@@ -14,5 +14,5 @@ angular.module('indiplatform', [
   'indiplatform.setup'
 ]).value("CONFIG", {
 	"DOM_ROOT": "/_api",
-  "APP_NAME":"Indi.Mobile"
+  "APP_NAME":"Indi.Mobile专业版"
 });

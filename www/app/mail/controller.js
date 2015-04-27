@@ -1,5 +1,5 @@
 
-angular.module('indiplatform.mail.controllers', ['ngResource','x2js'])
+angular.module('indiplatform.mail.controllers', ['ngResource','x2js','ngCordova'])
 .controller('boxCtrl', function($scope,$stateParams,$state ,MailService,x2js,CONFIG,$ionicScrollDelegate,$rootScope,AuthService) {
   $scope.initialized = false;
   /*var key,type;
@@ -81,8 +81,14 @@ var param={
   }
  
 })
-.controller('actionsCtrl', function($timeout,$q,$resource,$scope,$stateParams,$state ,MailService,x2js,CONFIG,$ionicPopup,selectService,DocService,$ionicSlideBoxDelegate,$ionicScrollDelegate,$ionicActionSheet,$ionicHistory) {  
-
+.controller('actionsCtrl', function($timeout,$q,$resource,$scope,$stateParams,$state ,MailService,x2js,CONFIG,$ionicPopup,selectService,DocService,$ionicSlideBoxDelegate,$ionicScrollDelegate,$ionicActionSheet,$ionicHistory,$cordovaKeyboard,$ionicPlatform) {  
+    $ionicPlatform.ready(function(){
+      try{
+         $cordovaKeyboard.hideAccessoryBar(false);
+      }catch(e){
+          console.log(e);
+      }     
+    })
     $scope.formData={
         strUserName:"",
         sendTo:"",

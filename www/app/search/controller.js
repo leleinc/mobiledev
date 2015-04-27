@@ -91,6 +91,7 @@ angular.module('indiplatform.search.controllers', [])
     $scope.enter = function(ev) {
       if(ev.keyCode==13){
         $scope.dosearch();
+        ev.preventDefault();
       }
     }
     $scope.ifshowhistory = function() {
@@ -246,12 +247,11 @@ angular.module('indiplatform.search.controllers', [])
            if(patrn.test(searchkey)){
               searchkey = '*' + searchkey + '*';
            }
-        var param={strstart:1,strCount:20,searchQuery:searchkey}
+        var param={strstart:1,strCount:20,searchQuery:searchkey,dbpath:$scope.context.userinfo.appName+"/ioboard.nsf"}
         if(argument){
           param.strstart=$scope.news.length+1;
         }
-        var serappPath=$scope.context.userinfo.appServer+"/"+$scope.context.userinfo.appName;
-        NewsService.getlist( param,serappPath,function(data){
+        NewsService.getlist( param,$scope.context.userinfo.appServer,function(data){
           if(!argument&&data.length==0){
               $scope.nothing=true
           }

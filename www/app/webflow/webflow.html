@@ -9,9 +9,25 @@
       <ion-content ng-show="formData" class="webflow-wrap" ng-class="{'has-footer':isNextline}">
         <div class="list card formData webflow" ng-repeat="item in formData.formdetail">
           <div ng-if="!item.dync">
-            <a class="item item-input cardback">
+          <!--   <a class="item item-input cardback">
               <span class="input-label">{{item.name}}:</span>
               <span class="input-content">{{item.value | list}}</span>
+            </a> -->
+             <a ng-if="item.value.length==1" class="item item-input cardback">
+              <span class="input-label">{{item.name}}:</span>
+              <span class="input-content">{{item.value | list}}</span>
+            </a>
+            <a ng-if="item.value.length > 1" class="item item-input cardback">
+              <span class="input-label">{{item.name}}:</span>
+              <span class="input-content">
+                <div class="webflow-yjlist-box" ng-repeat="yjlist in item.value">
+                  <h3>{{yjlist.yj}}</h3>
+                  <p>
+                    <span class="item-note">{{yjlist.time}}</span>
+                    <span class="item-note">{{yjlist.user | domUser}}</span>
+                  </p>
+                </div>
+              </span>
             </a>
           </div>
           <div ng-if="item.dync">
