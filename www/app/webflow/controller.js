@@ -99,6 +99,7 @@ angular.module('indiplatform.webflow.controllers', [])
       return item[0].conditionresult !== false
     }).map(function(item) {
       var ret = angular.copy(item[0].target);
+      ret=angular.extend(ret,{notifymail:"",notifysms:"",notifytoread:""})
       return ret;
     });
 

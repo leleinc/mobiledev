@@ -111,6 +111,11 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
       }).map(function(key){
         return key;
       });
+      var zhihuiWay = Object.keys(nextNode||{}).filter(function(key){//这是前端手动选择的知会人员的通知方式
+        return ~["notifymail","notifysms","notifytoread"].indexOf(key) && nextNode[key]
+      }).map(function(key){
+        return key.replace('notify',"");
+      });
       var data = {
         "flow": { //流程相关提交参数
           "strLineID": [], //提交的连线ID（连线数据结构+同处理人跳过）
@@ -123,7 +128,11 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
           "strNexIdx": "", //是否可以上传idx
           "strBjIdx": "", //是否可以编辑idx
           "strBxhbFlag": formData.strBxhbFlag || "", //并行分支处理标示，请参看1.4.1、1.4.2.5解析说明：bxtj、bxwhb、bxhb、空 
-          "strNotifyWay": strNotifyWay
+          "strNotifyWay": strNotifyWay,
+          "strZhihui":{
+                        "users":notifyto || [],
+                        "notifyways":zhihuiWay
+                      }
         },
         "clientType": "", //请求webservice的客户端类型，项目根据需求做自己的业务定制，改属性在流转记录和审批意见中存储
         "form": {

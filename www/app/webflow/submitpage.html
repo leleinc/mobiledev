@@ -26,10 +26,9 @@
          <div show-Select-People selectedsource="item.notifyto" class="item-note sd-input sd-input-newline" ></div>
       </a>
       <div ng-show="itemShown(item) && isSelected($index)" class="item item-input" >
-        <span class="input-label">通知</span>
+        <span class="input-label">通知处理人</span>
         <div class="item-note notify-type">
           <label>
-
             <input type="checkbox" ng-model="item.mail">
             <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.mail, 'indi-xuanzhong':item.mail}"></i>
             邮件
@@ -38,6 +37,26 @@
             <input type="checkbox" ng-model="item.sms">
             <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.sms, 'indi-xuanzhong':item.sms}"></i>
             短信
+          </label>
+        </div>
+      </div>
+      <div ng-show="itemShown(item) && isSelected($index)" class="item item-input" >
+        <span class="input-label">通知知会人</span>
+        <div class="item-note notify-type">
+          <label>
+            <input type="checkbox" ng-model="item.notifymail">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.notifymail, 'indi-xuanzhong':item.notifymail}"></i>
+            邮件
+          </label>
+          <label>
+            <input type="checkbox" ng-model="item.notifysms">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.notifysms, 'indi-xuanzhong':item.notifysms}"></i>
+            短信
+          </label>
+          <label>
+            <input type="checkbox" ng-model="item.notifytoread">
+            <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!item.notifytoread, 'indi-xuanzhong':item.notifytoread}"></i>
+            待阅
           </label>
         </div>
       </div>
@@ -78,7 +97,7 @@
         <div show-Select-People selectedsource="form.goutongUser" class="item-note sd-input sd-input-newline" ></div>
       </a>
       <div  class="item item-input">
-        <span class="input-label">通知</span>
+        <span class="input-label">通知处理人</span>
         <div class="item-note notify-type">
           <label>
             <input type="checkbox" ng-model="item.mail">
