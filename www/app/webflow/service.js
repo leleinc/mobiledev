@@ -639,7 +639,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
           that.htmlsforshow=[]; 
           for (var i = 1; i <= pages; i++) {
                  that.htmls.push({
-                      htmlURI: data.substring(0,data.indexOf("-"))+"-"+i+".html"
+                      htmlURI: data.substring(0,data.lastIndexOf("-"))+"-"+i+".html"
                   })
           }    
           that.htmlsforshow=[that.htmls[0]]
