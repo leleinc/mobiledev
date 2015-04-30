@@ -315,7 +315,7 @@ angular.module('indiplatform.common.directive', [])
     }
   }
 })
-.directive('attView', function($rootScope,DocService,UrlService) {
+.directive('attView', function($rootScope,DocService,UrlService,$http) {
   return {
       restrict: 'EA',
       // scope: {
@@ -429,9 +429,22 @@ angular.module('indiplatform.common.directive', [])
             $scope.setOldIndex=function(index){
               oldIndex = index;
             }
-            $scope.addright = function(realmaxcode){                   
-                  $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[realmaxcode]);
-                  $ionicSlideBoxDelegate.update();
+            $scope.addright = function(realmaxcode){  
+
+                  // $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[realmaxcode]);
+                  // $ionicSlideBoxDelegate.update();
+                  var imgUrl = $scope.attform.docViewer.pages[realmaxcode].imgURI
+
+                  $http({
+                      method: 'GET',
+                      url: imgUrl,
+                      timeout:60000
+                  }).then(function(result){
+                      if(result.status == 200){
+                        $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[realmaxcode]);
+                        $ionicSlideBoxDelegate.update();  
+                      }
+                  })      
             }
             $scope.addleft = function(realmincode){
                       var ss=$ionicSlideBoxDelegate.currentIndex()
@@ -700,6 +713,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
           $timeout(function(){
              allpages=scope.attform.docViewer.pages.length;
               perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
+              pageContianer.style['width'] = (String(allpages).length + 1) * 15 + "px";
             },500)
           rangeline.bind('touchstart',function(evt){
               moving=true;
@@ -729,6 +743,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
                   ngModel.$render();
                   scope.showpagecode(Math.round(reallength/perPageWidth)+1);
                   finalPage=Math.round(reallength/perPageWidth)+1;
+                  pageContianer.style['width'] = (String(allpages).length + String(finalPage).length) * 15 + "px";
               }
           })
           rangeline.bind('touchend',function(evt){
@@ -741,6 +756,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
        $scope.$watch($attrs.pagecode,function(newVal,oldVal){
                   if(!newVal||moving||rangeline[0].offsetLeft==0) return;
                    rangebutton.style['left']=(newVal-1)*perPageWidth+rangeline[0].offsetLeft+"px";
+                   pageContianer.style['width'] = (String(allpages).length + String(newVal).length) * 15 + "px";
 
           })
       }

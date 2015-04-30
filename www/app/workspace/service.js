@@ -476,6 +476,7 @@ angular.module('indiplatform.workspace.services', [])
 				
 			},
 			gotoUrl: function(event){
+				var me = this;
 				//myLog.log("PushService-gotoUrl, event:" + event);
 				
 				var msg = event.alert;
