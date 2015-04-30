@@ -76,8 +76,11 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
     // 忽略非用户出发的请求
     if(!isXhrByUser(config)) return;
     loadingCount++;
-    // 在tab列表页不显示加载框
-    if(evt.currentScope.$state.current.name.indexOf("tab.") !== -1) return;
+    // 在tab列表页or待办页不显示加载框
+    var pagename = evt.currentScope.$state.current.name;
+    if(pagename.indexOf("tab.") !== -1 || pagename.indexOf("mydone") !== -1 || pagename.indexOf("myattention") !== -1|| pagename.indexOf("mydraft") !== -1 || pagename.indexOf("myread") !== -1){
+      return;
+    }
     // 取消上一个loading定时
     if(loadingPromise){
       $timeout.cancel(loadingPromise);
