@@ -131,6 +131,26 @@
           </label>
         </div>
       </div>
+      <div  class="item item-input" >
+          <span class="input-label">通知知会人</span>
+          <div class="item-note notify-type">
+            <label>
+              <input type="checkbox" ng-model="form.mail">
+              <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.mail, 'indi-xuanzhong':form.mail}"></i>
+              邮件
+            </label>
+            <label>
+              <input type="checkbox" ng-model="form.sms">
+              <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.sms, 'indi-xuanzhong':form.sms}"></i>
+              短信
+            </label>
+            <label>
+              <input type="checkbox" ng-model="form.toread">
+              <i class="check-icon positive" ng-class="{'indi-xuanzhong-':!form.toread, 'indi-xuanzhong':form.toread}"></i>
+              待阅
+            </label>
+          </div>
+    </div>
    </div>
   </ion-content>
 

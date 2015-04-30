@@ -56,7 +56,16 @@ var param={
    
   };
   //$scope.doRefresh();
- 
+  
+  //shanglihui20150429
+  $scope.$on("tab.refreshdata", function(event, data) {
+	    //alert("mail-$scpoe.$on-pushservice.refreshdata, data:" + data);
+		if (data && data.url && data.url==="tab.mail"){
+			//alert("tab.home.mail-$scope.doRefresh(true)");
+			$scope.doRefresh(true);
+		}
+  });
+  
   $scope.loadMore = function() {//下拉加载更多
     console.log("more");
       if( typeof($scope.maillist[key])=="undefined" ){

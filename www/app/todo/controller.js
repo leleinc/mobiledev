@@ -22,6 +22,16 @@ angular.module('indiplatform.todo.controllers', [])
     //$scope.moreDataCanBeLoaded = true;
   };
   $scope.doRefresh(true);
+
+  //shangilhui20150429
+  $scope.$on("tab.refreshdata", function(event, data) {
+	    //alert("todo-$scpoe.$on-pushservice.refreshdata, data:" + data);
+		if (data && data.url && data.url==="tab.home.todo"){
+			//alert("tab.home.todo-$scope.doRefresh(true)");
+			$scope.doRefresh(true);
+		}
+  });
+  
   //
   $scope.loadMore = function() {//下拉加载更多
     var start = 1;
@@ -61,6 +71,16 @@ angular.module('indiplatform.todo.controllers', [])
     },refresh,"",start);
   };
   $scope.doRefresh(true);
+
+  //shanglihui20150429
+  $scope.$on("tab.refreshdata", function(event, data) {
+	    //alert("toread-$scpoe.$on-pushservice.refreshdata, data:" + data);
+		if (data && data.url && data.url==="tab.home.toread"){
+			//alert("tab.home.toread-$scope.doRefresh(true)");
+			$scope.doRefresh(true);
+		}
+  });
+  
   //
   $scope.loadMore = function() {//下拉加载更多
     var start = 1;

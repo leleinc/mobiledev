@@ -129,7 +129,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
           "strBjIdx": "", //是否可以编辑idx
           "strBxhbFlag": formData.strBxhbFlag || "", //并行分支处理标示，请参看1.4.1、1.4.2.5解析说明：bxtj、bxwhb、bxhb、空 
           "strNotifyWay": strNotifyWay,
-          "strZhihui":{
+          "strZhiHui":{
                         "users":notifyto || [],
                         "notifyways":zhihuiWay
                       }
@@ -393,10 +393,15 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
     },
     zhihui:function(param, formData){
       var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
-      
+      var zhihuiWay = Object.keys(formData||{}).filter(function(key){//这是前端手动选择的知会人员的通知方式
+        return ~["mail","sms","toread"].indexOf(key) && formData[key]
+      }).map(function(key){
+        return key;
+      });
       var args = { 
         "attitude": formData.comments || "",              /*意见文本*/
         "user": formData.zhihuiUser,            /*被知会人*/
+        "strNotifyWay":zhihuiWay,      /* mail（邮件通知）,sms(短信通知)*/
         "flag": formData.zhihuiflag?"1":"0"   /*知会人是否关注被知会人反馈*/
       };
       return SoapService.invoke(

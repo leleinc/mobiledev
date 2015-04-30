@@ -13,14 +13,14 @@
               <span class="input-label">{{item.name}}:</span>
               <span class="input-content">{{item.value | list}}</span>
             </a> -->
-             <a ng-if="item.value.length==1" class="item item-input cardback">
+             <a ng-if="!item.isyj" class="item item-input cardback">
               <span class="input-label">{{item.name}}:</span>
               <span class="input-content">{{item.value | list}}</span>
             </a>
-            <a ng-if="item.value.length > 1" class="item item-input cardback">
+            <a ng-if="item.isyj" class="item item-input cardback">
               <span class="input-label">{{item.name}}:</span>
               <span class="input-content">
-                <div class="webflow-yjlist-box" ng-repeat="yjlist in item.value">
+                <div class="webflow-yjlist-box" ng-repeat="yjlist in item.value track by $index">
                   <h3>{{yjlist.yj}}</h3>
                   <p>
                     <span class="item-note">{{yjlist.time}}</span>
@@ -68,9 +68,9 @@
  -->  </ion-content>
     <ion-footer-bar align-title="left" class=" yj-bar bar-stable item-input-inset" ng-show="isNextline">
        <!--  <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
-        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()"></button>
+        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()" ng-show="formData.power.canHandAttitude=='1'"></button>
         <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
-          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear">{{form.comments || "请输入意见"}}</button>
+          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear" ng-show="formData.power.canHandAttitude=='1'">{{form.comments || "请输入意见"}}</button>
         </div>
 <!--         <div class="item-input-wrapper item-input-mic-wrapper" ng-show="commentsType=='mic'">
           <button on-hold="Record('start')" on-release="Record('finish')" ng-show="RecordInfo.wavFullPath==''" id="record-comment" class="button button-block">{{RecordInfo.isRecording?"松开结束":"按住说话"}}</button>
@@ -81,7 +81,7 @@
     </ion-footer-bar>  
   </ion-tab>
   <ion-tab title="流转({{lzs.length}})">
-    <ion-content ng-class="{'has-footer':isNextline, 'empty':!yjs.length}">
+    <ion-content ng-class="{'has-footer':isNextline, 'empty':!lzs.length}">
     <div class="cur-info">
       <div class="cur-stat">
         <span class="label"> 当前环节：</span><span class="value">{{curinfo.stat}}</span>
@@ -101,9 +101,9 @@
     </ion-content>
     <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline">
         <!-- <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
-        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()"></button>
+        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()" ng-show="formData.power.canHandAttitude=='1'"></button>
         <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
-          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear">{{form.comments || "请输入意见"}}</button>
+          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear" ng-show="formData.power.canHandAttitude=='1'">{{form.comments || "请输入意见"}}</button>
         </div>
 <!--         <div class="item-input-wrapper item-input-mic-wrapper" ng-show="commentsType=='mic'">
           <button on-hold="Record('start')" on-release="Record('finish')" ng-show="RecordInfo.wavFullPath==''" id="record-comment" class="button button-block">{{RecordInfo.isRecording?"松开结束":"按住说话"}}</button>
@@ -133,9 +133,9 @@
     </ion-content>
     <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline">
         <!-- <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
-        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()"></button>
+        <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()" ng-show="formData.power.canHandAttitude=='1'"></button>
         <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
-          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear">{{form.comments || "请输入意见"}}</button>
+          <button ng-click="openModal()"  id="write-comment" class="button button-block button-clear" ng-show="formData.power.canHandAttitude=='1'">{{form.comments || "请输入意见"}}</button>
         </div>
 <!--         <div class="item-input-wrapper item-input-mic-wrapper" ng-show="commentsType=='mic'">
           <button on-hold="Record('start')" on-release="Record('finish')" ng-show="RecordInfo.wavFullPath==''" id="record-comment" class="button button-block">{{RecordInfo.isRecording?"松开结束":"按住说话"}}</button>

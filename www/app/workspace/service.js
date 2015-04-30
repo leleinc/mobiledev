@@ -121,7 +121,7 @@ angular.module('indiplatform.workspace.services', [])
       });
     }
   };
-}).factory("PushService", function($http,UrlService, LoginService, $state, $ionicLoading, $timeout, AuthService) {
+}).factory("PushService", function($http,UrlService, LoginService, $state, $ionicLoading, $timeout, AuthService, $rootScope) {
 	var myLog = {
 			debug: false,
 			log: function(msg){
@@ -490,7 +490,10 @@ angular.module('indiplatform.workspace.services', [])
 					url = "tab.mail";
 		    	}
 				
-				$state.go(url, {refresh: true});
+				$rootScope.$broadcast("tab.refreshdata", {from:me, url: url});
+				//$state.go(url, {refresh: true});
+				//$rootScope.refresh = true;	
+				$state.go(url);
 			}
 		};
 	/*

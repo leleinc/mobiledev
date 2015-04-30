@@ -13,9 +13,11 @@ angular.module('indiplatform.webflow.controllers', [])
   FormDataService.get($scope.fileinfo).then(function(FormData) {
 
   angular.forEach(FormData.form.formdetail,function(item){
+      item.isyj=false;
       angular.forEach(FormData.YjList,function(i){
           if(i._writetofield != undefined && item.id.toUpperCase() == i._writetofield.toUpperCase()){
             item.value.push(i);
+            item.isyj=true;
           }
       })
   })
@@ -24,8 +26,18 @@ angular.module('indiplatform.webflow.controllers', [])
     $scope.form.comments=$scope.formData.attitude;
   }
     angular.forEach($scope.formData.formdetail,function(item){
+
       item.value[0] = $filter('escape2Html')(item.value[0]);//过滤特殊字符
       item.value[0] = $filter('removeEnter')(item.value[0]);//过滤回车符
+      if(item.fieldmbset){//将是|1，否|0转成显示的字
+          var fieldmbsetObj={};
+          angular.forEach(item.fieldmbset.split(","),function(item){
+              fieldmbsetObj[item.split("|")[1]]=item.split("|")[0]
+          })      
+          item.value=item.value.map(function(value){
+              return fieldmbsetObj[value];
+          })  
+      }
       if(item.dync){
         try{
           item.dync = JSON.parse(item.dync);
@@ -378,7 +390,7 @@ angular.module('indiplatform.webflow.controllers', [])
 	var ha=$scope.HAInfo.data;
     var comments = $scope.form.comments;
     var iscommentModal = $scope.commentModal._isShown;
-    if (!comments&&!ha) {
+    if (!comments&&!ha&&$scope.formData.power.canHandAttitude=='1') {
       $ionicPopup.confirm({
           title: '消息提示',
           template: '您还没有填写意见，是否确定？',

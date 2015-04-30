@@ -36,6 +36,15 @@ angular.module('indiplatform.new.controllers', [])
   };
   $scope.doRefresh();
  
+  //shanglihui20150429
+  $scope.$on("tab.refreshdata", function(event, data) {
+	    //alert("news-$scpoe.$on-pushservice.refreshdata, data:" + data);
+		if (data && data.url && data.url==="tab.home.news"){
+			//alert("tab.home.news-$scope.doRefresh(true)");
+			$scope.doRefresh(true);
+		}
+  });
+  
   $scope.loadMore = function() {
     console.log("more");
     if($scope.news.length==0){
