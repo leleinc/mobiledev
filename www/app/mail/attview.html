@@ -25,7 +25,7 @@
             <span ng-if="attform.docViewerType=='img'" >{{attform.pagecode}}/{{attform.docViewer.pages.length}}</span>
           </div> -->
           <div class=" docviewrange" ng-init="attform.pagecode=1">
-            <div class="myrange"   ng-model="attform.pagecode"   range ng-if="attform.docViewerType=='img'" pagecode="attform.pagecode">
+            <div class="myrange"   ng-model="attform.pagecode"   range ng-if="attform.docViewerType=='img'" pagecode="attform.pagecode" pagecount="attform.docViewer.pages">
                 <i class="rangeline"></i>
                 <i class="movebutton"></i>
             </div>

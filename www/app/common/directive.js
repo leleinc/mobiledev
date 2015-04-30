@@ -758,7 +758,13 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
                    rangebutton.style['left']=(newVal-1)*perPageWidth+rangeline[0].offsetLeft+"px";
                    pageContianer.style['width'] = (String(allpages).length + String(newVal).length) * 15 + "px";
 
-          })
+        })
+       $scope.$watch($attrs.pagecount,function(newVal,oldVal){
+                  if(!newVal) return;
+                  allpages=newVal.length;
+                  perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
+                  pageContainer.style['width'] = (1 + String(allpages).length) * 15 + "px"; 
+        })
       }
   }
 })
