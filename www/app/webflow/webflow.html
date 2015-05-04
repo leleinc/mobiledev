@@ -14,11 +14,11 @@
               <span class="input-content">{{item.value | list}}</span>
             </a> -->
              <a ng-if="!item.isyj" class="item item-input cardback">
-              <span class="input-label">{{item.name}}:</span>
+              <span class="input-label input-label-newline">{{item.name}}:</span>
               <span class="input-content">{{item.value | list}}</span>
             </a>
             <a ng-if="item.isyj" class="item item-input cardback">
-              <span class="input-label">{{item.name}}:</span>
+              <span class="input-label input-label-newline">{{item.name}}:</span>
               <span class="input-content">
                 <div class="webflow-yjlist-box" ng-repeat="yjlist in item.value track by $index">
                   <h3>{{yjlist.yj}}</h3>

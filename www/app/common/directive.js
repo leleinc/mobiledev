@@ -710,11 +710,11 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
           }
           rangeline=element;
           rangebutton=element[0].lastElementChild; 
-          $timeout(function(){
-             allpages=scope.attform.docViewer.pages.length;
-              perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
-              pageContianer.style['width'] = (String(allpages).length + 1) * 15 + "px";
-            },500)
+          // $timeout(function(){
+          //    allpages=scope.attform.docViewer.pages.length;
+          //     perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
+          //     pageContianer.style['width'] = (String(allpages).length + 1) * 15 + "px";
+          //   },500)
           rangeline.bind('touchstart',function(evt){
               moving=true;
               allpages=scope.attform.docViewer.pages.length;
@@ -761,9 +761,9 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
         })
        $scope.$watch($attrs.pagecount,function(newVal,oldVal){
                   if(!newVal) return;
-                  allpages=newVal.length;
+                  allpages=newVal;
                   perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
-                  pageContainer.style['width'] = (1 + String(allpages).length) * 15 + "px"; 
+                  pageContianer.style['width'] = (String(allpages).length + 1) * 15 + "px";
         })
       }
   }

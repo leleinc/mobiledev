@@ -2,6 +2,7 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
 .run(function ($ionicPlatform,wwwinfoService) {
     $ionicPlatform.ready(function(){
       navigator.splashscreen && navigator.splashscreen.hide();
+      cordova.plugins.Keyboard.disableScroll(true);
     });
     $ionicPlatform.on("resume",function () {
       wwwinfoService.checkUpdate().then(function (ver) {

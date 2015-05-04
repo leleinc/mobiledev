@@ -153,6 +153,11 @@ ion-list.empty:before{
   margin-top:30px;
   margin-bottom:30px;
   background-size: 120px;
+  -webkit-transition-property: margin;
+  -webkit-transition-duration: 0.2s;
+}
+.keyboard-open .login-form .logo {
+  margin-top: -80px;
 }
 .login-form .action{
   margin:20px;
@@ -1086,4 +1091,7 @@ margin-top: 14px;
 }
 .webflow-yjlist-box .item-note{
   margin-left: 10px;
+}
+.input-label-newline{
+  white-space: normal;
 }

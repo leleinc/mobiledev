@@ -25,12 +25,12 @@
             <span ng-if="attform.docViewerType=='img'" >{{attform.pagecode}}/{{attform.docViewer.pages.length}}</span>
           </div> -->
           <div class=" docviewrange" ng-init="attform.pagecode=1">
-            <div class="myrange"   ng-model="attform.pagecode"   range ng-if="attform.docViewerType=='img'" pagecode="attform.pagecode" pagecount="attform.docViewer.pages">
+            <div class="myrange"   ng-model="attform.pagecode"   range ng-if="attform.docViewerType=='img'" pagecode="attform.pagecode" pagecount="attform.docViewer.pages.length">
                 <i class="rangeline"></i>
                 <i class="movebutton"></i>
             </div>
            <!--  <span ng-if="attform.docViewerType=='img'" style="white-space: nowrap;line-height:30px" >{{attform.pagecode}}/{{attform.docViewer.pages.length}}</span> -->
-            <span ng-if="attform.docViewerType=='img'" id="pageContianer" style="white-space: nowrap;line-height:30px; width:50px;" >{{attform.pagecode}}/{{attform.docViewer.pages.length}}</span>
+            <span ng-if="attform.docViewerType=='img'" id="pageContianer" style="white-space: nowrap;line-height:30px" >{{attform.pagecode}}/{{attform.docViewer.pages.length}}</span>
           </div>
           <button ng-if="attform.docViewerType=='reflow'&&attform.thisattname.indexOf('.doc')>0" class="button pull-auto" on-tap="attform.docViewerType='img'" style="min-width:70px">原版预览</button>
           <button ng-if="attform.docViewerType=='img'&&attform.thisattname.indexOf('.doc')>0" class="button pull-auto" on-tap="attform.docViewerType='reflow';attform.noMoreItemsAvailable = false;updatescroll()" style="min-width:90px">重排版预览</button>
