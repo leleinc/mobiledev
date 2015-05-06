@@ -39,15 +39,17 @@
                 headers: {
                     'SOAPAction' : soapAction
                 },
-                transformResponse: appendTransform($http.defaults.transformResponse,function(value){
+                transformResponse: appendTransform($http.defaults.transformResponse,function(value,headers){
                     try{
                         return getSoapResult(value,x2js)
                     }catch(e){
                         e.config = {
-                            url:url
+                            url:url,
+                            headers:headers
                         };
                         throw e;
-                    }                }),
+                    }
+                }),
                 data: addSoapEnvelope(soapAction,data,"")
             };
             var promise = $http(httpConfig);

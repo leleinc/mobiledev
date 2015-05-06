@@ -813,6 +813,7 @@ angular.module('indiplatform.webflow.controllers', [])
           });
         }
       }
+     $scope.form['HAInfo']=$scope.HAInfo
       FormDataService.forward($scope.fileinfo, $scope.form).then(function(data){
 		  data.msg = $scope.getFormatUsers(data.msg);
           $ionicPopup.alert({
@@ -864,10 +865,12 @@ angular.module('indiplatform.webflow.controllers', [])
           });
         }
       }
-      $scope.submitHA()
-      .then(function(){
-        return FormDataService.goutongstart($scope.fileinfo, $scope.form)
-      })
+      // $scope.submitHA()
+      // .then(function(){
+      //   return FormDataService.goutongstart($scope.fileinfo, $scope.form)
+      // })
+      $scope.form['HAInfo']=$scope.HAInfo;
+      FormDataService.goutongstart($scope.fileinfo, $scope.form)
       .then(function(data){
 		  data.msg = $scope.getFormatUsers(data.msg);
           $ionicPopup.alert({
@@ -881,10 +884,12 @@ angular.module('indiplatform.webflow.controllers', [])
       });
     },
     goutongsubmit:function(){
-      $scope.submitHA()
-      .then(function(){
-        return FormDataService.goutongsubmit($scope.fileinfo, $scope.form)
-      })
+      // $scope.submitHA()
+      // .then(function(){
+      //   return FormDataService.goutongsubmit($scope.fileinfo, $scope.form)
+      // })
+      $scope.form['HAInfo']=$scope.HAInfo;
+      FormDataService.goutongsubmit($scope.fileinfo, $scope.form)
       .then(function(data){
 		  data.msg = $scope.getFormatUsers(data.msg);
           $ionicPopup.alert({

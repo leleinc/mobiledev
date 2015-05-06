@@ -249,14 +249,27 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
         "strUser" : [].concat(formData.forwardUser),    /*被转办人*/  
         "strNotifyWay": strNotifyWay     /* mail（邮件通知）,sms(短信通知)*/
       };
+      var indiatts = '<INDIATTS xsi:type="urn:INDIDOCATTCHMENTARRAY">'+
+              '<ARRAY xsi:type="urn:ArrayOfINDIDOCATTCHMENT" soapenc:arrayType="urn:INDIDOCATTCHMENT[]"/>'+
+              '</INDIATTS>';
+      if(formData.HAInfo.data!=""){
+          var base64code=formData.HAInfo.data;
+          base64code=base64code.substr(base64code.indexOf("base64,")+7)
+          indiatts = '<INDIATTS><ARRAY>'+
+                          '<INDIATT>'+
+                            '<BUSINESSTYPE></BUSINESSTYPE>'+
+                            '<CATNUM>-2</CATNUM>'+
+                            '<FILECONTENT>'+base64code+'</FILECONTENT>'+
+                            '<FILENAME></FILENAME>'+
+                         '</INDIATT>'+
+                      '</ARRAY></INDIATTS>';
+      }
       return SoapService.invoke(
         url,
         "wsForZhuanBanConfirm", {
           "STRUNID": param.unid,
           "strJson": angular.toJson(data),
-          "indiatts": '<INDIATTS xsi:type="urn:INDIDOCATTCHMENTARRAY">' +
-                      '<ARRAY xsi:type="urn:ArrayOfINDIDOCATTCHMENT" soapenc:arrayType="urn:INDIDOCATTCHMENT[]"/>' +
-                      '</INDIATTS>'
+          "indiatts":indiatts
         }
       ).then(function(res){
         return res.data;
@@ -300,18 +313,30 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
         "strAttitude": formData.comments || "",              /*意见文本*/
         "clientType": ""             /*调用方类型*/
       };
-      var indiatts = '<INDIATTS xsi:type="urn:INDIDOCATTCHMENTARRAY">'+
-              '<ARRAY xsi:type="urn:ArrayOfINDIDOCATTCHMENT" soapenc:arrayType="urn:INDIDOCATTCHMENT[]"/>'+
+       var indiatts = '<INDIATTS xsi:type="urn:INDIDOCATTCHMENTARRAY">'+
+               '<ARRAY xsi:type="urn:ArrayOfINDIDOCATTCHMENT" soapenc:arrayType="urn:INDIDOCATTCHMENT[]"/>'+
               '</INDIATTS>';
-      if(formData.yjatt.base64!=""){
-          var base64code=formData.yjatt.base64;
-          base64code=base64code.substr(base64code.indexOf("base64,")+7);
+      // if(formData.yjatt.base64!=""){
+      //     var base64code=formData.yjatt.base64;
+      //     base64code=base64code.substr(base64code.indexOf("base64,")+7);
+      //     indiatts = '<INDIATTS><ARRAY>'+
+      //                     '<INDIATT>'+
+      //                       '<BUSINESSTYPE>default</BUSINESSTYPE>'+
+      //                       '<CATNUM>-5</CATNUM>'+
+      //                       '<FILECONTENT>'+base64code+'</FILECONTENT>'+
+      //                       '<FILENAME>'+formData.yjatt.name+'</FILENAME>'+
+      //                    '</INDIATT>'+
+      //                 '</ARRAY></INDIATTS>';
+      // }
+      if(formData.HAInfo.data!=""){
+          var base64code=formData.HAInfo.data;
+          base64code=base64code.substr(base64code.indexOf("base64,")+7)
           indiatts = '<INDIATTS><ARRAY>'+
                           '<INDIATT>'+
-                            '<BUSINESSTYPE>default</BUSINESSTYPE>'+
-                            '<CATNUM>-5</CATNUM>'+
+                            '<BUSINESSTYPE></BUSINESSTYPE>'+
+                            '<CATNUM>-2</CATNUM>'+
                             '<FILECONTENT>'+base64code+'</FILECONTENT>'+
-                            '<FILENAME>'+formData.yjatt.name+'</FILENAME>'+
+                            '<FILENAME></FILENAME>'+
                          '</INDIATT>'+
                       '</ARRAY></INDIATTS>';
       }
@@ -335,15 +360,27 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
       var indiatts = '<INDIATTS xsi:type="urn:INDIDOCATTCHMENTARRAY">'+
               '<ARRAY xsi:type="urn:ArrayOfINDIDOCATTCHMENT" soapenc:arrayType="urn:INDIDOCATTCHMENT[]"/>'+
               '</INDIATTS>';
-      if(formData.yjatt.base64!=""){
-          var base64code=formData.yjatt.base64;
-          base64code=base64code.substr(base64code.indexOf("base64,")+7);
+      // if(formData.yjatt.base64!=""){
+      //     var base64code=formData.yjatt.base64;
+      //     base64code=base64code.substr(base64code.indexOf("base64,")+7);
+      //     indiatts = '<INDIATTS><ARRAY>'+
+      //                     '<INDIATT>'+
+      //                       '<BUSINESSTYPE>default</BUSINESSTYPE>'+
+      //                       '<CATNUM>-5</CATNUM>'+
+      //                       '<FILECONTENT>'+base64code+'</FILECONTENT>'+
+      //                       '<FILENAME>'+formData.yjatt.name+'</FILENAME>'+
+      //                    '</INDIATT>'+
+      //                 '</ARRAY></INDIATTS>';
+      // }
+      if(formData.HAInfo.data!=""){
+          var base64code=formData.HAInfo.data;
+          base64code=base64code.substr(base64code.indexOf("base64,")+7)
           indiatts = '<INDIATTS><ARRAY>'+
                           '<INDIATT>'+
-                            '<BUSINESSTYPE>default</BUSINESSTYPE>'+
-                            '<CATNUM>-5</CATNUM>'+
+                            '<BUSINESSTYPE></BUSINESSTYPE>'+
+                            '<CATNUM>-2</CATNUM>'+
                             '<FILECONTENT>'+base64code+'</FILECONTENT>'+
-                            '<FILENAME>'+formData.yjatt.name+'</FILENAME>'+
+                            '<FILENAME></FILENAME>'+
                          '</INDIATT>'+
                       '</ARRAY></INDIATTS>';
       }

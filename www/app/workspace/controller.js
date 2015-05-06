@@ -4,9 +4,10 @@ angular.module('indiplatform.workspace.controllers', [])
     $ionicSideMenuDelegate.toggleLeft();
   };
 })
-.controller('LoginCtrl', function($scope, $state,$ionicPopup, LoginService, AuthService, PushService) {
+.controller('LoginCtrl', function($scope, $state,$ionicPopup,$ionicHistory, LoginService, AuthService, PushService) {
   $scope.userinfo = LoginService.getUserinfo();
   $scope.invalid = false;
+  $ionicHistory.clearHistory();
 
   // 实际登录的方法
   $scope.doLogin = function() {
@@ -52,6 +53,11 @@ angular.module('indiplatform.workspace.controllers', [])
         scopes.targetScope.doRefresh(true)
       }
     }
+  });
+
+  // 当xhr返回登录页时，密码失效。调用logout
+  $scope.$on('xhr:loginError', function(evt,config) {
+    $location.path("/logout");
   });
 
   // 未通过认证，调到登录页

@@ -725,6 +725,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
                  var reallength=evt.touches[0].clientX-rangebutton.offsetWidth/2-rangeline[0].offsetLeft;
                   ngModel.$setViewValue(Math.round(reallength/perPageWidth)+1);
                   finalPage=Math.round(reallength/perPageWidth)+1;
+                  pageContianer.style['width'] = (String(allpages).length + String(finalPage).length) * 15 + "px";
                   ngModel.$render();
                   $timeout(function(){
                       scope.showpagecode(Math.round(reallength/perPageWidth)+1);
@@ -754,16 +755,17 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
       },
       controller:function($scope,$element,$attrs){
        $scope.$watch($attrs.pagecode,function(newVal,oldVal){
-                  if(!newVal||moving||rangeline[0].offsetLeft==0) return;
-                   rangebutton.style['left']=(newVal-1)*perPageWidth+rangeline[0].offsetLeft+"px";
+                  if(!newVal||moving||rangeline[0].offsetLeft==0) return;                  
                    pageContianer.style['width'] = (String(allpages).length + String(newVal).length) * 15 + "px";
+                   perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
+                   rangebutton.style['left']=(newVal-1)*perPageWidth+rangeline[0].offsetLeft+"px";
 
         })
        $scope.$watch($attrs.pagecount,function(newVal,oldVal){
                   if(!newVal) return;
                   allpages=newVal;
-                  perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
                   pageContianer.style['width'] = (String(allpages).length + 1) * 15 + "px";
+                  perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
         })
       }
   }

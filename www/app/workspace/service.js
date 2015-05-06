@@ -2,19 +2,13 @@
 angular.module('indiplatform.workspace.services', [])
 
 
-.factory('AuthService', function($http,UrlService) {
+.factory('AuthService', function($http,$timeout,UrlService) {
   return {
     setUserinfo: function(info){
       var strAuth = 'Basic ' + toBase64(info.name + ":" + info.pass);
       localStorage.setItem("ba",strAuth);
-      return $http.post("/indishare/inditraveler.nsf/api.xsp/api",{
-        method: "setCookie",
-        params: ["ba", strAuth, 1000]
-      },{
-        headers:{
-          "Authorization":strAuth
-        },
-        withCredentials: true
+      return $timeout(function(){
+      	document.cookie = "ba=" + strAuth + "; path=/; expires=Wed, 06-May-2028 06:02:55 GMT";
       });
     },
     isAuthed:function(){
@@ -33,11 +27,8 @@ angular.module('indiplatform.workspace.services', [])
     clearUserinfo: function(info){
       localStorage.removeItem("ba");
       localStorage.removeItem("uinfo");
-      return $http.post("/indishare/inditraveler.nsf/api.xsp/api",{
-        method: "setCookie",
-        params: ["ba", "", 0]
-      },{
-        withCredentials: true
+      return $timeout(function(){
+      	document.cookie = "ba=; path=/; expires=Wed, 06-May-2008 06:02:55 GMT";
       });
     }
   }

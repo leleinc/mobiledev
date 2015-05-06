@@ -41,6 +41,9 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
         return config;
       },
       response: function(response) {
+        if(angular.isFunction(response.config.headers) && response.headers("logintype") === "0"){
+          $rootScope.$broadcast('xhr:loginError',response);          
+        }
         $rootScope.$broadcast('xhr:finish',response);
         return response;
       },
@@ -48,6 +51,10 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
         $rootScope.$broadcast('xhr:requestError',config);
       },
       responseError: function(response){
+        // logintype === 0 登录页
+        if(angular.isFunction(response.config.headers) && response.config.headers("logintype") === "0"){
+          $rootScope.$broadcast('xhr:loginError',response);          
+        }
         $rootScope.$broadcast('xhr:responseError',response);
       }
     }
