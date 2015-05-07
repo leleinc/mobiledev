@@ -4,7 +4,7 @@ controller('setupCtrl', function($scope,pushInfoService) {
 	$scope.toggleLeft = function() {
 		$ionicSideMenuDelegate.toggleLeft();
 	};
-	//1.1 消息通知lis
+	//1.1 消息通知list
 	$scope.userid = "";
 	var localinfo = localStorage.getItem("uinfo");
 	if(localinfo){

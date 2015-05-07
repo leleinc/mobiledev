@@ -50,7 +50,7 @@ angular.module('indiplatform.webflow.controllers', [])
         if(item.type == "user") {
           item.value = $filter('domUser')(item.value)
         }else if(item.type == "date") {
-          item.value = item.value.join("") && moment(item.value.join(""), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD HH:mm") || item.value;
+          item.value = item.value.join("") && moment(item.value.join(""), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD") || item.value;
           if(item.value == "Invalid date") {
             item.value = item.value
           }

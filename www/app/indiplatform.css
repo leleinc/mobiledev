@@ -149,7 +149,7 @@ ion-list.empty:before{
 }
 .login-form .logo{
   height: 120px;
-  background: url(../img/smartdot.svg) center center no-repeat;
+  background: url(../img/logo.svg) center center no-repeat;
   margin-top:30px;
   margin-bottom:30px;
   background-size: 120px;
@@ -1071,7 +1071,7 @@ margin-top: 14px;
 }
 .about-logo-img{
   height: 80px;
-  background: url(../img/smartdot.svg) center center no-repeat;
+  background: url(../img/logo.svg) center center no-repeat;
   margin-top:35px;
   margin-bottom: 5px;
   background-size: 80px;

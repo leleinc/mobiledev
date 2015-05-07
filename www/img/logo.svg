@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="图层_1" x="0px" y="0px" width="1280px" height="1280px" xml:space="preserve">
+<g transform="scale(10)">
+	<g transform="translate(-28,-18)">
+		<g>
+			<path fill="#D7162E" d="M117.188,59.208c-19.473-19.468-51.035-19.468-70.503,0c-19.463,19.467-19.463,51.03,0.005,70.498     c19.463,19.468,32.32-8.426,59.308-13.882C134.383,110.081,136.651,78.675,117.188,59.208z M99.317,111.839     c-9.603,9.598-25.163,9.598-34.766,0c-9.598-9.598-9.598-25.163,0-34.761c9.603-9.603,25.163-9.603,34.766,0     C108.911,86.677,108.915,102.241,99.317,111.839z"/>
+		</g>
+		
+			<radialGradient id="SVGID_1_" cx="-1859.455" cy="-349.2862" r="35.6418" gradientTransform="matrix(0.7376 0 0 0.7376 1498.7759 290.9919)" gradientUnits="userSpaceOnUse">
+			<stop offset="0" style="stop-color:#FFFFFF"/>
+			<stop offset="0.1" style="stop-color:#F6F6F6"/>
+			<stop offset="1" style="stop-color:#727172"/>
+		</radialGradient>
+		<path fill="url(#SVGID_1_)" d="M148.299,53.27c-6.953,6.953-18.224,6.953-25.177,0c-6.953-6.948-6.953-18.219,0-25.182    c6.953-6.944,18.224-6.944,25.177,0C155.247,35.05,155.247,46.321,148.299,53.27z"/>
+	</g>
+	
+</g>
+</svg>

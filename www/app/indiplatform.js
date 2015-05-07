@@ -11,7 +11,8 @@ angular.module('indiplatform', [
   'indiplatform.contact',
   'indiplatform.new',
   'indiplatform.search',
-  'indiplatform.setup'
+  'indiplatform.setup',
+  'indiplatform.custom'
 ]).value("CONFIG", {
 	"DOM_ROOT": "/_api",
   "APP_NAME":"Indi.Mobile专业版"

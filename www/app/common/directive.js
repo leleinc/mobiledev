@@ -689,7 +689,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
               element[0].style.color='rgb(237, 111, 26)';
         }
          else {
-              element.addClass('indi-fujian');
+              element.addClass('indi-file');
         }
       }
   }
