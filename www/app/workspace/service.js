@@ -500,33 +500,35 @@ angular.module('indiplatform.workspace.services', [])
 	PushService.bindReceiveEvent();
 	return PushService;
 })
-.factory("VersionTuiSongService",function($ionicPopup,CONFIG,AppinfoService,VersionService){
+.factory("VersionTuiSongService",function($ionicPopup,$translate,AppinfoService,VersionService){
     return {
         //查验新版本
         versionCheck:function(){
-            AppinfoService.getVersion().then(function(local){
-                var localVersion = local;//本地版本 
-                //获取服务器版本
-                AppinfoService.checkUpdate().then(function(v){
-                    if(v && v.version && localVersion){
-                        var result = VersionService.versionCompare(localVersion,v.version);
-                        if(result == -1){
-                            $ionicPopup.confirm({
-                                title: CONFIG.APP_NAME + v.version + '已发布',
-                                subTitle: "是否立即更新？",
-                                cancelText: "暂不更新",
-                                okText: "立即更新"
-                            }).then(function(res){
-                                if(res){
-                                    VersionService.newVersionDownload(v.url);
-                                };
-                            }); 
-                        }; 
-                    }else{
-                        console.error("版本检测失败");
-                    };
-                });
-            });
+        	$translate('COMMON.APP_NAME').then(function (appname) {
+				AppinfoService.getVersion().then(function(local){
+	                var localVersion = local;//本地版本 
+	                //获取服务器版本
+	                AppinfoService.checkUpdate().then(function(v){
+	                    if(v && v.version && localVersion){
+	                        var result = VersionService.versionCompare(localVersion,v.version);
+	                        if(result == -1){
+	                            $ionicPopup.confirm({
+	                                title: appname + v.version + '已发布',
+	                                subTitle: "是否立即更新？",
+	                                cancelText: "暂不更新",
+	                                okText: "立即更新"
+	                            }).then(function(res){
+	                                if(res){
+	                                    VersionService.newVersionDownload(v.url);
+	                                };
+	                            }); 
+	                        }; 
+	                    }else{
+	                        console.error("版本检测失败");
+	                    };
+	                });
+	            });
+			}); 
         }
     }
 });

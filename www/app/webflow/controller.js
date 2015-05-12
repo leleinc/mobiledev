@@ -54,6 +54,11 @@ angular.module('indiplatform.webflow.controllers', [])
           if(item.value == "Invalid date") {
             item.value = item.value
           }
+        }else if(item.type == "datetime") {
+          item.value = item.value.join("") && moment(item.value.join(""), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD HH:mm:ss") || item.value;
+          if(item.value == "Invalid date") {
+            item.value = item.value
+          }
         }
       }
     });

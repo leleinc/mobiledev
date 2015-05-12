@@ -318,13 +318,10 @@ angular.module('indiplatform.common.directive', [])
 .directive('attView', function($rootScope,DocService,UrlService,$http) {
   return {
       restrict: 'EA',
-      // scope: {
-      //   ref:"=ref",
-      //   catnum:"=catnum"
-      // },
       templateUrl: 'app/mail/attview.html',
       controller:function($scope,$ionicSlideBoxDelegate,$ionicScrollDelegate,$attrs,$state,$ionicLoading,$timeout,$element){  
-             var  defpages=5;//默认显示页数
+             var  defpages=15;//默认显示页数
+             var  totalpages;//总页码
              $scope.statename = $state.current.name;
              $scope.attform = {};
              $scope.attform.attViewershow="attlist";
@@ -365,13 +362,6 @@ angular.module('indiplatform.common.directive', [])
                     }else{
                       $scope.attform.attisfj=true;
                     }
-                    // if(["txt"].indexOf($scope.attform.thisattname.split(".")[1])>=0){
-                    //   $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[{"htmlURI":ref}];
-                    //   $ionicSlideBoxDelegate.update();
-                    //   $ionicSlideBoxDelegate.enableSlide(false);
-                    //   $ionicScrollDelegate.resize();
-                    //   return;
-                    // }
                     if(["jpg","png","gif","bmp"].indexOf($scope.attform.thisattname.split(".")[1])>=0){
                       $scope.attform.docViewer={};
 
@@ -387,155 +377,143 @@ angular.module('indiplatform.common.directive', [])
                       if(!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]&&["doc","docx","txt"].indexOf($scope.attform.thisattname.split(".")[1])>=0){
                           $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[$scope.attform.docViewer.htmls[0]];
                       }
-                      $scope.attform.docViewer.pagesforshow=[];//定义空内容的图片数组，翻页用
-                     
-                      for (var i = 0;i < defpages;i++) {
-                              if($scope.attform.docViewer.pages[i]){
-                                 $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[i]);
-                              }        
-                      };
+                      totalpages=$scope.attform.docViewer.pages.length;
+                      $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,1)//第一次进来画框框
+                      angular.forEach([0,1],function(i){//加载当前页和预加载一页
+                          if($scope.attform.docViewer.pages[i]){
+                            $scope.attform.docViewer.pagesforshow[i]=$scope.attform.docViewer.pages[i];
+                          }
+                      })
                       $ionicSlideBoxDelegate.update();
                       $ionicSlideBoxDelegate.enableSlide(false);
                       $ionicScrollDelegate.resize();
-                      // $ionicSlideBoxDelegate.slide(2);
                     });
               };  
-            // $scope.$watch("ref", function(newVal, oldVal) {
-            //       if (!newVal) return;
-            //       var ref=newVal;
-            //        $scope.attform.thisattname=ref.split("/")[ref.split("/").length-1] ;//附件名    
-            //        $scope.attform.docViewer = DocService(newVal, {}, function(){
-            //         $scope.attform.noMoreItemsAvailable = false;
-            //           if(!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]){
-            //               $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[$scope.attform.docViewer.htmls[0]];
-            //           }
-            //           $ionicSlideBoxDelegate.update();
-            //           $ionicSlideBoxDelegate.enableSlide(false);
-            //           $ionicScrollDelegate.resize();    
-            //         });
-                 
-            // });
-           
-            // $scope.$watch("catnum", function(newVal, oldVal) {
-            //     if (!newVal) return;
-            //     if(newVal=="-1"){
-            //       $scope.attform.attisfj=false;
-            //     }else{
-            //       $scope.attform.attisfj=true;
-            //     }
-            // });
             var adding = false;
             var oldIndex ;
+            var fnpreSildeboxs=function(all,index){//返回区段内的slidebox数组
+                  var slideAarry=[];         
+                  var statr=index%15==0?index-14:Math.floor(index/15)*15+1
+                  var end=index%15==0?index:Math.floor(index/15)*15+15
+                  end=end>all?all:end;
+                  for(var i=statr;i<=end;i++){
+                      slideAarry[i-statr]={pagecode:i}
+                  }
+                return slideAarry
+            }
             $scope.setOldIndex=function(index){
               oldIndex = index;
             }
-            $scope.addright = function(realmaxcode){  
+            $scope.addright = function(index){  
 
-                  // $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[realmaxcode]);
-                  // $ionicSlideBoxDelegate.update();
-                  var imgUrl = $scope.attform.docViewer.pages[realmaxcode].imgURI
+                      if($scope.attform.docViewer.pagesforshow[index+1]){//预加载下一页
+                              $scope.attform.docViewer.pagesforshow[index+1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode];
+                      }else{//下一页没有，如果不是最后一页再加15页
+                         if($scope.attform.docViewer.pagesforshow[index].pagecode<$scope.attform.docViewer.pages[totalpages-1].pagecode){
+                              console.log("addright");
+                              $scope.attform.docViewer.pagesforshow=$scope.attform.docViewer.pagesforshow.concat(fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode+1))
+                              $http({
+                                  method: 'GET',
+                                  url: $scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode].imgURI,
+                                  timeout:60000
+                              }).then(function(result){
+                                  if(result.status == 200){
+                                    $scope.attform.docViewer.pagesforshow[index+1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode];
+                                    $ionicSlideBoxDelegate.update(); 
+                                  }
+                              })      
+                         }
 
-                  $http({
-                      method: 'GET',
-                      url: imgUrl,
-                      timeout:60000
-                  }).then(function(result){
-                      if(result.status == 200){
-                        $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[realmaxcode]);
-                        $ionicSlideBoxDelegate.update();  
                       }
-                  })      
+                      
             }
-            $scope.addleft = function(realmincode){
-                      var ss=$ionicSlideBoxDelegate.currentIndex()
-                      $scope.attform.docViewer.pagesforshow.splice(0,0,$scope.attform.docViewer.pages[realmincode-2]);
-                      $ionicSlideBoxDelegate.update();
-                      adding = true;
-                      $ionicSlideBoxDelegate.slide(ss+1, [0]);//头部增加了一页坐标会变，又走回去，不用next有延时
-                      $timeout(function(){
-                            adding = false;
-                      },200);
+            $scope.addleft = function(index){
+                      if($scope.attform.docViewer.pagesforshow[index-1]){//预加载前一页
+                              console.log("预加载left")
+                              console.log($scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1].imgURI)
+                              $scope.attform.docViewer.pagesforshow[index-1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1];
+                      }else{//上一页没有，如果不是第一页再加15页,临界点
+                         if($scope.attform.docViewer.pagesforshow[index].pagecode>1){
+                              console.log("发请求加载前面的");
+                              adding = true;
+                              var prel=fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode-1).length
+                              $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode-1).concat($scope.attform.docViewer.pagesforshow);
+
+                             $ionicSlideBoxDelegate.update();   
+
+                              $timeout(function(){
+                                $ionicSlideBoxDelegate.slide(prel,[0]);                                
+                              },200);
+                              $http({
+                                  method: 'GET',
+                                  url: $scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI,
+                                  timeout:60000
+                              }).then(function(result){
+                                  adding = false;
+                                  if(result.status == 200){
+                                     console.log("请求返回加了第"+$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI);
+                                    $scope.attform.docViewer.pagesforshow[prel-1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1];
+                                    $ionicSlideBoxDelegate.update(); 
+                                  }
+                              })      
+                         }
+
+                      }
             }
             $scope.slideChanged = function(index){
-                      if(adding) return;
-                      $scope.attform.pagecode=$scope.attform.docViewer.pagesforshow[index].pagecode;             
-                      var realmaxcode=$scope.attform.docViewer.pagesforshow[$scope.attform.docViewer.pagesforshow.length-1].pagecode;
-                      var realmincode=$scope.attform.docViewer.pagesforshow[0].pagecode;
-                      if(index > oldIndex ){ //往前加
-                            if(realmaxcode<$scope.attform.docViewer.pages.length){
-                                $timeout(function(){  
-                                      $scope.addright(realmaxcode);
-                                },200);
-                            }                            
-                      }else{      //往后加
-                             $timeout(function(){
-                                      if (realmincode>1) {
-                                          $scope.addleft(realmincode);
-                                      };
-                            },200)
+                       if(adding) return;
+                       $scope.attform.pagecode=$scope.attform.docViewer.pagesforshow[index].pagecode;                             
+                      if(!$scope.attform.docViewer.pagesforshow[index].imgURI){//直接跳到该页或临界点取消加载造成该页没有的情况               
+                             $http({
+                                   method: 'GET',
+                                   url: $scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode-1].imgURI,
+                                   timeout:60000
+                               }).then(function(result){
+                                   if(result.status == 200){
+                                    $scope.attform.docViewer.pagesforshow[index]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode-1];
+                                    $ionicSlideBoxDelegate.update();                                    
+                                   }
+                               }) 
                       }
-                      //oldIndex = index;
-                      $ionicSlideBoxDelegate.enableSlide(false);
+                      $timeout(function(){
+                        $scope.addleft(index);
+                        $scope.addright(index);
+                        $ionicSlideBoxDelegate.update(); 
+                      },50)
+                      
+                     $ionicSlideBoxDelegate.enableSlide(false);
                       [index-1, index+1].forEach(function(i){
                               var handle = $ionicScrollDelegate.$getByHandle("page"+i);
                               if(i>0 && i<$scope.attform.docViewer.pagesforshow.length){
-                                handle.zoomTo(1);
-                                handle.scrollTop();
+                                $timeout(function(){
+                                   handle.zoomTo(1);
+                                   handle.scrollTop();
+                                },250)
                               }
-                      });
+                      });         
               };
               
               $scope.pageOnScroll = function(index){
                   $ionicSlideBoxDelegate.enableSlide(false);
-                  var max = $ionicScrollDelegate.$getByHandle("page"+index).getScrollView().__maxScrollLeft
-                  var cur = $ionicScrollDelegate.$getByHandle("page"+index).getScrollPosition().left;
-                  if(cur>=max || cur<=0){
+                  var max = $ionicScrollDelegate.$getByHandle("page"+index).getScrollView()&&$ionicScrollDelegate.$getByHandle("page"+index).getScrollView().__maxScrollLeft
+                  var cur = $ionicScrollDelegate.$getByHandle("page"+index).getScrollPosition()&&$ionicScrollDelegate.$getByHandle("page"+index).getScrollPosition().left;
+                  if(cur>=max || cur<=0 || !cur){
                     $ionicSlideBoxDelegate.enableSlide(true);
                   }
               };
               $scope.showpagecode=function(index){
                   $scope.attform.showpagecode=true;
               }
-              $scope.hidepagecode=function(index){
-                  $timeout(function(){ 
+              $scope.hidepagecode=function(index){//快速跳转
 
-                          $scope.attform.docViewer.pagesforshow=[];
-
+                          $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,index);                       
                           $ionicSlideBoxDelegate.update();
+                          $ionicSlideBoxDelegate.slide(index%15==0?14:(index%15-1));
                           $scope.attform.showpagecode=false;
-                          $scope.attform.docViewer.pagesforshow.push($scope.attform.docViewer.pages[index-1]);
-                          $ionicSlideBoxDelegate.update();
-                          $timeout(function(){
-                             
-                               $timeout(function(){
-                                    if(index<$scope.attform.docViewer.pages.length){                                                                              
-                                         $scope.addright($scope.attform.docViewer.pages[index-1].pagecode);
-                                          if(index==1){//跳到第一页不知道为什么自己会跳到第2页，强制调回
-                                            adding = true;
-                                            $timeout(function(){ $ionicSlideBoxDelegate.slide(0, [0]);})
-                                            $timeout(function(){
-                                              adding = false;
-                                            },200);
-                                          }
-                                    }
-                                    $timeout(function(){
-                                        if(index>1){
-                                            adding = true;
-                                            $scope.attform.docViewer.pagesforshow.splice(0,0,$scope.attform.docViewer.pages[index-2]);
-                                            $ionicSlideBoxDelegate.update();
-                                            $timeout(function(){ $ionicSlideBoxDelegate.slide(1, [0]);},50)//头部增加了一页坐标会变，又走回去，不用next有延时                                      
-                                            $timeout(function(){
-                                              adding = false;
-                                            },200);
-                                        }   
-
-                                    },200)
-                              },100)    
-                          },100)
                           $ionicSlideBoxDelegate.update();
                           $ionicSlideBoxDelegate.enableSlide(false);
                           $ionicScrollDelegate.resize();
-                  },100)
+
 
               }
               $scope.updatescroll=function(){

@@ -28,27 +28,31 @@ angular.module('indiplatform.search.controllers', [])
       });
    // $ionicNavBarDelegate.showBackButton(false);
     $scope.searchkey={};
- 
     $scope.setSearchtype=function(type){
-          $scope.morecanload=false;
+          $scope.morecanload=false; 
+          $scope.firstSearch = true;
           switch(type)
           {
-          case "todos":
-            $scope.searchtype="todos"
+              case "todos":
+                $scope.searchtype="todos"
+                $stateParams.type="todos"
+               
+                break;
+              case "news":
+                $scope.searchtype="news"
+                $stateParams.type="news"
+             
+                break;
+              case "mails":
+                $scope.searchtype="mails"
+                $stateParams.type="mails"
            
-            break;
-          case "news":
-            $scope.searchtype="news"
-         
-            break;
-          case "mails":
-            $scope.searchtype="mails"
-       
-            break;
-          case "contact":
-            $scope.searchtype="contact"
-          
-            break;
+                break;
+              case "contact":
+                $scope.searchtype="contact"
+                $stateParams.type="contact"
+              
+                break;
           }
     }
  
@@ -146,6 +150,11 @@ angular.module('indiplatform.search.controllers', [])
  ///////////////////////////////////////////////////////////////////////////////////////邮件搜索
     $scope.searchmail = function(){
         var argument=arguments[0];
+        if(argument && $scope.firstSearch){ //第一次搜索滚动BUG
+          $scope.firstSearch = false;
+          $scope.$broadcast('scroll.infiniteScrollComplete');
+          return
+        }
         var searchkey=$scope.searchkey[$scope.searchtype];
         if(searchkey==""){
                $scope.mails= [];
@@ -174,6 +183,7 @@ angular.module('indiplatform.search.controllers', [])
           if(!argument&&data.length==0){
               $scope.nothing=true
           }
+          //console.log(data);
           var reg=new RegExp($scope.searchkey[$scope.searchtype],"g"); //创建正则RegExp对象 
           angular.forEach(data,function(item){
                 var reg=new RegExp($scope.searchkey[$scope.searchtype],"g"); //创建正则RegExp对象  
@@ -194,8 +204,16 @@ angular.module('indiplatform.search.controllers', [])
     $scope.modifyMailinfo=function(index){
      $scope.mails[index].mailread='true';
     }
+    
     $scope.searchjob = function(){//工作搜索
+        
         var argument=arguments[0];
+       if(argument && $scope.firstSearch){ //第一次搜索滚动BUG
+         $scope.firstSearch = false;
+         $scope.$broadcast('scroll.infiniteScrollComplete');
+         return
+       }
+        
         var searchkey=$scope.searchkey[$scope.searchtype];
         if(searchkey==""){
                $scope.todos= [];
@@ -216,6 +234,7 @@ angular.module('indiplatform.search.controllers', [])
           if(!argument&&data.length==0){
               $scope.nothing=true
           }
+           //console.log(data);
            angular.forEach(data,function(item){
                 var reg=new RegExp($scope.searchkey[$scope.searchtype],"g"); //创建正则RegExp对象  
                 item['title']=item['title'].replace(reg,"<font color=blue>"+$scope.searchkey[$scope.searchtype]+"</font>");
@@ -224,16 +243,25 @@ angular.module('indiplatform.search.controllers', [])
             })
            $scope.todos= $scope.todos?$scope.todos.concat(data):data;
             if(!argument&&$scope.todos.length>=20){//第一次运行初始标示能否加载更多的值
-             $scope.morecanload=true;
+                $scope.morecanload=true;               
             }
           if (argument&&data.length<20) {
+              $scope.firstSearch = true;
               $scope.morecanload=false;
           }
           $scope.$broadcast('scroll.infiniteScrollComplete');
-
         },true,searchkey,start);
+        
+        
     };
      $scope.searchnews= function(){//公告搜索
+        
+        var argument=arguments[0];
+        if(argument && $scope.firstSearch){ //第一次搜索滚动BUG
+          $scope.firstSearch = false;
+          $scope.$broadcast('scroll.infiniteScrollComplete');
+          return
+        }
         var argument=arguments[0];
         var searchkey=$scope.searchkey[$scope.searchtype];
         if(searchkey==""){
@@ -255,6 +283,7 @@ angular.module('indiplatform.search.controllers', [])
           if(!argument&&data.length==0){
               $scope.nothing=true
           }
+          //console.log(data);
           angular.forEach(data,function(item){
                 var urlReg = /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;  
                 var yuming=urlReg.exec(item.newimgurl);

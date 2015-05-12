@@ -1,5 +1,6 @@
 angular.module('indiplatform', [
   'ionic', 
+  'pascalprecht.translate',
   'DominoSoap',
   'x2js',
   'ngCordova',
@@ -14,6 +15,5 @@ angular.module('indiplatform', [
   'indiplatform.setup',
   'indiplatform.custom'
 ]).value("CONFIG", {
-	"DOM_ROOT": "/_api",
-  "APP_NAME":"Indi.Mobile专业版"
+	"DOM_ROOT": "/_api"
 });

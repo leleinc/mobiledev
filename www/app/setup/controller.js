@@ -275,11 +275,13 @@ controller('setupCtrl', function($scope,pushInfoService) {
 		});	
 	};
 })
-.controller('AboutCtrl', function($scope,$ionicPopup,$timeout,CONFIG,AppinfoService,VersionService) {
+.controller('AboutCtrl', function($scope,$ionicPopup,$timeout,$translate,AppinfoService,VersionService) {
 /**
  *关于 版本更新模块
  */
- 	$scope.appname = CONFIG.APP_NAME;
+	$translate('COMMON.APP_NAME').then(function (appname) {
+		$scope.appname = appname;
+	});
  	AppinfoService.getVersion().then(function(v){
   		$scope.localVersion = v;//本地版本
   	});

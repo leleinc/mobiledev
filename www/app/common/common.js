@@ -200,6 +200,13 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
 })
 .constant('angularMomentConfig', {
     preprocess: 'domino'
+}).config(function($translateProvider) {
+  $translateProvider.translations('zh_CN', {
+    COMMON:{
+      APP_NAME: 'Indi.Mobile专业版'
+    }
+  });
+  $translateProvider.preferredLanguage('zh_CN');
 });
 
 // 区分用户发出的数据请求 或 ionic发出的模板请求
