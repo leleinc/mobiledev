@@ -3,7 +3,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
 .factory('FormDataService', function(SoapService, CONFIG, x2js, $ionicPopup) {
   return {
     addLock: function(param) {
-      var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
+      var url = "http://"+param.domain+ param.dbpath +"/wsforflow?OpenWebService";
       return SoapService.invoke(
         url,
         "wsForAddLock", {
@@ -14,7 +14,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
       });
     },
     clearLock: function(param) {
-      var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
+      var url = "http://"+param.domain+ param.dbpath + "/wsforflow?OpenWebService";
       return SoapService.invoke(
         url,
         "wsForClearLock", {
@@ -25,7 +25,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
       });
     },
     get: function(param) {
-      var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
+      var url ="http://"+param.domain+ param.dbpath + "/wsforflow?OpenWebService";
 
       return SoapService.invoke(
         url,
@@ -95,7 +95,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
         });
     },
     submit: function(param, formData) {
-      var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
+      var url = "http://"+param.domain+ param.dbpath  + "/wsforflow?OpenWebService";
       var nextNode, nextNodeId, nextDealer, notifyto;
       if(formData.nextNode){
         nextNode = formData.nodeList[formData.nextNode];
@@ -547,7 +547,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
 .factory('NodeInfoService', function(SoapService,CONFIG) {
   return {
     get: function(param){
-      var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
+      var url = "http://"+param.domain+ param.dbpath + "/wsforflow?OpenWebService";
 
       return SoapService.invoke(
         url,
@@ -605,7 +605,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
 .factory('CyyService', function(SoapService,CONFIG) {
   return {
     get: function(param){
-      var url = "http://" + param.dbpath.split("/").splice(1,1).join("/") + "/cyspy.nsf/wsforcyy?OpenWebService";
+      var url = "http://" +param.domain +"/"+param.dbpath.split("/").splice(1,1).join("/") + "/cyspy.nsf/wsforcyy?OpenWebService";
 
       return SoapService.invokeSync(
         url,

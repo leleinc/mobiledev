@@ -346,8 +346,18 @@ ion-list.empty:before{
 .yjitem .content img{
   width:100%;
 }
+.att {
+  font-size: 16px;
+  color: #4b77be;
+}
 .yjitem .content .att i{
   padding-right: 3px;
+  font-size: 25px;
+  position: absolute;
+}
+.yjitem .content .att span{
+  padding-left: 25px;
+  white-space: pre;
 }
 .yjitem .content:after, .yjitem .content:before {
   content: "";

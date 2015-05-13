@@ -77,7 +77,7 @@
         <ion-content class=" has-header has-subheader has-mysearch contact"  style="width:60%;left:40%;" ng-show="islocal">
                     <div class="list">
                   <ion-item  class="item item-avatar" ng-repeat="person in recentUser" type="item-text-wrap"> 
-                     <img ng-src={{person.imgpath==""?defaultimage:(ROOT+person.imgpath)}} >
+                     <img ng-src={{person.imgpath}} >
                       {{person._name}}
                     <label class="checkbox">
                       <input type="checkbox"  ng-model="selected.names[person._name]"  ng-true-value="'{{person.AbbName}}'"

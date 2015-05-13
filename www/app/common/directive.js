@@ -679,6 +679,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
   var finalPage;
   var rangeline;
   var rangebutton;
+  var pageContianer
   return {
       restrict: 'A',
       require: '?ngModel',
@@ -733,7 +734,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
       },
       controller:function($scope,$element,$attrs){
        $scope.$watch($attrs.pagecode,function(newVal,oldVal){
-                  if(!newVal||moving||rangeline[0].offsetLeft==0) return;                  
+                  if(!newVal||moving||rangeline[0].offsetLeft==0) return;
                    pageContianer.style['width'] = (String(allpages).length + String(newVal).length) * 15 + "px";
                    perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);
                    rangebutton.style['left']=(newVal-1)*perPageWidth+rangeline[0].offsetLeft+"px";
@@ -741,6 +742,7 @@ var selectDiv='<span ng-repeat="mitto in '+source+'"><span ng-show="$index>0">,<
         })
        $scope.$watch($attrs.pagecount,function(newVal,oldVal){
                   if(!newVal) return;
+                  pageContianer= $element.parent()[0].lastElementChild;   
                   allpages=newVal;
                   pageContianer.style['width'] = (String(allpages).length + 1) * 15 + "px";
                   perPageWidth=(rangeline[0].offsetWidth-rangebutton.offsetWidth)/(allpages-1);

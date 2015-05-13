@@ -4,6 +4,7 @@ angular.module('indiplatform.webflow.controllers', [])
 
 .controller('WebflowCtrl', function($rootScope, $scope, $q, $state, $stateParams,$cordovaFile,$cordovaMedia,$filter,$timeout, $ionicPopup, $ionicLoading, $ionicModal,$ionicActionSheet,$ionicScrollDelegate,$ionicSlideBoxDelegate, DocService, FormDataService, NodeInfoService, CyyService,selectService,ContactService) {
   $scope.fileinfo = {
+    domain:$stateParams.domain,
     dbpath: $stateParams.path,
     unid: $stateParams.id
   };
@@ -66,19 +67,26 @@ angular.module('indiplatform.webflow.controllers', [])
     $scope.fjlength=0;//附件个数的
 
     var isAttitude = /\d*_Attitude\.(gif|png)/i;
-    $scope.formData.idxfiles = $scope.formData.idxfiles.filter(function(item){
-      return item.name && !isAttitude.test(item.name)
-    });
+
     angular.forEach($scope.formData.idxfiles,function(item){
       item.url="http://"+$stateParams.domain+item.url;
       item.size=Math.floor(item.size/1024)+"KB";
-      if(item.catnum!="-1"){
-        $scope.fjlength=$scope.fjlength+1;
-      }else{
+      if(item.catnum=="-1"){
         $scope.zwurl=item.url;
       }
     });
     $scope.yjs = FormData.YjList;
+    $scope.yjs.forEach(function(yj){
+        if(yj.yjatt){
+          yj.yjatt.url=$scope.formData.idxfiles.filter(function(item){
+                              return item.name && yj.yjatt.attname==item.name
+                        })[0].url;
+        }
+    })
+    $scope.formData.idxfiles = $scope.formData.idxfiles.filter(function(item){
+      return item.name && !isAttitude.test(item.name) && item.catnum!=-5
+    });
+    $scope.fjlength=$scope.formData.idxfiles.length;
     $scope.getAvatars = function() {
       var first = true;
       return (function() {

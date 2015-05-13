@@ -26,7 +26,8 @@ angular.module('indiplatform.webflow', ['ionic', 'indiplatform.webflow.services'
       onEnter: function($stateParams, $state, FormDataService, $filter, $ionicPopup) {
         // 进入时加锁
         FormDataService.addLock({
-          dbpath: $stateParams.domain+$stateParams.path,
+          domain:$stateParams.domain,
+          dbpath:$stateParams.path,
           unid: $stateParams.id
         }).then(function(data) {
           var islocked = data.msg.match(islockedRE);
@@ -44,7 +45,8 @@ angular.module('indiplatform.webflow', ['ionic', 'indiplatform.webflow.services'
       onExit: function($stateParams, FormDataService) {
         // 退出时解锁
         FormDataService.clearLock({
-          dbpath: $stateParams.path,
+          domain:$stateParams.domain,
+          dbpath:$stateParams.path,
           unid: $stateParams.id
         }).then(function(data) {
           console.info(data.msg);

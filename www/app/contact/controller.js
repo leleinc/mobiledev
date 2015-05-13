@@ -220,7 +220,8 @@ angular.module('indiplatform.contact.controllers', ['ngResource','ionic'])
   			var recentUser=[]
 	  		angular.forEach(data,function(item){
 	         	item._name=item.AbbName.split("/")[0];
-            item.imgpath=typeof(item.imgpath)=="undefined"?"":item.imgpath;
+           // item.imgpath=typeof(item.imgpath)=="undefined"?"":item.imgpath;
+            item.imgpath=ContactService.getAvatar(item.AbbName).avatar;
 	          recentUser.push(item);
 	        })
   			$scope.recentUser=recentUser;

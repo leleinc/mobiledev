@@ -113,8 +113,8 @@
         <button class="button button-positive" ng-show="commentsType!=='mic'||(commentsType=='mic'&&RecordInfo.wavFullPath!='')" ng-click="submit()">提交</button>
     </ion-footer-bar> 
   </ion-tab>
-  <ion-tab title="意见({{yjs.length}})" on-select="getAvatars()">
-    <ion-content ng-class="{'has-footer':isNextline, 'empty':!yjs.length}">
+  <ion-tab title="意见({{yjs.length}})" on-select="getAvatars();attform.attViewershow='attlist';zwflesh=zwflesh+1">
+    <ion-content ng-class="{'has-footer':isNextline, 'empty':!yjs.length}"  ng-show="attform.attViewershow=='attlist'">
       <div class='yjlist'>
         <div class='yjitem' ng-repeat="yj in yjs">
           <div class="user">
@@ -122,16 +122,16 @@
             <p>{{yj.user | domUser}}</p>
           </div>
           <div class='content'>
-            <div class="yj-text" ng-class="{empty:yj.yj == 'NoAttitude_Handler'}">{{yj.yj}}</div>
+            <div class="yj-text" ng-class="{empty:yj.yj == 'NoAttitude_Handler'}" ng-show="yj.yj != 'NoAttitude_Handler'">{{yj.yj}}</div>
             <img ng-if="!!yj.yjtp" ng-src="{{yj.yjtp}}"/>
-            <!-- <div ng-if="!!yj.yjatt" class="att"><i class="icon indi-fujian"></i>{{yj.yjatt.attname}}</div> -->
+            <div ng-if="!!yj.yjatt" class="att"  ng-click="openFile(yj.yjatt.url,'0');attform.attViewershow=''"><i class="icon " att-Tubiao="yj.yjatt.attname"></i><span>{{yj.yjatt.attname}}</span></div>
           </div>
           <div class='time'>{{yj.time | amCalendar}}&nbsp;&nbsp;{{yj.stat}}
           </div>
         </div>
       </div>
     </ion-content>
-    <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline">
+    <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline&&attform.attViewershow=='attlist'">
         <!-- <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
         <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()" ng-show="formData.power.canHandAttitude=='1'"></button>
         <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
@@ -144,6 +144,7 @@
         </div> -->
         <button class="button button-positive" ng-show="commentsType!=='mic'||(commentsType=='mic'&&RecordInfo.wavFullPath!='')" ng-click="submit()">提交</button>
     </ion-footer-bar> 
+     <div  ng-show="attform.attViewershow!='attlist'" class="doc-viewer" flesh='zwflesh' att-View></div>
   </ion-tab>
 
   <ion-tab title="正文" ng-init="zwflesh=1" on-select="zwflesh=zwflesh+1">

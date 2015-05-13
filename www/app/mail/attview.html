@@ -14,7 +14,7 @@
           <ion-slide ng-repeat="page in attform.docViewer.pagesforshow " on-touch="setOldIndex($index)" >
           <ion-content scroll="false" class="has-footer has-header " ng-class="{'has-tabs-top':statename=='webflow'}" >
             <ion-scroll delegate-handle="page{{$index}}" on-scroll="pageOnScroll($index)" zooming="true" direction="xy" min-zoom="1" class="page-content-wrapper">
-              <img class="page-content" ng-src="{{page.imgURI}}"  >
+              <img class="page-content" ng-src="{{page.imgURI}}" >
             </ion-scroll>
             </ion-content>
           </ion-slide>
