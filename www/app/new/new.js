@@ -1,7 +1,5 @@
 
 angular.module('indiplatform.new', ['ionic', 'indiplatform.new.services', 'indiplatform.new.controllers'])
-
-
 .config(function($stateProvider, $urlRouterProvider) {
 
   $stateProvider
@@ -13,9 +11,18 @@ angular.module('indiplatform.new', ['ionic', 'indiplatform.new.services', 'indip
            controller: 'NewsCtrl'
         }
       }
-    })  
-     .state('new', {
-      url: "/new/:id",
+    })
+    .state('tab.home.ioboard', {
+      url: "/ioboard",
+      views: {
+        'ioboard-tab': {
+          templateUrl: 'app/new/ioboards.html',
+           controller: 'NewsCtrl'
+        }
+      }
+    })
+    .state('new', {
+      url: "/new/:id/:type",
       views: {
         'main-view': {
           templateUrl: 'app/new/new.html',

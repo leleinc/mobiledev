@@ -1,14 +1,39 @@
 
 angular.module('indiplatform.new.controllers', [])
 
+.controller('NewsCtrl', function($scope, $state,$stateParams, NewsService,CONFIG,UrlService) {
+ 
+ //console.log($stateParams.current);
+ //console.log($state);
 
-.controller('NewsCtrl', function($scope, $stateParams, NewsService,CONFIG,UrlService) {
-   $scope.initialized = false;
+ if(!$stateParams.type){
+   $scope.currenturl = $state.current.url
+ }else{
+   $scope.currenturl = $stateParams.type
+ }
+ if($scope.currenturl.indexOf("/") ==-1){
+   $scope.currenturl = "/" + $scope.currenturl
+ }
+ console.log($scope.currenturl);
+ 
+ switch($scope.currenturl){  
+   case '/ioboard' : 
+     $scope.newslisttitle = "公告详情";  //新闻最上标题标题
+     $scope.filetail = "/ioboard.nsf"   //文件尾部
+     break;
+   case '/news' :
+     $scope.newslisttitle = "新闻详情"; 
+     $scope.filetail = "/tpxw.nsf" 
+     break;
+ }
+ //console.log($scope.filetail);
+ $scope.initialized = false;
  $scope.news=[];
   var urlReg = /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;  
- $scope.param= {strstart:1,strCount:5,searchQuery:"",dbpath:$scope.context.userinfo.appName+"/ioboard.nsf"};
+ 
+ $scope.param= {strstart:1,strCount:5,searchQuery:"",dbpath:$scope.context.userinfo.appName + $scope.filetail};
    if($stateParams.id){
-   NewsService.get($stateParams.id,$scope.context.userinfo.appServer,$scope.context.userinfo.appName+"/ioboard.nsf",function(data){
+   NewsService.get($stateParams.id,$scope.context.userinfo.appServer,$scope.context.userinfo.appName + $scope.filetail,function(data){
          // if(data.imgurl[0]) {
          //     data.content[0]=data.content[0].replace(new RegExp("http://"+urlReg.exec(data.imgurl[0].url)[0],"gi"),CONFIG.DOM_ROOT);
          // }
@@ -20,7 +45,7 @@ angular.module('indiplatform.new.controllers', [])
     });
   }
  $scope.doRefresh = function(){
-    NewsService.getlist( {strstart:1,strCount:5,searchQuery:"",dbpath:$scope.context.userinfo.appName+"/ioboard.nsf"},$scope.context.userinfo.appServer,function(data){
+    NewsService.getlist( {strstart:1,strCount:5,searchQuery:"",dbpath:$scope.context.userinfo.appName + $scope.filetail},$scope.context.userinfo.appServer,function(data){
      $scope.news=[];
       angular.forEach(data,function(item){
             var yuming=urlReg.exec(item.newimgurl);

@@ -21,7 +21,7 @@
       </ion-refresher>
     <ion-list>
       <div class="card news " ng-repeat="new in news " >
-       <a class="item  item-text-wrap "  href="#/new/{{new.newid}}/news">
+       <a class="item  item-text-wrap "  href="#/new/{{new.newid}}/ioboard">
              <h2 style="color:black;">{{new.newtitle}}</h2>
                 <p style="font-size: 13px;">{{new.newtime |amCalendar}}</p>
                  <img  ng-src={{new.newimgurl.split(',')[0]}} ng-if="new.newimgurl!=''" > 

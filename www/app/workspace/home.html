@@ -8,7 +8,12 @@
     <ion-tab title="待阅 ({{context.userinfo.count.toread}})" href="#/tab/home/toread" badge="context.userinfo.count.toread" badge-style="badge-assertive">
       <ion-nav-view name="toread-tab"></ion-nav-view>
     </ion-tab>
-    <ion-tab title="公告" href="#/tab/home/news">
+    
+    <ion-tab title="公告" href="#/tab/home/ioboard">
+      <ion-nav-view name="ioboard-tab"></ion-nav-view>
+    </ion-tab>
+  
+    <ion-tab title="新闻" href="#/tab/home/news">
       <ion-nav-view name="news-tab"></ion-nav-view>
     </ion-tab>
   </ion-tabs>

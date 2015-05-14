@@ -363,6 +363,7 @@ $scope.delMail = function(id) {
                   console.log('You are not sure');
                }
              }); 
+             delSheet();
        }
    });
 };
