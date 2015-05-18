@@ -23,7 +23,7 @@ angular.module('indiplatform.new.controllers', [])
      break;
    case '/news' :
      $scope.newslisttitle = "新闻详情"; 
-     $scope.filetail = "/tpxw.nsf" 
+     $scope.filetail = "/dtxw.nsf" 
      break;
  }
  //console.log($scope.filetail);
