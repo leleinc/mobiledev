@@ -37,3 +37,15 @@ angular.module('indiplatform.common.filter', [])
         return str.replace(/\r?\n/g,"");
     } 
 })
+.filter('unique',function(){
+    return function(input){
+        var newArr=[],obj={};
+        for(var i=0,len=input.length;i<len;i++){
+            if(!obj[input[i]]){ 
+                newArr.push(input[i]);
+                obj[input[i]]=true;
+            }
+        }
+        return newArr;
+    }
+})

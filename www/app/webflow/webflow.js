@@ -6,7 +6,7 @@ angular.module('indiplatform.webflow', ['ionic', 'indiplatform.webflow.services'
       //alert("$ionicPlatform.ready");
       PushService.init();
 
-      window.requestFileSystem(LocalFileSystem.TEMPORARY,0,function(fs){
+      window.requestFileSystem && window.requestFileSystem(LocalFileSystem.TEMPORARY,0,function(fs){
         window._tempFs=fs;
       })
     })

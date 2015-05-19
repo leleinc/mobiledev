@@ -59,7 +59,8 @@ angular.module('indiplatform.webflow.controllers', [])
       }
       if(item.type) {
         if(item.type == "user") {
-          item.value = $filter('domUser')(item.value)
+          item.value = $filter('unique')(item.value);
+          item.value = $filter('domUser')(item.value);
         }else if(item.type == "date") {
           item.value = item.value.join("") && moment(item.value.join(""), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD") || item.value;
           if(item.value == "Invalid date") {
@@ -232,6 +233,9 @@ angular.module('indiplatform.webflow.controllers', [])
                   break;
                 case "zhihui":
                   $scope.actionType="zhihui";
+                  //getzhihui version
+                 
+
                   $scope.openModal();
                   break;
                 case "zhihuibanbi":

@@ -763,39 +763,47 @@ return {
          $scope.$watch($attrs.yjShow,function(newVal,oldVal){
                   if(!newVal) return;
                     newVal.forEach(function(tb){//处理每个意见table
-                     tb=angular.element(tb);
-                     angular.forEach(tb.find('a'),function(a){//处理附件和图片
-                        if(a.attributes.href&&~a.attributes.href.value.indexOf('OpenMyFile')){
-                          var yjurl=$scope.yjs.filter(function(yj){//从意见里找出匹配附件
-                            return yj.yjatt&&yj.yjatt.attname==a.attributes.title.value                         
-                          })[0].yjatt.url
-                          var attnode='<div  class="att" ng-click="openFile(\''+yjurl+'\',\'0\');attform.attViewershow=\'\'"><i class="icon" att-tubiao="\''+a.attributes.title.value+'\'" "></i><span class="ng-binding">'+a.attributes.title.value+'</span></div>'
-                          a.parentNode.appendChild(angular.element(attnode)[0]);
-                          a.remove();
-                        }  
-                        if(a.attributes.onclick&&~a.attributes.onclick.value.indexOf('$file')){
+                           tb=angular.element(tb);
+                           angular.forEach(tb.find('td'),function(i){
+                               if(i.innerHTML.trim() == ""){
+                                 if( i.parentNode.childNodes.length == 1){
+                                   i.parentNode.remove();
+                                 }
+                                 i.remove();
+                                }
+                            })
+                           angular.forEach(tb.find('a'),function(a){//处理附件和图片
+                              if(a.attributes.href&&~a.attributes.href.value.indexOf('OpenMyFile')){
+                                var yjurl=$scope.yjs.filter(function(yj){//从意见里找出匹配附件
+                                  return yj.yjatt&&yj.yjatt.attname==a.attributes.title.value                         
+                                })[0].yjatt.url
+                                var attnode='<div  class="att" ng-click="openFile(\''+yjurl+'\',\'0\');attform.attViewershow=\'\'"><i class="icon" att-tubiao="\''+a.attributes.title.value+'\'" "></i><span class="ng-binding">'+a.attributes.title.value+'</span></div>'
+                                a.parentNode.appendChild(angular.element(attnode)[0]);
+                                a.remove();
+                              }  
+                              if(a.attributes.onclick&&~a.attributes.onclick.value.indexOf('$file')){
 
-                          var imgpath=a.attributes.onclick.value.match(/"\/.*?"/)[0].split("\"")[1];
-                          imgpath=UrlService.transform("http://"+$scope.fileinfo.domain+imgpath);
-                          var attnode='<img  ng-src='+imgpath+'>'
-                            a.parentNode.appendChild(angular.element(attnode)[0]);
-                            a.remove();
-                        }  
-                    })
-                    angular.forEach(tb[0].querySelectorAll(".userName"),function(span){//用户名
-                          span.parentNode.style['padding-right']="5px";
-                          span=angular.element(span);
-                          span[0].innerHTML=$filter('domUser')(span[0].innerHTML)
-                          span.after("<br>");
+                                var imgpath=a.attributes.onclick.value.match(/"\/.*?"/)[0].split("\"")[1];
+                                imgpath=UrlService.transform("http://"+$scope.fileinfo.domain+imgpath);
+                                var attnode='<img  ng-src='+imgpath+'>'
+                                  a.parentNode.appendChild(angular.element(attnode)[0]);
+                                  a.remove();
+                              }  
+                          })
+                          angular.forEach(tb[0].querySelectorAll(".userName"),function(span){//用户名
+                                span.parentNode.style['padding-right']="5px";
+                                span=angular.element(span);
+                                span[0].innerHTML=$filter('domUser')(span[0].innerHTML)
+                                span.after("<br>");
 
-                    })
-                    if(tb[0].querySelector(".sign")){//手签名
-                         var imgnode=angular.element(tb[0].querySelector(".sign").querySelector("img"));
-                             imgnode.attr('src',UrlService.transform("http://"+$scope.fileinfo.domain+imgnode.attr('src')));
-                             imgnode.after("<br>");
-                             imgnode[0].parentNode.style['padding-right']="5px";
-                    }           
-                    res.appendChild(tb[0]);
+                          })
+                          if(tb[0].querySelector(".sign")){//手签名
+                               var imgnode=angular.element(tb[0].querySelector(".sign").querySelector("img"));
+                                   imgnode.attr('src',UrlService.transform("http://"+$scope.fileinfo.domain+imgnode.attr('src')));
+                                   imgnode.after("<br>");
+                                   imgnode[0].parentNode.style['padding-right']="5px";
+                          }           
+                          res.appendChild(tb[0]);
                     })
                     $templateCache.put(templateId, res.innerHTML);
                     $scope.template = templateId;

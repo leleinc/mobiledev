@@ -2,7 +2,7 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
 .run(function ($ionicPlatform,wwwinfoService) {
     $ionicPlatform.ready(function(){
       navigator.splashscreen && navigator.splashscreen.hide();
-      cordova.plugins.Keyboard.disableScroll(true);
+      window.cordova && cordova.plugins.Keyboard.disableScroll(true);
     });
     $ionicPlatform.on("resume",function () {
       wwwinfoService.checkUpdate().then(function (ver) {
@@ -184,7 +184,7 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
     }
     // Domino时间格式的预处理
     amMoment.preprocessors["domino"] = function(value, format){
-      return moment.utc(value.replace(" ZE8","").replace(/-/g,"/"), format).zone("+08:00");
+      return moment(value,format||"YYYYMMDDHHmmss");
     }
 })
 .config(function($ionicConfigProvider) {
@@ -207,6 +207,7 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
     }
   });
   $translateProvider.preferredLanguage('zh_CN');
+  $translateProvider.useSanitizeValueStrategy(null);
 });
 
 // 区分用户发出的数据请求 或 ionic发出的模板请求
