@@ -199,7 +199,7 @@ angular.module('indiplatform.webflow.controllers', [])
         label: btn.label
       }
     }).filter(function(btn){
-      return !~btn.id.indexOf("huiqian") && !~btn.id.indexOf("hqgtfk") && !~btn.id.indexOf("zhihuichehui")
+      return !~btn.id.indexOf("huiqian") && !~btn.id.indexOf("hqgtfk") && !~btn.id.indexOf("zhihuichehui") && !~btn.id.indexOf("trash")
     });
     $ionicActionSheet.show({
       activityStyle:true,

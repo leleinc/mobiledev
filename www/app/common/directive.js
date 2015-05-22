@@ -61,25 +61,28 @@ angular.module('indiplatform.common.directive', [])
           //   if (match) {
           //     $node.attr("href","#/webflow" + match[1] + match[2]);
           //   }
-             var $node = angular.element(node);
-            var href = $node.attr("href");
-            if(!href) return;
-            href = $node.attr("href").replace(/[\r\n]/g,"");
-            var localinfo = angular.fromJson(localStorage.getItem("uinfo"));
-            var appServer=localinfo.appServer;
-            var urlReg = /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;  
-            var domain =urlReg.exec(href)[0]
-            var appName=href.split(domain)[1].split("/")[1];
-            if(domain.split(".")[1]!=appServer.split(".")[1]) return;//不是同域名不处理
-            var vw=href.split(".nsf/")[1].split("/")[0]
-            var regexp = new RegExp(domain.replace(new RegExp('\\.','gm'),'\\.')+'(/'+appName+'.*?/)'+vw+'/(.*)\\?(.*)pen(.*)ocument');
-            var match = href.match(regexp);
-            if (match) {
-              $node.attr("href",'#/webflow/' + domain + match[1] + match[2]);
-            }
-            else{
-                //域名不正确
-            }
+            try{
+                    var $node = angular.element(node);
+                    var href = $node.attr("href");
+                    if(!href||!href.split(".nsf/")[1]) return;
+                    href = $node.attr("href").replace(/[\r\n]/g,"");
+                    var localinfo = angular.fromJson(localStorage.getItem("uinfo"));
+                    var appServer=localinfo.appServer;
+                    var urlReg = /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;  
+                    var domain =urlReg.exec(href)[0]
+                    var appName=href.split(domain)[1].split("/")[1];
+                    if(domain.split(".")[1]!=appServer.split(".")[1]) return;//不是同域名不处理
+                    var vw=href.split(".nsf/")[1].split("/")[0]
+                    var regexp = new RegExp(domain.replace(new RegExp('\\.','gm'),'\\.')+'(/'+appName+'.*?/)'+vw+'/(.*)\\?(.*)pen(.*)ocument');
+                    var match = href.match(regexp);
+                    if (match) {
+                      $node.attr("href",'#/webflow/' + domain + match[1] + match[2]);
+                    }
+                    else{
+                        //域名不正确
+                    }
+             }catch(e){}
+    
         });
         return res.innerHTML;
       };
@@ -320,6 +323,7 @@ angular.module('indiplatform.common.directive', [])
       restrict: 'EA',
       templateUrl: 'app/mail/attview.html',
       controller:function($scope,$ionicSlideBoxDelegate,$ionicScrollDelegate,$attrs,$state,$ionicLoading,$timeout,$element){  
+             $element.append("<style>.attSlideWidth{width:"+$element[0].offsetWidth+"px}</style>")//slideg改变重画width造成闪烁，给个初始宽度
              var  defpages=15;//默认显示页数
              var  totalpages;//总页码
              $scope.statename = $state.current.name;
@@ -381,7 +385,7 @@ angular.module('indiplatform.common.directive', [])
                       $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,1)//第一次进来画框框
                       angular.forEach([0,1],function(i){//加载当前页和预加载一页
                           if($scope.attform.docViewer.pages[i]){
-                            $scope.attform.docViewer.pagesforshow[i]=$scope.attform.docViewer.pages[i];
+                            $scope.attform.docViewer.pagesforshow[i].imgURI=$scope.attform.docViewer.pages[i].imgURI;
                           }
                       })
                       $ionicSlideBoxDelegate.update();
@@ -391,8 +395,9 @@ angular.module('indiplatform.common.directive', [])
               };  
             var adding = false;
             var oldIndex ;
+            var slideAarry 
             var fnpreSildeboxs=function(all,index){//返回区段内的slidebox数组
-                  var slideAarry=[];         
+                 slideAarry=[];         
                   var statr=index%15==0?index-14:Math.floor(index/15)*15+1
                   var end=index%15==0?index:Math.floor(index/15)*15+15
                   end=end>all?all:end;
@@ -407,7 +412,7 @@ angular.module('indiplatform.common.directive', [])
             $scope.addright = function(index){  
 
                       if($scope.attform.docViewer.pagesforshow[index+1]){//预加载下一页
-                              $scope.attform.docViewer.pagesforshow[index+1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode];
+                              $scope.attform.docViewer.pagesforshow[index+1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode].imgURI;
                       }else{//下一页没有，如果不是最后一页再加15页
                          if($scope.attform.docViewer.pagesforshow[index].pagecode<$scope.attform.docViewer.pages[totalpages-1].pagecode){
                               console.log("addright");
@@ -418,7 +423,7 @@ angular.module('indiplatform.common.directive', [])
                                   timeout:60000
                               }).then(function(result){
                                   if(result.status == 200){
-                                    $scope.attform.docViewer.pagesforshow[index+1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode];
+                                    $scope.attform.docViewer.pagesforshow[index+1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode].imgURI;
                                     $ionicSlideBoxDelegate.update(); 
                                   }
                               })      
@@ -431,7 +436,7 @@ angular.module('indiplatform.common.directive', [])
                       if($scope.attform.docViewer.pagesforshow[index-1]){//预加载前一页
                               console.log("预加载left")
                               console.log($scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1].imgURI)
-                              $scope.attform.docViewer.pagesforshow[index-1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1];
+                              $scope.attform.docViewer.pagesforshow[index-1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1].imgURI;
                       }else{//上一页没有，如果不是第一页再加15页,临界点
                          if($scope.attform.docViewer.pagesforshow[index].pagecode>1){
                               console.log("发请求加载前面的");
@@ -452,7 +457,7 @@ angular.module('indiplatform.common.directive', [])
                                   adding = false;
                                   if(result.status == 200){
                                      console.log("请求返回加了第"+$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI);
-                                    $scope.attform.docViewer.pagesforshow[prel-1]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1];
+                                    $scope.attform.docViewer.pagesforshow[prel-1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI;
                                     $ionicSlideBoxDelegate.update(); 
                                   }
                               })      
@@ -470,16 +475,25 @@ angular.module('indiplatform.common.directive', [])
                                    timeout:60000
                                }).then(function(result){
                                    if(result.status == 200){
-                                    $scope.attform.docViewer.pagesforshow[index]=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode-1];
+                                    $scope.attform.docViewer.pagesforshow[index].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode-1].imgURI;
+                                    $scope.addleft(index);
+                                    $scope.addright(index);
                                     $ionicSlideBoxDelegate.update();                                    
                                    }
                                }) 
+                      }else{
+                          $scope.addleft(index);
+                          $scope.addright(index);
+                          $timeout(function(){                          
+                            $ionicSlideBoxDelegate.update(); 
+                          },50)
                       }
-                      $timeout(function(){
-                        $scope.addleft(index);
-                        $scope.addright(index);
-                        $ionicSlideBoxDelegate.update(); 
-                      },50)
+                      if($scope.attform.docViewer.pagesforshow[index-2]){ //只保留3页
+                        $scope.attform.docViewer.pagesforshow[index-2].imgURI=""
+                      }
+                      if($scope.attform.docViewer.pagesforshow[index+2]){
+                        $scope.attform.docViewer.pagesforshow[index+2].imgURI=""
+                      }
                       
                      $ionicSlideBoxDelegate.enableSlide(false);
                       [index-1, index+1].forEach(function(i){
