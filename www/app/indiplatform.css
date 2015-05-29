@@ -167,7 +167,6 @@ ion-list.empty:before{
   line-height: 25px;
   width: 25px;
   text-align: center;
-  color: #4b77be;
   margin:0 10px;
 }
 .login-form .item-toggle{
@@ -342,6 +341,7 @@ ion-list.empty:before{
   padding: 1ex 1em;
   background: #FDFDFE;
   line-height: 1.5em;
+  min-height: 40px;
 }
 .yjitem .content img{
   width:100%;
@@ -720,9 +720,11 @@ border-top: 1px solid rgba(216, 216, 216, 0.56);
 .search .ion-arrow-up-b:before {
 content: "\f10d";
 position: absolute;
-bottom: -8px;
+bottom: -9px;
 left: 40%;
-color: rgb(37, 83, 158);
+}
+.nav-bar-block .bar .title{
+  height:44px;
 }
 .search p{
 margin: 0px;
@@ -742,16 +744,11 @@ font-size: 16px;
 width: 22%;
 vertical-align: middle;
 }
-.item.item-input-inset.has-header.search {
-background-color: rgb(37, 83, 158);
-}
 .search .item-input-wrapper {
 background-color: white;
 }
 .search .button.button-small {
-background-color: rgb(75, 119, 190);
 min-width: 50px;
-color: white;
 border: none;
 }
 .search .icon.ion-ios-close-empty{
@@ -1038,7 +1035,9 @@ margin-top: 14px;
   border-radius: 3px;
   float:left;
   padding: 0px 10px;
-  margin-bottom: 3px
+  margin-bottom: 3px;
+  max-width: 200px;
+  white-space: normal;
 }
 .item-input-mic-wrapper {
   padding-left: 0;

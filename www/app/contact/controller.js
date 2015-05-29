@@ -374,6 +374,7 @@ angular.module('indiplatform.contact.controllers', ['ngResource','ionic'])
   }
    $scope.remove=function(data){//删除已选择的人员
     var k;
+    $scope.isAllChecked();
     if(data){
       $scope.selected.names[data.split("/")[0]]=false;
       $scope.showchecked(data);
@@ -381,7 +382,7 @@ angular.module('indiplatform.contact.controllers', ['ngResource','ionic'])
       for (k in $scope.selected.names){
         $scope.selected.names[k]=false;
           $scope.namelist=[];
-      }
+      }    
     }
   }
   $scope.release=function(){
@@ -554,6 +555,7 @@ angular.module('indiplatform.contact.controllers', ['ngResource','ionic'])
   }
    $scope.remove=function(index){//删除已选择的人员
     var k;
+    $scope.isAllChecked();
     if(typeof(index)!="undefined"){
       $scope.selected.names[$scope.codelist[index]]=false;
       $scope.showchecked($scope.codelist[index]);
@@ -740,6 +742,7 @@ angular.module('indiplatform.contact.controllers', ['ngResource','ionic'])
   }
    $scope.remove=function(index){//删除已选择的人员
     var k;
+    $scope.isAllChecked();
     if(typeof(index)!="undefined"){
       $scope.selected.names[$scope.codelist[index]]=false;
       $scope.showchecked($scope.codelist[index]);

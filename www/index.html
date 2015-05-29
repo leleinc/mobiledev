@@ -11,15 +11,8 @@
   <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Indi.Mobile专业版</title>
 
-    <!-- ionic css -->
-    <link href="css/ionic.app.min.css" rel="stylesheet">
-
-    <!-- your app's css -->
-    <link href="app/indiplatform.css" rel="stylesheet">
-    <link href="/_custom/css/custom.css" rel="stylesheet">
-
     <!-- ionic/angularjs scripts -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic/js/ionic.bundle.min.js"></script>
     <script src="lib/angular-translate.min.js"></script>
     <script src="lib/ionic/js/angular/angular-resource.min.js"></script>
     <script src="lib/elastic.js"></script>
@@ -31,7 +24,11 @@
 
     <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
     <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
+    <script src="cordova.js"></script><link href="css/blue.min.css" rel="stylesheet">
+
+    <!-- your app's css -->
+    <link href="app/indiplatform.css" rel="stylesheet">
+    <link href="/_custom/css/custom.css" rel="stylesheet">
 
     <!-- your app's script -->
     <script src="app/indiplatform.js"></script>
@@ -92,5 +89,6 @@
     </ion-side-menu-content> 
     <div ng-include src="'app/workspace/sidemenu.html'"></div>      
   </ion-side-menus>
+  <div ng-include src="'/_custom/template/custom.html'"></div> 
   </body>
 </html>

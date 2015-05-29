@@ -24,6 +24,14 @@ angular.module('indiplatform.common', ['angularMoment','indiplatform.common.serv
     return {
       // 生成几个和http请求相关的事件
       request: function(config) {
+        // 处理custom.xxxx的模板扩展点请求，直接返回空字符串，避免发生网络请求
+        if(config.url.indexOf("custom.")===0){
+          var $templateCache = $injector.get("$templateCache");
+          if(!$templateCache.get(config.url)){
+            $templateCache.put(config.url,"");
+          }
+          return config;
+        }
         // 登录请求需要允许传递cookie
         if(config.url.indexOf("?login")===-1){
           //config.headers["Authorization"] = config.headers["Authorization"] || getAuthString();

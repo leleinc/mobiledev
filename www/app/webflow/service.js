@@ -277,7 +277,8 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
     },
     //zhangweiguo修改
     zancun: function(param, formData) {
-      var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
+      //var url = CONFIG.DOM_ROOT + "/" + param.dbpath + "/wsforflow?OpenWebService";
+      var url ="http://"+param.domain+ param.dbpath + "/wsforflow?OpenWebService";
       var strJson = {
         "strunid": param.unid,
         "strAttitude": formData.comments || "",
@@ -641,7 +642,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
     this.pages = [];
     var httpConfigpage = {
       method: 'GET',
-      url: this.baseURI + this.countURI + this._ref,
+      url: this.baseURI + this.countURI + this._ref+'&filetype='+config.filetype,
       timeout:60000
     };
     var httpConfightml = {
@@ -655,23 +656,12 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
           var pagecount=result.data.pagecount;
           that._initpage(result.data.pagecount);
           if(['doc','docx',"txt"].indexOf(that._ref.split(".")[that._ref.split(".").length-1])>=0){
-            $http(httpConfightml).then(function(result){
-            that._inithtml(result.data,pagecount);
-            success();
-            })
-          }else{
-            success();
+           that._inithtml(result.data,pagecount);
           }
+          success();
           
     })
-    // $q.all([
-    //   $http(httpConfigpage),
-    //   $http(httpConfightml)
-    //   ]).then(function(result){
-    //       that._initpage(result[0].data.pagecount);
-    //       that._inithtml(result[1].data,result[0].data.pagecount);
-    //       success();
-    //   })
+
   }
   DocViewer.prototype = {
     _initpage: function(pagecount){
@@ -687,13 +677,11 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
       var that = this;
       that.html =  data;
           that.htmls=[];
-          that.htmlsforshow=[]; 
           for (var i = 1; i <= pages; i++) {
                  that.htmls.push({
-                      htmlURI: data.substring(0,data.lastIndexOf("-"))+"-"+i+".html"
+                      htmlURI: this._src(i, "html") + "&frontproxy=yes&multihtml=yes",
                   })
           }    
-          that.htmlsforshow=[that.htmls[0]]
     },
     _src: function(index, filetype){
       return this.baseURI + this.previewURI + this._ref + "-page-" + index + "&filetype=" + filetype;

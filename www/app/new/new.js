@@ -14,6 +14,7 @@ angular.module('indiplatform.new', ['ionic', 'indiplatform.new.services', 'indip
     })
     .state('tab.home.ioboard', {
       url: "/ioboard",
+	  cache: false,
       views: {
         'ioboard-tab': {
           templateUrl: 'app/new/ioboards.html',
@@ -23,6 +24,7 @@ angular.module('indiplatform.new', ['ionic', 'indiplatform.new.services', 'indip
     })
     .state('new', {
       url: "/new/:id/:type",
+	  cache: false,
       views: {
         'main-view': {
           templateUrl: 'app/new/new.html',

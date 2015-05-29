@@ -1,31 +1,32 @@
 
-<ion-view title=""  hide-back-button="true" >
-
- <ion-nav-title>
+<ion-view title=""   hide-back-button="true" >
+ 
+<ion-nav-title>
            <button class="button button-clear search" ng-click="setSearchtype('todos')">
             <p>搜工作</p>
-             <i class="ion-arrow-up-b" ng-if="searchtype=='todos'" ></i>
+             <i class="ion-arrow-up-b positive-dark" ng-if="searchtype=='todos'" ></i>
           </button>
            <button class="button button-clear search" ng-click="setSearchtype('news')" >
             <p>搜新闻</p>
-             <i class="ion-arrow-up-b" ng-if="searchtype=='news'" ></i>
+             <i class="ion-arrow-up-b positive-dark" ng-if="searchtype=='news'" ></i>
           </button>
            <button class="button button-clear search" ng-click="setSearchtype('mails')" >
-            <p>搜邮件</p>
-             <i class="ion-arrow-up-b" ng-if="searchtype=='mails'" ></i>
+            <p>搜件</p>
+             <i class="ion-arrow-up-b positive-dark" ng-if="searchtype=='mails'" ></i>
           </button>
            <button class="button button-clear search" ng-click="setSearchtype('contact')" >
            <p> 搜同事</p>
-            <i class="ion-arrow-up-b" ng-if="searchtype=='contact'" ></i>
+            <i class="ion-arrow-up-b positive-dark" ng-if="searchtype=='contact'" ></i>
           </button> 
  </ion-nav-title>  
+
  <form action=""> 
-    <div class="item item-input-inset has-header search">
+    <div class="item item-input-inset has-header search positive-dark-bg">
           <label class="item-input-wrapper">
             <i class="icon indi-sousuo placeholder-icon"></i>
             <input type="search" ng-model="searchkey[searchtype]"  ng-keypress="enter($event)" auto-focus ng-change="ifshowhistory()" ng-click="ifshowhistory()" style="width:100%" clear-Input>
           </label>
-          <button class="button button-small" type="button" ng-click="goback()">
+          <button class="button button-small button-positive" type="button" ng-click="goback()">
             取消
           </button>
 
@@ -67,7 +68,7 @@
       <ion-content class="has-searchitem" ng-show="searchtype=='news'" >
         <div ng-if="nothing" class="searchnothing">没有找到"<span >{{searchkey[searchtype]}}</span>"相关结果</div>
         <ion-list>
-          <ion-item class="item" ng-repeat="new in news" type="item-text-wrap" nav-direction="forward" href="#/new/{{new.newid}}">
+          <ion-item class="item" ng-repeat="new in news" type="item-text-wrap" nav-direction="forward" href="#/new/{{new.newid}}/ioboard">
             <h3  ng-bind-html="new.newtitle"></h3>
             <p>
               <span >{{new.newtime| amCalendar}}</span>

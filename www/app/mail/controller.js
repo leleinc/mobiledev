@@ -1,6 +1,6 @@
 
 angular.module('indiplatform.mail.controllers', ['ngResource','x2js','ngCordova'])
-.controller('boxCtrl', function($scope,$stateParams,$state ,MailService,x2js,CONFIG,$ionicScrollDelegate,$rootScope,AuthService) {
+.controller('boxCtrl', function($scope,$stateParams,$state ,MailService,x2js,CONFIG,$ionicScrollDelegate,$rootScope,AuthService,$timeout) {
   $scope.initialized = false;
   /*var key,type;
   if ($state.current.name=="tab.mail.inbox") {
@@ -33,6 +33,8 @@ var param={
         if(typeof($scope.maillist[key])=="undefined" ) {
           $scope.doRefresh()
         }
+       // $timeout(function(){$scope.moreDataCanBeLoaded=true;},50)
+$scope.moreDataCanBeLoaded=true
         $rootScope.param=param;
  }
   $scope.doRefresh = function(){
@@ -69,7 +71,9 @@ var param={
   $scope.loadMore = function() {//下拉加载更多
     console.log("more");
       if( typeof($scope.maillist[key])=="undefined" ){
+
        $scope.$broadcast('scroll.infiniteScrollComplete');
+               return;
       }
       param.start=$scope.maillist[key].length+1;
       MailService.all(param,function(data){
@@ -95,7 +99,6 @@ var param={
       try{
          $cordovaKeyboard.hideAccessoryBar(false);
       }catch(e){
-          console.log(e);
       }     
     })
     $scope.formData={

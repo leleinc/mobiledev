@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Indi.Mobile专业版</title>
+    <meta charset="utf-8">
+    <link href="css/blue.min.css" rel="stylesheet">
+    <style>
+      .frame {
+        border: none;
+        border-radius: 3px;
+        box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        height: 667px;
+      }
+      body{
+        text-align: center;
+      }
+.button{
+  margin: 2px;
+  padding: 0px 10px;
+}
+body{
+  width: 375px;
+  margin: auto;
+}
+p{
+  margin-top: 10px;
+}
+    </style>
+    <script>
+    function changetheme(theme){
+      frames["main"].document.querySelector('[href$=".min.css"]').href = "css/" + theme + ".min.css"
+    }
+    </script>
+  </head>
+
+  <body>
+  <p>
+<script>
+var themes = ["blue","green","red","yellow"];
+themes.forEach(function(theme){
+  document.write('<button class="button button-small button-stable" onclick="changetheme(\'' + theme +'\')">' + theme + "</button>");
+});
+</script>
+  </p>
+    <iframe id="iphone-frame" src="./?theme=blue" class="frame" name="main"></iframe>
+  </body>
+</html>

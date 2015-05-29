@@ -14,7 +14,7 @@ angular.module('indiplatform.common.directive', [])
 
       var parseRaw = function(val) {
         var wrapper = document.createElement("div");
-        wrapper.innerHTML = val;
+        wrapper.innerHTML = val.replace(/text-indent:/g,"");//去掉缩进
         var res = document.createElement("div");
 
         // 删除不需要的标签
@@ -35,7 +35,7 @@ angular.module('indiplatform.common.directive', [])
         //      res.innerHTML=wrapper.innerHTML;
         //    };         
         // };
-        res.innerHTML=wrapper.innerHTML;
+       res.innerHTML=wrapper.innerHTML;
 
         // 处理图片
         [].slice.call(res.querySelectorAll("img")).forEach(function(node) {
@@ -45,13 +45,17 @@ angular.module('indiplatform.common.directive', [])
             var baseURI = $scope.ref.match(/^.*\//g);
 
             //$node.attr("src", baseURI + $node.attr("src"));
-            $node.attr("src",  UrlService.transform(baseURI + $node.attr("src")));
+            $node.attr("ng-src",  UrlService.transform(baseURI + $node.attr("src")));
           }else{
-            $node.attr("src",  UrlService.transform($node.attr("src")));
+            $node.attr("ng-src",  UrlService.transform($node.attr("src")));
           }
 
         });
-
+     // 去掉table宽度
+        [].slice.call(res.querySelectorAll("table")).forEach(function(node) {
+          var $node = angular.element(node);
+          $node.removeAttr("width").removeAttr("height").removeAttr("style");      
+        });
         // 将链接转换为移动版格式
         [].slice.call(res.querySelectorAll("a")).forEach(function(node) {
           // var $node = angular.element(node);
@@ -326,8 +330,10 @@ angular.module('indiplatform.common.directive', [])
              $element.append("<style>.attSlideWidth{width:"+$element[0].offsetWidth+"px}</style>")//slideg改变重画width造成闪烁，给个初始宽度
              var  defpages=15;//默认显示页数
              var  totalpages;//总页码
+
              $scope.statename = $state.current.name;
              $scope.attform = {};
+               $scope.attform.handleid=$attrs.handleid
              $scope.attform.attViewershow="attlist";
              $scope.attform.htmlsforshowcached={};//将看过的附件cached下来，
             $scope.$watch($attrs.catnum, function(newVal, oldVal) {
@@ -346,7 +352,8 @@ angular.module('indiplatform.common.directive', [])
                        $scope.attform.thisattname="" ;//附件名    
                         return;
                     }
-                    $scope.attform.thisattname=ref.split("/")[ref.split("/").length-1] ;//附件名    
+                    $scope.attform.thisattname=ref.split("/")[ref.split("/").length-1] ;//附件名
+                  
                     if(localStorage["fileShow"]&&localStorage["fileShow"]=="republishing"){//默认配置预览方式
                                 $scope.attform.docViewerType = "reflow";
                     }else{
@@ -360,12 +367,6 @@ angular.module('indiplatform.common.directive', [])
                     }
                     $scope.attform.pagecode=1;
                     $scope.attform.attViewershow="";//不显示列表
-                            
-                    if(catnum=="-1"){
-                      $scope.attform.attisfj=false;
-                    }else{
-                      $scope.attform.attisfj=true;
-                    }
                     if(["jpg","png","gif","bmp"].indexOf($scope.attform.thisattname.split(".")[1])>=0){
                       $scope.attform.docViewer={};
 
@@ -375,24 +376,76 @@ angular.module('indiplatform.common.directive', [])
                       $ionicSlideBoxDelegate.enableSlide(false);
                       $ionicScrollDelegate.resize();
                       return;
-                    }                    
-                    $scope.attform.docViewer = DocService(ref, {}, function(){
-                      $scope.attform.noMoreItemsAvailable = false;
-                      if(!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]&&["doc","docx","txt"].indexOf($scope.attform.thisattname.split(".")[1])>=0){
-                          $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[$scope.attform.docViewer.htmls[0]];
-                      }
-                      totalpages=$scope.attform.docViewer.pages.length;
-                      $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,1)//第一次进来画框框
-                      angular.forEach([0,1],function(i){//加载当前页和预加载一页
-                          if($scope.attform.docViewer.pages[i]){
-                            $scope.attform.docViewer.pagesforshow[i].imgURI=$scope.attform.docViewer.pages[i].imgURI;
-                          }
-                      })
-                      $ionicSlideBoxDelegate.update();
-                      $ionicSlideBoxDelegate.enableSlide(false);
+                    }             
+                    $scope.attform.docViewer = DocService(ref, {filetype:$scope.attform.docViewerType=='reflow'?'html':'png'}, function(){
+
+                      $scope.attform.initialized=true;
+                      if( $scope.attform.docViewerType =="reflow"){
+
+                            if(!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]){
+                                  $http({
+                                    method: 'GET',
+                                    url: $scope.attform.docViewer.htmls[0].htmlURI,
+                                    timeout:60000
+                                  }).then(function(result){
+                                    $scope.attform.noMoreItemsAvailable = false;
+                                    $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[{htmlURI:result.data}];
+                                  })                              
+                            }
+                      }else{
+                            totalpages=$scope.attform.docViewer.pages.length;
+                            $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,1)//第一次进来画框框
+                            angular.forEach([0,1],function(i){//加载当前页和预加载一页
+                                if($scope.attform.docViewer.pages[i]){
+                                  $scope.attform.docViewer.pagesforshow[i].imgURI=$scope.attform.docViewer.pages[i].imgURI;
+                                }
+                            })
+                            $ionicSlideBoxDelegate.update();
+                            $ionicSlideBoxDelegate.enableSlide(false);
+                      }              
                       $ionicScrollDelegate.resize();
                     });
               };  
+            $scope.$watch('attform.docViewerType', function(newVal, oldVal) {//切换时加载原声版或重拍版
+
+                if (!newVal||!$scope.attform.initialized) return;
+                if($scope.attform.docViewerType =="reflow"){
+                    if(!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]){//如果没有就是第一次加载
+                               $http({
+                                  method: 'GET',
+                                  url: $scope.attform.docViewer.htmls[0].htmlURI,
+                                  timeout:60000
+                                }).then(function(result){
+                                  console.log(result.data)
+                                  $scope.attform.noMoreItemsAvailable = false;//第一次运行时loadmore会先将其置为true，放在回调里延迟处理
+                                  $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[{htmlURI:result.data}];
+                                  $ionicScrollDelegate.resize();     
+                                })  
+                    }
+                    $scope.attform.noMoreItemsAvailable = false;
+                }else{
+                    if(!$scope.attform.docViewer.pagesforshow){//初始化原始版
+                            totalpages=$scope.attform.docViewer.pages.length;
+                            $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,1)//第一次进来画框框
+                            $http({
+                                   method: 'GET',
+                                   url: $scope.attform.docViewer.pages[0].imgURI,
+                                   timeout:60000
+                            }).then(function(result){
+                                   if(result.status == 200&& $scope.attform.docViewer.pagesforshow){
+                                        angular.forEach([0,1],function(i){//加载当前页和预加载一页
+                                              if($scope.attform.docViewer.pages[i]){
+                                                $scope.attform.docViewer.pagesforshow[i]=$scope.attform.docViewer.pages[i];
+                                              }
+                                        }) 
+                                        $ionicSlideBoxDelegate.update();
+                                        $ionicSlideBoxDelegate.enableSlide(false); 
+
+                                   }
+                            }) 
+                    }
+                }    
+            });
             var adding = false;
             var oldIndex ;
             var slideAarry 
@@ -435,7 +488,7 @@ angular.module('indiplatform.common.directive', [])
             $scope.addleft = function(index){
                       if($scope.attform.docViewer.pagesforshow[index-1]){//预加载前一页
                               console.log("预加载left")
-                              console.log($scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1].imgURI)
+                             
                               $scope.attform.docViewer.pagesforshow[index-1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1].imgURI;
                       }else{//上一页没有，如果不是第一页再加15页,临界点
                          if($scope.attform.docViewer.pagesforshow[index].pagecode>1){
@@ -443,12 +496,11 @@ angular.module('indiplatform.common.directive', [])
                               adding = true;
                               var prel=fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode-1).length
                               $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode-1).concat($scope.attform.docViewer.pagesforshow);
-
+                             
                              $ionicSlideBoxDelegate.update();   
-
-                              $timeout(function(){
-                                $ionicSlideBoxDelegate.slide(prel,[0]);                                
-                              },200);
+                             $timeout(function(){
+                                  $ionicSlideBoxDelegate.slide(prel,[0]);
+                             },200)            
                               $http({
                                   method: 'GET',
                                   url: $scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI,
@@ -456,7 +508,7 @@ angular.module('indiplatform.common.directive', [])
                               }).then(function(result){
                                   adding = false;
                                   if(result.status == 200){
-                                     console.log("请求返回加了第"+$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI);
+                                   //  console.log("请求返回加了第"+$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI);
                                     $scope.attform.docViewer.pagesforshow[prel-1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[prel-1].pagecode-1].imgURI;
                                     $ionicSlideBoxDelegate.update(); 
                                   }
@@ -467,6 +519,7 @@ angular.module('indiplatform.common.directive', [])
             }
             $scope.slideChanged = function(index){
                        if(adding) return;
+                                 console.log('slideChanged')
                        $scope.attform.pagecode=$scope.attform.docViewer.pagesforshow[index].pagecode;                             
                       if(!$scope.attform.docViewer.pagesforshow[index].imgURI){//直接跳到该页或临界点取消加载造成该页没有的情况               
                              $http({
@@ -474,27 +527,31 @@ angular.module('indiplatform.common.directive', [])
                                    url: $scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode-1].imgURI,
                                    timeout:60000
                                }).then(function(result){
-                                   if(result.status == 200){
+                                   if(result.status == 200&& $scope.attform.docViewer.pagesforshow){
                                     $scope.attform.docViewer.pagesforshow[index].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode-1].imgURI;
-                                    $scope.addleft(index);
-                                    $scope.addright(index);
+                                    $scope.addright(index);                               
+                                    $scope.addleft(index);                              
                                     $ionicSlideBoxDelegate.update();                                    
                                    }
                                }) 
                       }else{
-                          $scope.addleft(index);
-                          $scope.addright(index);
+                           if(index>oldIndex){
+                                $scope.addright(index);
+                            }else{
+                                $scope.addleft(index);
+                            }   
                           $timeout(function(){                          
                             $ionicSlideBoxDelegate.update(); 
                           },50)
                       }
                       if($scope.attform.docViewer.pagesforshow[index-2]){ //只保留3页
-                        $scope.attform.docViewer.pagesforshow[index-2].imgURI=""
+                       $scope.attform.docViewer.pagesforshow[index-2]={pagecode:$scope.attform.docViewer.pagesforshow[index-2].pagecode}
+         
                       }
                       if($scope.attform.docViewer.pagesforshow[index+2]){
-                        $scope.attform.docViewer.pagesforshow[index+2].imgURI=""
+                     $scope.attform.docViewer.pagesforshow[index+2]={pagecode:$scope.attform.docViewer.pagesforshow[index+2].pagecode}
+              
                       }
-                      
                      $ionicSlideBoxDelegate.enableSlide(false);
                       [index-1, index+1].forEach(function(i){
                               var handle = $ionicScrollDelegate.$getByHandle("page"+i);
@@ -520,13 +577,13 @@ angular.module('indiplatform.common.directive', [])
               }
               $scope.hidepagecode=function(index){//快速跳转
 
-                          $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,index);                       
-                          $ionicSlideBoxDelegate.update();
-                          $ionicSlideBoxDelegate.slide(index%15==0?14:(index%15-1));
-                          $scope.attform.showpagecode=false;
-                          $ionicSlideBoxDelegate.update();
-                          $ionicSlideBoxDelegate.enableSlide(false);
-                          $ionicScrollDelegate.resize();
+                        $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,index);                     
+                        $ionicSlideBoxDelegate.update();  
+                        $ionicSlideBoxDelegate.slide(index%15==0?14:(index%15-1));  
+                         $ionicSlideBoxDelegate.update();  
+                        $scope.attform.showpagecode=false;
+                        $ionicSlideBoxDelegate.enableSlide(false);
+                        $ionicScrollDelegate.resize();
 
 
               }
@@ -534,19 +591,33 @@ angular.module('indiplatform.common.directive', [])
                   $ionicScrollDelegate.resize();
               }
               $scope.loadMoreHtml = function() {//下拉加载更多 
-                        console.log("正在加载...");                  
-                        $timeout(function(){
-                           if($scope.attform.htmlsforshowcached[$scope.attform.thisattname]&&$scope.attform.docViewer.htmls[$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length]){
-                                $scope.attform.htmlsforshowcached[$scope.attform.thisattname].push($scope.attform.docViewer.htmls[$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length])                                     
-                            }
-                        },10)
-                        $scope.$broadcast('scroll.infiniteScrollComplete');
+                        console.log("laodmore...");                    
+                         if($scope.attform.htmlsforshowcached[$scope.attform.thisattname]&&$scope.attform.docViewer.htmls[$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length]){
+                              $http({
+                                method: 'GET',
+                                url: $scope.attform.docViewer.htmls[$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length].htmlURI,
+                                timeout:60000
+                              }).then(function(result){
+                                    $scope.attform.htmlsforshowcached[$scope.attform.thisattname].push({htmlURI:result.data});
+                                    $timeout(function(){
+                                       $scope.$broadcast('scroll.infiniteScrollComplete');
+                                    },50)                                  
+                              })  
+                              //$scope.attform.htmlsforshowcached[$scope.attform.thisattname].push($scope.attform.docViewer.htmls[$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length])                                     
+                          }
                         if($scope.attform.docViewerType == "img"||!$scope.attform.htmlsforshowcached[$scope.attform.thisattname]||$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length>=$scope.attform.docViewer.htmls.length){
                           $scope.attform.noMoreItemsAvailable =true; 
                           $scope.$broadcast('scroll.infiniteScrollComplete');                   
                         }
                               
                };  
+               $scope.exit=function(){
+                $ionicSlideBoxDelegate.select(0);//退出后会记录之前slidebox的位置，退出前置为第一页
+                $scope.attform.docViewer={};
+                $scope.attform.attViewershow='attlist';
+                $scope.attform.docViewerType='';
+                $scope.attform.initialized=false
+               }
 
       }
   }
@@ -811,12 +882,15 @@ return {
                                 span.after("<br>");
 
                           })
-                          if(tb[0].querySelector(".sign")){//手签名
-                               var imgnode=angular.element(tb[0].querySelector(".sign").querySelector("img"));
-                                   imgnode.attr('src',UrlService.transform("http://"+$scope.fileinfo.domain+imgnode.attr('src')));
-                                   imgnode.after("<br>");
-                                   imgnode[0].parentNode.style['padding-right']="5px";
-                          }           
+                          angular.forEach(tb.find('img'),function(img){////手签名
+                              if(img.attributes.src&&img.attributes.src.value.indexOf('signature')>0){
+                                  img=angular.element(img);
+                                 img.attr('ng-src',UrlService.transform("http://"+$scope.fileinfo.domain+img.attr('src')));
+                                 img.after("<br>");
+                              }
+
+                          })
+                            
                           res.appendChild(tb[0]);
                     })
                     $templateCache.put(templateId, res.innerHTML);

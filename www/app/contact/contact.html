@@ -29,7 +29,7 @@
               <div class="list"  class="scroll"  ng-if="!islocal">                               
                      
                           <a  class="item item-avatar" ng-repeat="person in obj.concats" type="item-text-wrap"  style="border-left:none;border-right:none" ui-sref="person({name:person.AbbName})" >   
-                           <img src={{person.imgpath==""?defaultimage:(ROOT+person.imgpath)}} >
+                           <img ng-src={{person.imgpath==""?defaultimage:(ROOT+person.imgpath)}} >
                             <h2 >{{person._name}}</h2>
                           </a>             
                           <a  class="item item-avatar" ng-repeat="person in obj.concatstmp" type="item-text-wrap"  style="border-left:none;border-right:none" ui-sref="person({unid:person['@unid'],imgpath:person['imgpath']})" >   

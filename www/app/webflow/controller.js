@@ -2,7 +2,23 @@
 angular.module('indiplatform.webflow.controllers', [])
 
 
-.controller('WebflowCtrl', function($rootScope, $scope, $q, $state, $stateParams,$cordovaFile,$cordovaMedia,$filter,$timeout, $ionicPopup, $ionicLoading, $ionicModal,$ionicActionSheet,$ionicScrollDelegate,$ionicSlideBoxDelegate, DocService, FormDataService, NodeInfoService, CyyService,selectService,ContactService) {
+.controller('WebflowCtrl', function($rootScope, $scope, $q, $state, myinfoService,$stateParams,$cordovaFile,$cordovaMedia,$filter,$timeout, $ionicPopup, $ionicLoading, $ionicModal,$ionicActionSheet,$ionicScrollDelegate,$ionicSlideBoxDelegate, DocService, FormDataService, NodeInfoService, CyyService,selectService,ContactService) {
+  
+  $scope.depp = [];  //用户所属部门路径
+  if(typeof($scope.context.userinfo.depFullname) != "undefined"){
+    $scope.depMain = $scope.context.userinfo.depFullname;
+    $scope.depp.unshift($scope.depMain);
+  }
+  if($scope.context.userinfo.fldSubDepsInfo.toString() != "" && typeof($scope.context.userinfo.fldSubDepsInfo) != "undefined"){
+    $scope.Other = JSON.parse($scope.context.userinfo.fldSubDepsInfo);
+    for(x in $scope.Other){
+      angular.forEach($scope.Other[x],function(i){
+        $scope.depp.unshift(i.SubDep);
+      })
+    }
+  }
+  $scope.depp = $filter('unique')($scope.depp);
+  
   $scope.fileinfo = {
     domain:$stateParams.domain,
     dbpath: $stateParams.path,
@@ -13,20 +29,22 @@ angular.module('indiplatform.webflow.controllers', [])
   $scope.form.denyBackWay="0";
   FormDataService.get($scope.fileinfo).then(function(FormData) {
 
-  // angular.forEach(FormData.form.formdetail,function(item){
-  //     item.isyj=false;
-  //     angular.forEach(FormData.YjList,function(i){
-  //         if(i._writetofield != undefined && item.id.toUpperCase() == i._writetofield.toUpperCase()){
-  //           item.value.push(i);
-  //           item.isyj=true;
-  //         }
-  //     })
-  // })
   $scope.formData = FormData.form;
   if($scope.formData.attitude){
     $scope.form.comments=$scope.formData.attitude;
   }
     angular.forEach($scope.formData.formdetail,function(item){
+
+      item.value = item.value.map(function(i){  //过滤表单部门
+        angular.forEach($scope.depp,function(j){
+          if(i.toString().indexOf(j) != -1){
+            j = "/" + j 
+            i = i.replace(j,"")
+          }
+        })
+        return i
+      })
+
       item.value=item.value.map(function(value){
           if(typeof(value)=="string"){
              value = $filter('escape2Html')(value);//过滤特殊字符
@@ -265,6 +283,9 @@ angular.module('indiplatform.webflow.controllers', [])
                 case "bohui":
                   $scope.actionType="bohui";
                   FormDataService.getDeny($scope.fileinfo).then(function(items){
+                      if(items.length==1){
+                         $scope.form.nextNode='0';//只有一个默认选中
+                      }
                       $scope.form.denyNodeList=items;
                       $scope.form.denyNodeList.forEach(function(item) {
                         item = angular.extend(item, {mail:item.tmpyoujian=="yes",sms:item.tmpSms=="yes"});
@@ -283,7 +304,8 @@ angular.module('indiplatform.webflow.controllers', [])
                     }).then(function() {
                       if (data.type == "success") {
                           FormDataService.addLock({
-                                dbpath: $stateParams.domain+$stateParams.path,
+                                domain:$stateParams.domain,
+                                dbpath: $stateParams.path,
                                 unid: $stateParams.id
                           })
                       }
@@ -393,7 +415,8 @@ angular.module('indiplatform.webflow.controllers', [])
                     }).then(function() {
                       if (data.type == "success") {
                           FormDataService.addLock({
-                                dbpath: $stateParams.domain+$stateParams.path,
+                                domain:$stateParams.domain,
+                                dbpath: $stateParams.path,
                                 unid: $stateParams.id
                           })
                       }
@@ -726,7 +749,7 @@ angular.module('indiplatform.webflow.controllers', [])
       });
       return false;
     };
-    if ($scope.form.nextNode && $scope.form.nodeList) {
+    if ($scope.form.nextNode && $scope.form.nodeList && $scope.actionType=='submit') {
       if (~["SubmitBtn_sence9", "SubmitBtn_sence10"].indexOf($scope.form.nodeList[$scope.form.nextNode].returnSence)) {
         return $scope.mergeOrSplit($scope.form.nextNode)
       }
