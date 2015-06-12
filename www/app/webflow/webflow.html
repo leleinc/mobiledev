@@ -1,3 +1,9 @@
+
+<script id="HAModal.html" type="text/ng-template">
+  <ion-modal-view>
+   <div hand-attitude></div>
+  </ion-modal-view>
+</script>
 <ion-view title="审批">
   <ion-nav-buttons side="right">
     <button class="button icon button-clear indi-gengduo" ng-click="moreAction()" ></button>
@@ -5,13 +11,13 @@
 
   <ion-tabs class="tabs-striped tabs-top" ng-show="attform.attViewershow=='attlist'" >
     <ion-tab title="表单" on-select="zwflesh=zwflesh+1">
-      <ion-content ng-show="formData&&attform.attViewershow=='attlist'" class="webflow-wrap" ng-class="{'has-footer':isNextline}" >
+      <ion-content ng-show="formData" class="webflow-wrap" ng-class="{'has-footer':isNextline}" >
         <div class="list card formData webflow" ng-repeat="item in formData.formdetail">
           <div ng-if="!item.dync">
              <a  class="item item-input cardback">
               <span class="input-label input-label-newline">{{item.name}}:</span>
-              <span  class="input-content"  ng-if="item.value[0].toString().indexOf('yjAttAndPic')<0" >{{item.value | list}}</span>
-              <span  class="input-content"  ng-if="item.value[0].toString().indexOf('yjAttAndPic')>=0" yj-show="item.value"></span>
+              <span  class="input-content"  ng-if="!item.isyj&&item.type!='user'" >{{item.value | list}}</span>
+              <span  class="input-content"  ng-if="item.isyj||item.type=='user'" yj-show="item.value"></span>
             </a>
           </div>
           <div ng-if="item.dync">
@@ -37,7 +43,7 @@
           </div>
         </div>
  </ion-content>
-    <ion-footer-bar align-title="left" class=" yj-bar bar-stable item-input-inset" ng-show="isNextline&&attform.attViewershow=='attlist'" >
+    <ion-footer-bar align-title="left" class=" yj-bar bar-stable item-input-inset" ng-show="isNextline" >
        <!--  <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
         <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()" ng-show="formData.power.canHandAttitude=='1'"></button>
         <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
@@ -65,7 +71,7 @@
       <a class="lzxxitem" ng-repeat="lzxx in lzs">
           <div class="lzxx-time">{{lzxx.time | amDateFormat:'YYYY-MM-DD'}}<br>{{lzxx.time | amDateFormat:'h:mm'}}</div>
           <div class="lzxx-stat">{{lzxx.stat}}</div>
-          <div class="lzxx-user">{{lzxx.user | domUser}}</div>
+          <div class="lzxx-user">{{lzxx.user | filterUsrNameNumber}}</div>
         </a>
     </div>
     <div class="lzxxblank"></div>
@@ -85,15 +91,15 @@
     </ion-footer-bar> 
   </ion-tab>
   <ion-tab title="意见({{yjs.length}})" on-select="getAvatars();zwflesh=zwflesh+1">
-    <ion-content ng-class="{'has-footer':isNextline, 'empty':!yjs.length}"  ng-show="attform.attViewershow=='attlist'">
+    <ion-content ng-class="{'has-footer':isNextline, 'empty':!yjs.length}"  >
       <div class='yjlist'>
         <div class='yjitem' ng-repeat="yj in yjs">
           <div class="user">
             <img ng-src='{{yj.contact.avatar}}'>
-            <p>{{yj.user | domUser}}</p>
+            <p>{{yj.user | filterUsrNameNumber}}</p>
           </div>
           <div class='content'>
-            <div class="yj-text" ng-class="{empty:yj.yj == 'NoAttitude_Handler'}" ng-show="yj.yj != 'NoAttitude_Handler'">{{yj.yj}}</div>
+            <div class="yj-text"  ng-hide="yj.yj == 'NoAttitude_Handler'&&(!!yj.yjtp||!!yj.yjatt)" yj-show="yj.yj"></div>
             <img ng-if="!!yj.yjtp" ng-src="{{yj.yjtp}}"/>
             <div ng-if="!!yj.yjatt" class="att"  ng-click="openFile(yj.yjatt.url,'0');attform.attViewershow=''"><i class="icon " att-Tubiao="yj.yjatt.attname"></i><span>{{yj.yjatt.attname}}</span></div>
           </div>
@@ -102,7 +108,7 @@
         </div>
       </div>
     </ion-content>
-    <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline&&attform.attViewershow=='attlist'">
+    <ion-footer-bar align-title="left" class="yj-bar bar-stable item-input-inset" ng-show="isNextline">
         <!-- <button class="button button-light button-icon icon {{commentsType!='mic'?'indi-yuyin':'indi-jianpan'}}" ng-click="toggleCommentsType()"></button> -->
         <button class="button button-light button-icon icon indi-shouxie" ng-click="openHAModal()" ng-show="formData.power.canHandAttitude=='1'"></button>
         <div class="item-input-wrapper" ng-show="commentsType!=='mic'" >
@@ -152,8 +158,3 @@
 </ion-tabs>
 <div  ng-show="attform.attViewershow!='attlist'" class="doc-viewer" flesh='zwflesh' att-View >
 </ion-view>
-<script id="HAModal.html" type="text/ng-template">
-  <ion-modal-view>
-   <div hand-attitude></div>
-  </ion-modal-view>
-</script>

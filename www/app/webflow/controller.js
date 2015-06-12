@@ -2,7 +2,7 @@
 angular.module('indiplatform.webflow.controllers', [])
 
 
-.controller('WebflowCtrl', function($rootScope, $scope, $q, $state, myinfoService,$stateParams,$cordovaFile,$cordovaMedia,$filter,$timeout, $ionicPopup, $ionicLoading, $ionicModal,$ionicActionSheet,$ionicScrollDelegate,$ionicSlideBoxDelegate, DocService, FormDataService, NodeInfoService, CyyService,selectService,ContactService) {
+.controller('WebflowCtrl', function($rootScope, $scope, $q, $state, myinfoService,$stateParams,$cordovaFile,$cordovaMedia,$filter,$timeout, $ionicPopup, $ionicLoading, $ionicModal,$ionicActionSheet,$ionicScrollDelegate,$ionicSlideBoxDelegate, DocService, FormDataService, NodeInfoService, CyyService,selectService,ContactService,$ionicHistory) {
   
   $scope.depp = [];  //用户所属部门路径
   if(typeof($scope.context.userinfo.depFullname) != "undefined"){
@@ -28,8 +28,23 @@ angular.module('indiplatform.webflow.controllers', [])
   $scope.actionType="submit";
   $scope.form.denyBackWay="0";
   FormDataService.get($scope.fileinfo).then(function(FormData) {
-
+  if(FormData.CurInfo.stat=="待接收"){
+      $ionicPopup.alert({
+            template: '公文未接收，请在pc端进行收文操作之后再查看!',
+      }).then(function(){       
+         $ionicHistory.goBack();      
+      })
+  }
+  angular.forEach(FormData.form.formdetail,function(item){
+    angular.forEach(FormData.YjList,function(i){
+        if(i._writetofield != undefined && item.id.toUpperCase() == i._writetofield.toUpperCase()){
+          item.isyj=true;
+        }
+    })
+  })
   $scope.formData = FormData.form;
+  $scope.form.flowconfig=$scope.formData.flowconfig;//系统设置信息
+  $scope.form.flowunid=FormData.FlowBtns.flowunid;
   if($scope.formData.attitude){
     $scope.form.comments=$scope.formData.attitude;
   }
@@ -72,13 +87,13 @@ angular.module('indiplatform.webflow.controllers', [])
           item.dync = JSON.parse(item.dync);
           item.value = JSON.parse(item.value);
         }catch(e){
-          console.error("动态表格数据异常,转换JSON失败");
+          //console.error("动态表格数据异常,转换JSON失败");
         }
       }
       if(item.type) {
         if(item.type == "user") {
           item.value = $filter('unique')(item.value);
-          item.value = $filter('domUser')(item.value);
+      //    item.value = $filter('domUser')(item.value);
         }else if(item.type == "date") {
           item.value = item.value.join("") && moment(item.value.join(""), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD") || item.value;
           if(item.value == "Invalid date") {
@@ -252,9 +267,12 @@ angular.module('indiplatform.webflow.controllers', [])
                 case "zhihui":
                   $scope.actionType="zhihui";
                   //getzhihui version
-                 
+                  if($scope.form.flowconfig.key_ZhihuiV2&&$scope.form.flowconfig.key_ZhihuiV2[0]=="1"){//v2
+                        $scope.openModal();
+                  }else{
+                        $scope.submitModal.show();
+                  }
 
-                  $scope.openModal();
                   break;
                 case "zhihuibanbi":
                   $scope.actionType="yuebi";
@@ -297,8 +315,8 @@ angular.module('indiplatform.webflow.controllers', [])
                   $scope.actionType="forward";
                   $scope.openModal();
                   break;
-				case "zancun":
-					FormDataService.zancun($scope.fileinfo, $scope.form).then(function(data) {
+				        case "zancun":
+					       FormDataService.zancun($scope.fileinfo, $scope.form).then(function(data) {
                     $ionicPopup.alert({
                       title: '暂存成功',
                     }).then(function() {
@@ -311,7 +329,32 @@ angular.module('indiplatform.webflow.controllers', [])
                       }
                     });
                   })
-				  break;
+				        break;
+                case "msddyj":
+                FormDataService.getmsdllealers($scope.fileinfo).then(function(data) {
+                    if(data.lealers.length==1){
+                         return data.lealers[0];
+                    }else{
+                      //多个人的情况
+                         return data.lealers[0];
+                    }                    
+                  }).then(function(data){
+                        data="CN="+data.split("/")[0]+"/O="+data.split("/")[1]
+                        var param = angular.extend($scope.fileinfo, {
+                                  strFrom: data
+                          });
+                         FormDataService.jieguan(param).then(function(data){
+                              if(data.type=='success'){
+                                    $ionicHistory.currentView($ionicHistory.backView());
+                                    $state.go($state.current, $stateParams, { location:false, reload: true, inherit: false, notify: true });                   
+                              }else{
+                                    $ionicPopup.alert({
+                                        template:data.message
+                                    });
+                              }
+                         })
+                  })
+                break;
             }
         return true;
      }
@@ -346,6 +389,14 @@ angular.module('indiplatform.webflow.controllers', [])
       }).map(function(item){
         return item.dealer
       });
+      if(dealers.length==0){
+       return $ionicPopup.alert({
+          title: "请至少选择一个终止沟通人员"
+        });
+      }
+      if(!$scope.form.goutong){
+          $scope.form.goutong={}
+      }
       var strNotifyWay = Object.keys($scope.form.goutong).filter(function(key){
         return ~["mail", "sms"].indexOf(key) && $scope.form.goutong[key]
       }).map(function(key){
@@ -705,12 +756,12 @@ angular.module('indiplatform.webflow.controllers', [])
   };
   $scope.addLock = function() {
     return FormDataService.addLock($scope.fileinfo).then(function(data){
-      console.info(data.msg);
+      //console.info(data.msg);
     });
   };
   $scope.clearLock = function() {
     return FormDataService.clearLock($scope.fileinfo).then(function(data){
-      console.info(data.msg);
+      //console.info(data.msg);
     });
   };
   $scope.form.HAfilename="";
@@ -754,7 +805,6 @@ angular.module('indiplatform.webflow.controllers', [])
         return $scope.mergeOrSplit($scope.form.nextNode)
       }
     }
-    
     //先提交手写批示
     $scope.submitHA()
       .then(function(){
@@ -768,8 +818,7 @@ angular.module('indiplatform.webflow.controllers', [])
         }
       } else {
         $scope.submitFormActions[$scope.actionType]();
-      }
-        
+      }     
       });
   };
   $scope.submitHA = function(){
@@ -808,40 +857,87 @@ angular.module('indiplatform.webflow.controllers', [])
       };
     },
     submit: function() {
-         $q.when(FormDataService.submit($scope.fileinfo, $scope.form)).then(function(data){      
-            if(data.status == "invalid"){
-              if(data.invalidType == "nextNode"){
-				data.message = $scope.getFormatUsers(data.message);
-                $ionicPopup.alert({
-                  title: "提交失败",
-                  template: data.message
-                });
-              }
-            }else if(data.status == "success"){
-              $scope.clearLock()
-              .then(function(){
-                return $scope.submitModal.hide()
+//委托校验 
+        var  wtuser=[];
+        if($scope.form.nextNode){
+            if($scope.form.nodeList[$scope.form.nextNode].submitto){
+                 wtuser=$scope.form.nodeList[$scope.form.nextNode].submitto.join(",")
+            }     
+        }else{
+          if($scope.form.nextDealer){
+            wtuser=$scope.form.nextDealer.join(",");
+          }
+        }
+        var  wtdbpath=$scope.fileinfo.dbpath;
+        var  wtdbname=$scope.fileinfo.dbpath;
+        var  wtflowname=$scope.form.flowunid;
+        var  wthjname="";
+        var  wtpara="user="+encodeURI(wtuser)+"&dbpath="+wtdbpath+"&dbname="+wtdbname+"&flowname="+wtflowname+"&hjname="+wthjname
+        FormDataService.getWeiTuo(wtpara).then(function(data){
+          var ret={wtuser:[],bwtuser:[]};
+          if(data=="") return ret;
+          wtuser=$filter('domUser')(wtuser.split(",")).split(",");
+          var bwtuser=$filter('domUser')(data.split(",")).split(",");
+          
+           for(i=0;i<wtuser.length;i++){
+                if (wtuser[i]!=bwtuser[i]){
+                     ret.wtuser.push(wtuser[i]);
+                     ret.bwtuser.push(bwtuser[i])
+                };
+           }
+           return ret;
+        }).then(function(ret){
+            if (ret.wtuser.length==0) {
+              return true
+            }else{
+              var sure=$ionicPopup.confirm({
+                title:"以下人员"+ret.wtuser+"委托了给"+ret.bwtuser+"是否继续提交？"
               })
-              .then(function(){
-				data.message = $scope.getFormatUsers(data.message);
-                return $ionicPopup.alert({
-                  title: "提交成功",
-                  template: data.message
-                });
-              })
-              .then(function(){
-                $rootScope.refresh = true;
-                $state.go("tab.home.todo");
-              });
-            }else if(data.status == "fail"){
-			  data.message = $scope.getFormatUsers(data.message);
-              $ionicPopup.alert({
-                title: "提交失败",
-                template: data.message
-              });
-              $state.reload();
+                  return sure;
             };
-          });
+
+
+        }).then(function(data){
+          if(data){
+                  $q.when(FormDataService.submit($scope.fileinfo, $scope.form)).then(function(data){      
+                      if(data.status == "invalid"){
+                        if(data.invalidType == "nextNode"){
+                  data.message = $scope.getFormatUsers(data.message);
+                          $ionicPopup.alert({
+                            title: "提交失败",
+                            template: data.message
+                          });
+                        }
+                      }else if(data.status == "success"){
+                        $scope.clearLock()
+                        .then(function(){
+                          return $scope.submitModal.hide()
+                        })
+                        .then(function(){
+                  data.message = $scope.getFormatUsers(data.message);
+                          return $ionicPopup.alert({
+                            title: "提交成功",
+                            template: data.message
+                          });
+                        })
+                        .then(function(){
+                          $rootScope.refresh = true;
+                          $state.go("tab.home.todo");
+                        });
+                      }else if(data.status == "fail"){
+                  data.message = $scope.getFormatUsers(data.message);
+                        $ionicPopup.alert({
+                          title: "提交失败",
+                          template: data.message
+                        });
+                        //$state.reload();
+                          $ionicHistory.currentView($ionicHistory.backView());
+                          $state.go($state.current, $stateParams, { location:false, reload: true, inherit: false, notify: true });       
+                      };
+                  });
+          }
+        })
+      
       },
     forward:function(){
       //zhangweiguo修改
@@ -898,40 +994,53 @@ angular.module('indiplatform.webflow.controllers', [])
           template: "沟通处理人不能为空"
         });
       }
-      var localinfo = localStorage.getItem("uinfo");
-      if (localinfo) {
-        var userid = angular.fromJson(localinfo).userid;
-        var flag = false;
-        for (var i = 0; i < goutingUsers.length; i++) {
-          var goutingUser = goutingUsers[0];
-          goutingUser = goutingUser.split("/")[0].replace("CN=", "");
-          if (userid == goutingUser) {
-            flag = true;
-          }
-        }
-        if (flag) {
-          return $ionicPopup.alert({
-            title: userid + " 是处理人，请重新选择！"
-          });
-        }
-      }
-      // $scope.submitHA()
-      // .then(function(){
-      //   return FormDataService.goutongstart($scope.fileinfo, $scope.form)
-      // })
-      $scope.form['HAInfo']=$scope.HAInfo;
-      FormDataService.goutongstart($scope.fileinfo, $scope.form)
-      .then(function(data){
-		  data.msg = $scope.getFormatUsers(data.msg);
-          $ionicPopup.alert({
-            title: data.msg,
-          }).then(function(){
-            if (data.type=="success") {
-              $rootScope.refresh = true;
-                $state.go("tab.home.todo");
-            };   
-          });
-      });
+        var  wtuser= $scope.form.goutongUser.join(",");
+        var  wtdbpath=$scope.fileinfo.dbpath;
+        var  wtdbname=$scope.fileinfo.dbpath;
+        var  wtflowname=$scope.form.flowunid;
+        var  wthjname="";
+        var  wtpara="user="+encodeURI(wtuser)+"&dbpath="+wtdbpath+"&dbname="+wtdbname+"&flowname="+wtflowname+"&hjname="+wthjname;
+        var bwtuser;
+        FormDataService.getWeiTuo(wtpara).then(function(data){
+          wtuser=$filter('domUser')(wtuser.split(",")).split(",");
+          bwtuser=$filter('domUser')(data.split(",")).split(",");
+          var ret={wtuser:[],bwtuser:[]}
+           for(i=0;i<wtuser.length;i++){
+                if (wtuser[i]!=bwtuser[i]){
+                     ret.wtuser.push(wtuser[i]);
+                     ret.bwtuser.push(bwtuser[i])
+                };
+           }
+            return ret;
+        }).then(function(ret){
+            if (ret.wtuser.length==0) {
+              return true
+            }else{
+              var sure=$ionicPopup.confirm({
+                title:"以下人员"+ret.wtuser+"委托给了"+ret.bwtuser+"是否继续提交？"
+              })
+                  return sure;
+            };
+        }).then(function(data){
+            if(!data){return}
+            if(~$filter('domUser')(bwtuser).split(',').indexOf($filter('domUser')($scope.context.userinfo.fullname))){
+                return $ionicPopup.alert({
+                  title: $filter('domUser')($scope.context.userinfo.fullname)+ " 是处理人，请重新选择！"
+                });
+            }
+            $scope.form['HAInfo']=$scope.HAInfo;
+            FormDataService.goutongstart($scope.fileinfo, $scope.form).then(function(data){
+                data.msg = $scope.getFormatUsers(data.msg);
+                    $ionicPopup.alert({
+                      title: data.msg,
+                    }).then(function(){
+                      if (data.type=="success") {
+                        $rootScope.refresh = true;
+                          $state.go("tab.home.todo");
+                      };   
+                    });
+            });
+        })
     },
     goutongsubmit:function(){
       // $scope.submitHA()
@@ -953,6 +1062,18 @@ angular.module('indiplatform.webflow.controllers', [])
       });
     },
     zhihui:function(){
+      if(!$scope.form.zhihuiUser||$scope.form.zhihuiUser.length==0){
+          $ionicPopup.alert({
+            title:'请选择只会人!'
+          })
+          return;
+      }
+       if(!($scope.form.mail||$scope.form.mail||$scope.form.toread)){
+          $ionicPopup.alert({
+            title:'请选择只会方式!'
+          })
+          return;
+      }
       FormDataService.zhihui($scope.fileinfo, $scope.form).then(function(data){
 		  data.msg = $scope.getFormatUsers(data.msg);
           $ionicPopup.alert({
@@ -969,7 +1090,8 @@ angular.module('indiplatform.webflow.controllers', [])
       FormDataService.getYuebiInfo($scope.fileinfo, $scope.form)
       .then(function(yuebiInfo){
         if(yuebiInfo.length==1){
-          return FormDataService.yuebi($scope.fileinfo, $scope.form, yuebiInfo);
+         // return FormDataService.yuebi($scope.fileinfo, $scope.form, yuebiInfo);
+         return yuebiInfo;
         }else if(yuebiInfo.length>1){
           return $scope.selectYuebi(yuebiInfo);
         }
@@ -1185,7 +1307,9 @@ angular.module('indiplatform.webflow.controllers', [])
 
 })
 .controller('RecordAttitudeCtrl', function($scope,$cordovaFile) {
-      var showErr=function(err) {console.log(err)}
+      var showErr=function(err) {
+		  //console.log(err)
+	  }
       var encodeRec=function(then){
           // 将wav编码为m4a 
           window.encodeAudio($scope.RecordInfo.wavFullPath, function(newM4APath) {

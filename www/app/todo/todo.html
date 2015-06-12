@@ -19,8 +19,8 @@
     <ion-list>
 
       <ion-item class="item" ng-repeat="todo in todos" type="item-text-wrap" nav-direction="forward" href="#/webflow/{{todo.dbpath}}/{{todo.unid}}">
-        <h3>{{todo.title}}</h3>
-        <p>{{todo.from | domUser}}&nbsp;&nbsp;{{todo.type}}<span class="item-note">{{todo.receivetime | amCalendar}}</span></p>
+        <h3>{{todo.title}}<span class="item-note" style="color:#cb0000;font-weight:bold">{{todo.emergency}}</span></h3>
+        <p>{{todo.from | filterUsrNameNumber}}&nbsp;&nbsp;{{todo.type}}<span class="item-note">{{todo.receivetime | amCalendar}}</span></p>
       </ion-item>
       
     </ion-list>

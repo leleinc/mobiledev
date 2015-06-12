@@ -1,6 +1,6 @@
 
 angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatform.contact.services'])
-.factory('FormDataService', function(SoapService, CONFIG, x2js, $ionicPopup) {
+.factory('FormDataService', function(SoapService, CONFIG, x2js, $ionicPopup,UrlService,$http) {
   return {
     addLock: function(param) {
       var url = "http://"+param.domain+ param.dbpath +"/wsforflow?OpenWebService";
@@ -39,11 +39,12 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
         // 表单信息
         // data.form.formdetail.unshift({id:"fldsubject",name:"标题",value:[flow.rundata._subject]})//标题信息
         ret.form = data.form;
-
+       //配置信息
+        ret.form.flowconfig=data.flowconfig;
         // 意见列表
         ret.YjList = [].concat(flow.rundata.spyj.yjitem||[]);
         ret.YjList.forEach(function(yj){
-          if(yj.yjtp) yj.yjtp = CONFIG.DOM_ROOT+yj.yjtp
+          if(yj.yjtp) yj.yjtp = UrlService.transform("http://"+param.domain+yj.yjtp)
         });
         ret.CurInfo = {};
         Object.keys(flow.rundata.curitem||{}).forEach(function(key) {
@@ -65,7 +66,7 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
 
         // 功能按钮
         ret.ActionBtns = data.functionbtn;
-
+ 
         return ret;
       });
     },
@@ -317,18 +318,6 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
        var indiatts = '<INDIATTS xsi:type="urn:INDIDOCATTCHMENTARRAY">'+
                '<ARRAY xsi:type="urn:ArrayOfINDIDOCATTCHMENT" soapenc:arrayType="urn:INDIDOCATTCHMENT[]"/>'+
               '</INDIATTS>';
-      // if(formData.yjatt.base64!=""){
-      //     var base64code=formData.yjatt.base64;
-      //     base64code=base64code.substr(base64code.indexOf("base64,")+7);
-      //     indiatts = '<INDIATTS><ARRAY>'+
-      //                     '<INDIATT>'+
-      //                       '<BUSINESSTYPE>default</BUSINESSTYPE>'+
-      //                       '<CATNUM>-5</CATNUM>'+
-      //                       '<FILECONTENT>'+base64code+'</FILECONTENT>'+
-      //                       '<FILENAME>'+formData.yjatt.name+'</FILENAME>'+
-      //                    '</INDIATT>'+
-      //                 '</ARRAY></INDIATTS>';
-      // }
       if(formData.HAInfo.data!=""){
           var base64code=formData.HAInfo.data;
           base64code=base64code.substr(base64code.indexOf("base64,")+7)
@@ -361,18 +350,6 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
       var indiatts = '<INDIATTS xsi:type="urn:INDIDOCATTCHMENTARRAY">'+
               '<ARRAY xsi:type="urn:ArrayOfINDIDOCATTCHMENT" soapenc:arrayType="urn:INDIDOCATTCHMENT[]"/>'+
               '</INDIATTS>';
-      // if(formData.yjatt.base64!=""){
-      //     var base64code=formData.yjatt.base64;
-      //     base64code=base64code.substr(base64code.indexOf("base64,")+7);
-      //     indiatts = '<INDIATTS><ARRAY>'+
-      //                     '<INDIATT>'+
-      //                       '<BUSINESSTYPE>default</BUSINESSTYPE>'+
-      //                       '<CATNUM>-5</CATNUM>'+
-      //                       '<FILECONTENT>'+base64code+'</FILECONTENT>'+
-      //                       '<FILENAME>'+formData.yjatt.name+'</FILENAME>'+
-      //                    '</INDIATT>'+
-      //                 '</ARRAY></INDIATTS>';
-      // }
       if(formData.HAInfo.data!=""){
           var base64code=formData.HAInfo.data;
           base64code=base64code.substr(base64code.indexOf("base64,")+7)
@@ -442,13 +419,9 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
         "strNotifyWay":zhihuiWay,      /* mail（邮件通知）,sms(短信通知)*/
         "flag": formData.zhihuiflag?"1":"0"   /*知会人是否关注被知会人反馈*/
       };
-      return SoapService.invoke(
-        url,
-        "wsForChuanYueConfirm", {
-          "strUNID": param.unid,
-          "strJson" : angular.toJson(args)
-        }
-      ).then(function(res){
+      var wsFn=formData.flowconfig.key_ZhihuiV2&&formData.flowconfig.key_ZhihuiV2[0]=='1'?'wsForChuanYueConfirm':'wsForZhiHuiConfirm';
+      var wsParam=formData.flowconfig.key_ZhihuiV2&&formData.flowconfig.key_ZhihuiV2[0]=='1'?{"strUNID": param.unid,"strJson":angular.toJson(args)}:{"strUNID": param.unid,"strUser":formData.zhihuiUser.join(',')}
+      return SoapService.invoke(url,wsFn,wsParam).then(function(res){
         return res.data;
       });
     },
@@ -461,17 +434,17 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
           "strUNID": param.unid
         }
       ).then(function(res){
-        return [{
-          "from": "CN=admin/O=smartdot", //知会发起人
-          "attitude": "", //知会发起人意见
-          "time": "2014-10-29 10:30:10", //知会发起时间
-          "unid": "C7B0AB990D1AD8EF48257D80000DBF8C" //知会记录文档unid
-        },{
-          "from": "CN=lichuang/O=smartdot", //知会发起人
-          "attitude": "", //知会发起人意见
-          "time": "2014-10-29 10:30:10", //知会发起时间
-          "unid": "C7B0AB990D1AD8EF48257D80000DBF8C" //知会记录文档unid
-        }];
+        // return [{
+        //   "from": "CN=admin/O=smartdot", //知会发起人
+        //   "attitude": "", //知会发起人意见
+        //   "time": "2014-10-29 10:30:10", //知会发起时间
+        //   "unid": "C7B0AB990D1AD8EF48257D80000DBF8C" //知会记录文档unid
+        // },{
+        //   "from": "CN=lichuang/O=smartdot", //知会发起人
+        //   "attitude": "", //知会发起人意见
+        //   "time": "2014-10-29 10:30:10", //知会发起时间
+        //   "unid": "C7B0AB990D1AD8EF48257D80000DBF8C" //知会记录文档unid
+        // }];
         return res.data;
       });
     },
@@ -542,6 +515,43 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
       ).then(function(res){
         return res.data;
       });
+    },
+    getmsdllealers:function(param){
+      var url ="http://"+param.domain+ param.dbpath + "/wsforflow?OpenWebService";
+      return SoapService.invoke(
+        url,
+            "wsForMSDLLealers", {
+              "STRUNID": param.unid
+            }
+      ).then(function(res){
+           return res.data;
+      });
+    },    
+    jieguan:function(param){
+      var url ="http://"+param.domain+ param.dbpath + "/wsforflow?OpenWebService";
+      var data={
+          "strFrom":param.strFrom,  /*被接管的用户*/
+          "strType":"yjdl",   /*目前仅支持yjdl，标示是由秘书代录意见导致的接管*/
+
+      }
+      return SoapService.invoke(
+        url,
+            "wsForJieGuan", {
+              "STRUNID": param.unid,
+               "strJson": angular.toJson(data)
+            }
+      ).then(function(res){
+           return res.data;
+      });
+    },
+    getWeiTuo:function(param){
+     return $http({
+            method: 'POST',
+            url: '/indishare/dbsz.nsf/agtGetDbByUser?open',
+            data: param
+      }).then(function(ret){
+              return ret.data;
+      });
     }
   }
 })
@@ -606,11 +616,16 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
 .factory('CyyService', function(SoapService,CONFIG) {
   return {
     get: function(param){
-      var url = "http://" +param.domain +"/"+param.dbpath.split("/").splice(1,1).join("/") + "/cyspy.nsf/wsforcyy?OpenWebService";
-
+      //var url = "http://" +param.domain +"/"+param.dbpath.split("/").splice(1,1).join("/") + "/cyspy.nsf/wsforcyy?OpenWebService";
+      var url = "/indishare/indiWSCenter.nsf/wsforcyy?OpenWebService";
+      var data = {
+                appname:param.dbpath.split('/')[1]
+          };
       return SoapService.invokeSync(
         url,
-        "FnGetallmycyy",{},
+        "FnGetallmycyy",{
+          "strJson":angular.toJson(data)
+        },
         {
           transformResponse: function(data) {
             data = data.map(function(item){
@@ -619,7 +634,6 @@ angular.module('indiplatform.webflow.services', ['ngResource','x2js','indiplatfo
               }
               return item;
             });
-            // console.log(data)
             return data;
           }
         }

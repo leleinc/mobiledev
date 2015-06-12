@@ -21,7 +21,7 @@
             <ion-scroll zooming="true" direction="x" class="selectedItems" has-bouncing="false">
              <div><span  class="selectedItem" ng-repeat=" name in namelist" ng-click="remove(name)">{{name | domUser}}</span></div> 
             </ion-scroll>
-            <span ng-click="remove()" class="selecteddel ion-ios-close-empty"></span>
+            <div ng-click="remove()" style="width:30px;height:30px;background:#fff;border-radius:15px;;padding:5px;"><span class="selecteddel ion-ios-close-empty" style="display:block"></span></div>
       </div>
 </div>
 

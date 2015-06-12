@@ -39,7 +39,7 @@ angular.module('indiplatform.webflow', ['ionic', 'indiplatform.webflow.services'
               $state.go("tab.home.todo")
             });
           }
-          console.info(data.msg);
+          //console.info(data.msg);
         });
       },
       onExit: function($stateParams, FormDataService) {
@@ -49,7 +49,7 @@ angular.module('indiplatform.webflow', ['ionic', 'indiplatform.webflow.services'
           dbpath:$stateParams.path,
           unid: $stateParams.id
         }).then(function(data) {
-          console.info(data.msg);
+          //console.info(data.msg);
         });
       }
     });

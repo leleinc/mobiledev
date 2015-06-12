@@ -26,7 +26,7 @@ angular.module('indiplatform.common.service', [])
             deferred.resolve(version);
           });
         }else{
-          deferred.resolve("0.0.0");
+          deferred.resolve("1984.4.5");
         }
       });
       return deferred.promise;

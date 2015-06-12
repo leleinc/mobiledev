@@ -7,7 +7,7 @@
         <div class="list">
             <a class="item item-thumbnail-left item-avatar" 
               style="padding-top:13px;background: rgb(249, 249, 249);">
-                <img src="{{person.img}}" style="max-width:60px;max-height:60px;top:17px;left:23px;"/>
+                <img ng-src="{{person.img}}" ng-click="photoAction()" style="max-width:60px;max-height:60px;top:17px;left:23px;"/>
                 <h3>{{person.user |domUser}}</h3>
                 <p>{{person.dep}} {{person.JobTitle}}</p>
                 <p ng-repeat="x in person.fldSubDepsInfo">隶属部门:{{x.SubDep}} {{x.SubDepJob}}</p>
@@ -45,3 +45,32 @@
         </div>
     </ion-content>
 </ion-view  >
+<script id="image-modal.html" type="text/ng-template">
+    <div class="modal big-photo-content" ng-click="closeImageModal()">
+        <img ng-src="{{person.img}}" class="big-photo"/>
+    </div>
+</script>
+<script id="change-image-modal.html" type="text/ng-template">
+    <div class="modal">
+      <div class="overlay">
+        <div class="overlay-inner"></div>
+      </div>
+      <div id="canvasWrapss" class="resize-container">   
+      </div>
+      <div class="tabs tabs-icon-top">
+        <div class="fileinput-button-wrap">
+          <i class="icon ion-android-camera"></i>
+          拍照
+          <input class="fileinput-button" type="file" accept="image/*" capture="camera" file-model="myFile"/>
+        </div>
+        <a class="tab-item">
+          <i class="icon indi-zancun"></i>
+          保存
+        </a>
+        <a class="tab-item" ng-click="closeChangeImageModal()">
+          <i class="icon indi-huifu"></i>
+          返回
+        </a>
+      </div>
+    </div>
+</script>

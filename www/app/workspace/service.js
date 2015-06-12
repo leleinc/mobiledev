@@ -63,14 +63,16 @@ angular.module('indiplatform.workspace.services', [])
       return output;
   }
 
-}).factory('LoginService', function($http,UrlService) {
+}).factory('LoginService', function($http,UrlService,$q) {
   return {
     getUserinfo: function(){
       var name = localStorage["m_name"]||"";
+      var showname = localStorage["m_showname"]||name;
       var pass = localStorage["m_pass"]||"";
       var savepass = localStorage["m_savepass"]==="true";
       return {
           name:name,
+          showname:showname,
           pass:pass,
           savepass:savepass
       }
@@ -78,6 +80,7 @@ angular.module('indiplatform.workspace.services', [])
     setUserinfo: function(info){
       localStorage["m_name"] = info.name;
       localStorage["m_savepass"] = info.savepass;
+      localStorage["m_showname"] = info.showname;
       localStorage["m_pass"] = info.savepass?info.pass:"";
       //sessionStorage["m_name"] = info.name;
       //sessionStorage["m_pass"] = info.pass;
@@ -85,6 +88,22 @@ angular.module('indiplatform.workspace.services', [])
     logout: function(){
       //delete sessionStorage["m_name"];
       //delete sessionStorage["m_pass"];
+    },
+    getUserid:function(name){
+      // 如果不包含非ASCII字符，直接返回。否则去服务器获取
+      if(!/[^\x00-\x7F]/.test(name)){
+        var deferred = $q.defer();
+        deferred.resolve(name);
+        return deferred.promise;
+      }else{
+        return $http({
+          url: "/indishare/inditraveler.nsf/namelookup?open", 
+          method: "GET",
+          params: {name: name}
+        }).then(function(res){
+          return res.data.trim();
+        });
+      }
     },
     requestVerifyPass: function(scope,info){
       var data = {
@@ -120,7 +139,7 @@ angular.module('indiplatform.workspace.services', [])
 				if (me.debug){
 					alert(msg);
 				}
-				console.log(msg);
+				//console.log(msg);
 			},
 			error: function(error){
 				alert(error);
@@ -191,11 +210,11 @@ angular.module('indiplatform.workspace.services', [])
 			
 				try{
 					var alertMsg   = event.aps.alert;
-					console.log("JPushService-onReceiveNotification key aps.alert:"+alertMsg);
+					//console.log("JPushService-onReceiveNotification key aps.alert:"+alertMsg);
 					alert("JPushService-onReceiveNotification key aps.alert:"+alertMsg);
 				}
 				catch(exeption){
-					console.log(exception)
+					//console.log(exception)
 				}
 			},
 			*/
@@ -219,7 +238,7 @@ angular.module('indiplatform.workspace.services', [])
 					
 				}
 				catch(exeption){
-					console.log(exception)
+					//console.log(exception)
 				}
 			}
 		};
@@ -295,11 +314,11 @@ angular.module('indiplatform.workspace.services', [])
 						$timeout(function() {
 					      	$ionicLoading.hide();
 					    }, 2000);
-						console.log("已登录, 前台消息:" + event.alert);
+						//console.log("已登录, 前台消息:" + event.alert);
 						//此处如何处理还需等待设计??
 					}else{
 						smPushService.gotoUrl(event);
-						console.log("已登录, 后台消息:" + event.alert);
+						//console.log("已登录, 后台消息:" + event.alert);
 					}
 				}
 			}			
@@ -524,7 +543,7 @@ angular.module('indiplatform.workspace.services', [])
 	                            }); 
 	                        }; 
 	                    }else{
-	                        console.error("版本检测失败");
+	                        //console.error("版本检测失败");
 	                    };
 	                });
 	            });

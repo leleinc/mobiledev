@@ -27,7 +27,7 @@ controller('setupCtrl', function($scope,pushInfoService) {
 		strKey = item.type;
 		if(strKey != ""){
 			pushInfoService.save($scope.userid,angular.toJson($scope.pushList)).then(function(data) {
-				console.log(data)
+				//console.log(data)
 			});			
 		}
 	};
@@ -128,7 +128,7 @@ controller('setupCtrl', function($scope,pushInfoService) {
   $scope.pushNotification = {checked:true};
   $scope.emailNotification = 'Subscribed';
 })
-.controller('myinfoCtrl',function($scope,$stateParams,CONFIG,$ionicPopup,myinfoService,$timeout,$ionicLoading){//个人信息
+.controller('myinfoCtrl',function($scope,$stateParams,$ionicPopup,$timeout,$ionicLoading,$ionicModal,$ionicActionSheet,CONFIG,myinfoService){//个人信息
 	//是否显示保存编辑按钮
 	$scope.showEditBtn = true;
 	$scope.showSaveBtn = false;
@@ -225,6 +225,75 @@ controller('setupCtrl', function($scope,pushInfoService) {
 		    }, 1000);
 		});		
 	}
+	
+	$scope.photoAction = function(){
+		// Show the action sheet
+	    var hideSheet = $ionicActionSheet.show({
+	      	buttons: [
+	        	{ text: '更换头像' },
+	        	{ text: '查看大头像' }
+	      	],
+	      	cancelText: '取消',
+	      	buttonClicked: function(index) {
+	      		switch(index){
+	                case 0:
+	                  $scope.openChangeImageModal();
+	                  break;
+	                case 1:
+	                  $scope.openImageModal();
+	                  break;
+	            }
+	        	return true;
+	      	}
+	    });
+	}
+	/*查看大图 Start*/
+	$ionicModal.fromTemplateUrl('image-modal.html', {
+	  scope: $scope,
+	  hardwareBackButtonClose: true
+	}).then(function(modal) {
+	  $scope.imageModal = modal;
+	});
+	$scope.openImageModal = function() {
+	  $scope.imageModal.show();
+	};
+	$scope.closeImageModal = function() {
+	  $scope.imageModal.hide();
+	};
+	/*查看大图 End*/
+	/*更换照片 Start*/
+	$ionicModal.fromTemplateUrl('change-image-modal.html', {
+	  scope: $scope,
+	  hardwareBackButtonClose: true
+	}).then(function(modal) {
+	  $scope.changeImageModal = modal;
+	});
+	$scope.openChangeImageModal = function() {
+	  $scope.changeImageModal.show();
+	};
+	$scope.closeChangeImageModal = function() {
+	  $scope.changeImageModal.hide();
+	};
+	$scope.uploadImage = function(){
+		var strMyinfo = angular.toJson($scope.person);
+		var base64file = $scope.person.img;
+		myinfoService.uploadImage(strMyinfo,base64file.substr(22)).then(function(data){
+			$scope.context.userinfo.avatar = $scope.person.img;
+			var myPopup = $ionicPopup.show({
+		      title: '头像上传成功'
+		    });
+	  		$timeout(function() {
+		      myPopup.close();
+		    }, 2000);
+		})
+	};
+	/*更换照片 End*/
+	$scope.$on('$stateChangeStart', function(){
+	  if($scope.imageModal)
+        $scope.imageModal.hide();
+      if($scope.changeImageModal)
+	    $scope.changeImageModal.hide();
+  	});
 })
 .controller('changePWCtrl',function($scope,$state,$stateParams,CONFIG,$ionicPopup,changePWService){
 	$scope.showSaveBtn = true;

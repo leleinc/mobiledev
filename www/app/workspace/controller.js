@@ -11,7 +11,15 @@ angular.module('indiplatform.workspace.controllers', [])
 
   // 实际登录的方法
   $scope.doLogin = function() {
-    LoginService.requestVerifyPass($scope,$scope.userinfo);
+    LoginService.getUserid($scope.userinfo.showname).then(function(userid){
+      if(!userid){
+        // 没找到对应的userid，登陆失败
+        $scope.$emit("login.failed");
+      }else{
+        $scope.userinfo.name = userid;
+        LoginService.requestVerifyPass($scope,$scope.userinfo);
+      }
+    });
   };
 
   $scope.$on('login.success',function(){
@@ -33,6 +41,7 @@ angular.module('indiplatform.workspace.controllers', [])
   });
   $scope.$on('login.failed',function(){
     $scope.invalid = true;
+    window.cordova && cordova.plugins.Keyboard.close();
     $ionicPopup.alert({
       title: '登录失败',
       content: '用户名或密码错误，请重新输入'

@@ -121,7 +121,7 @@
         <!-- <div class="item-note sd-input">{{form.zhihuiUser |  domUser}}</div> -->
          <div show-Select-People selectedsource="form.zhihuiUser" class="item-note sd-input sd-input-newline" ></div>
       </a>
-      <div  class="item item-input">
+      <div  class="item item-input" ng-show="form.flowconfig.key_ZhihuiV2&&form.flowconfig.key_ZhihuiV2[0]=='1'">
         <span class="input-label">知会意见</span>
         <div class="item-note notify-type">
           <label>
@@ -178,7 +178,7 @@
         <div  ng-class="{selected: isSelected($index)}" ng-repeat="item in form.denyNodeList" >
         <!-- <pre>{{item | json}}</pre> -->
           <label class="item item-divider" style="background-color: transparent">
-            <input type="radio" name="selected" ng-model="form.nextNode" value="{{$index}}">
+            <input type="radio" name="selected" ng-model="form.nextNode" value="{{$index}}" >
             <i class="radio-icon positive" ng-class="{'indi-xuanze-1-':!isSelected($index), 'indi-xuanze-1':isSelected($index)}"></i>
             {{item.name}}
           </label>

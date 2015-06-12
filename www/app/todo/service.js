@@ -26,6 +26,20 @@ angular.module('indiplatform.todo.services', [])
       ).success(function(data, status) {
         angular.forEach([].concat(data.DATAS.ITEM),function(item){
           if(!item) return;
+          switch(item.urgency){
+             case "急件" :
+             item.urgency = "!"
+             break;
+             case "紧急" :
+             item.urgency = "!!"
+             break;
+             case "特急" : 
+             item.urgency = "!!!"
+             break;
+             default : 
+             item.urgency = "";
+             break;
+          }
           todos.push({
             id: todos.length,
             title: item.TITLE,
@@ -33,7 +47,8 @@ angular.module('indiplatform.todo.services', [])
             from: item.fromuser,
             unid: item.flowunid,
             receivetime: item.receivetime,
-            dbpath: item.flowurl
+            dbpath: item.flowurl,
+            emergency : item.urgency
           });
         });
         var todoslen = todos.length;
@@ -59,7 +74,7 @@ angular.module('indiplatform.todo.services', [])
           "strAction":"del"
         }
       ).then(function(res){
-        console.log(res.data)
+        //console.log(res.data)
         if(res.data.type == "success"){
           callback(item.unid);
         }

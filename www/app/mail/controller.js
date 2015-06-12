@@ -69,7 +69,7 @@ $scope.moreDataCanBeLoaded=true
   });
   
   $scope.loadMore = function() {//下拉加载更多
-    console.log("more");
+    //console.log("more");
       if( typeof($scope.maillist[key])=="undefined" ){
 
        $scope.$broadcast('scroll.infiniteScrollComplete');
@@ -94,7 +94,17 @@ $scope.moreDataCanBeLoaded=true
   }
  
 })
-.controller('actionsCtrl', function($timeout,$q,$resource,$scope,$stateParams,$state ,MailService,x2js,CONFIG,$ionicPopup,selectService,DocService,$ionicSlideBoxDelegate,$ionicScrollDelegate,$ionicActionSheet,$ionicHistory,$cordovaKeyboard,$ionicPlatform) {  
+.controller('actionsCtrl', function($location,$timeout,$q,$resource,$scope,$stateParams,$state ,MailService,x2js,CONFIG,$ionicPopup,selectService,DocService,$ionicSlideBoxDelegate,$ionicScrollDelegate,$ionicActionSheet,$ionicHistory,$cordovaKeyboard,$ionicPlatform) {  
+    $ionicPlatform.registerBackButtonAction(function (e) {
+      e.preventDefault();
+      if(typeof($location) != "undefined" && $location.$$path.indexOf('/writemail') != -1){
+        $scope.goback();
+      }else{
+        $ionicHistory.goBack();  
+      }
+      return false;
+    }, 101);
+
     $ionicPlatform.ready(function(){
       try{
          $cordovaKeyboard.hideAccessoryBar(false);
@@ -282,7 +292,7 @@ $scope.send=function(){ //发邮件，或回复邮件
 }
 $timeout(function(){
   $scope.Dateopen=JSON.stringify($scope.formData);
-  console.log($scope.Dateopen);
+  //console.log($scope.Dateopen);
 },500)
 $scope.goback=function(){ 
         if($scope.Dateopen==JSON.stringify($scope.formData)){
@@ -363,7 +373,7 @@ $scope.delMail = function(id) {
                   });
                   $state.go("tab.mail");
                } else {
-                  console.log('You are not sure');
+                  //console.log('You are not sure');
                }
              }); 
              delSheet();
@@ -432,7 +442,7 @@ $scope.move = function(id) {
                                                           })   
                                                     });                                        
                                                  } else {
-                                                   console.log('You are not sure');
+                                                   //console.log('You are not sure');
                                                  }
                                             }); 
                                  }

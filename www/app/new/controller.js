@@ -14,7 +14,7 @@ angular.module('indiplatform.new.controllers', [])
  if($scope.currenturl.indexOf("/") ==-1){
    $scope.currenturl = "/" + $scope.currenturl
  }
- console.log($scope.currenturl);
+ //console.log($scope.currenturl);
  
  switch($scope.currenturl){  
    case '/ioboard' : 
@@ -71,7 +71,7 @@ angular.module('indiplatform.new.controllers', [])
   });
   
   $scope.loadMore = function() {
-    console.log("more");
+    //console.log("more");
     if($scope.news.length==0){
        $scope.$broadcast('scroll.infiniteScrollComplete');
   //     return

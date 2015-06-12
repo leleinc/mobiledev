@@ -413,7 +413,7 @@ angular.module('indiplatform.contact.controllers', ['ngResource','ionic'])
     		eval($scope.bindTo+"=$scope.namelist");
         if($scope.namelist){
             ContactService.SaveRecentUser($scope.namelist.join("^")).success(function(status){
-                console.log("保存到常用选择人:"+status);
+                //console.log("保存到常用选择人:"+status);
             })
         }
     };

@@ -27,6 +27,19 @@ angular.module('indiplatform.setup.services', ['ngResource', 'x2js'])
 					return data;
 				})
 			},
+			//更换头像
+			uploadImage: function(strUserJson,base64file) {
+				var url = "/indishare/addressbook.nsf/wsForAddressbook?OpenWebService";
+				return SoapService.invoke(
+					url,
+					"updateUserWithHeadPicForAddrbook", {
+						strUserJson: strUserJson,
+						base64file: base64file
+					}
+				).success(function(data, status) {
+					return data;
+				})
+			}
 		}
 	})
 	.factory('changePWService', function(CONFIG, SoapService, $resource) {

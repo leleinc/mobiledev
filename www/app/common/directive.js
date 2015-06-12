@@ -10,7 +10,7 @@ angular.module('indiplatform.common.directive', [])
       ref: "=sdHtmlViewer",
       uri: "@"
     },
-    controller: function($scope, $element, $attrs, $http, $templateCache) {
+    controller: function($scope, $element, $attrs, $http, $templateCache,$location,$ionicPopup) {
 
       var parseRaw = function(val) {
         var wrapper = document.createElement("div");
@@ -58,42 +58,49 @@ angular.module('indiplatform.common.directive', [])
         });
         // 将链接转换为移动版格式
         [].slice.call(res.querySelectorAll("a")).forEach(function(node) {
-          // var $node = angular.element(node);
-          // var href = $node.attr("href");
-          // if(!href) return;
-          // var match = $node.attr("href").match(/http:\/\/mobiledev\.smartdot\.com(\/smartdotdev.*?\/)0\/(.*)\?opendocument/);
-          //   if (match) {
-          //     $node.attr("href","#/webflow" + match[1] + match[2]);
-          //   }
-            try{
-                    var $node = angular.element(node);
-                    var href = $node.attr("href");
-                    if(!href||!href.split(".nsf/")[1]) return;
-                    href = $node.attr("href").replace(/[\r\n]/g,"");
-                    var localinfo = angular.fromJson(localStorage.getItem("uinfo"));
-                    var appServer=localinfo.appServer;
-                    var urlReg = /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;  
-                    var domain =urlReg.exec(href)[0]
-                    var appName=href.split(domain)[1].split("/")[1];
-                    if(domain.split(".")[1]!=appServer.split(".")[1]) return;//不是同域名不处理
-                    var vw=href.split(".nsf/")[1].split("/")[0]
-                    var regexp = new RegExp(domain.replace(new RegExp('\\.','gm'),'\\.')+'(/'+appName+'.*?/)'+vw+'/(.*)\\?(.*)pen(.*)ocument');
-                    var match = href.match(regexp);
-                    if (match) {
-                      $node.attr("href",'#/webflow/' + domain + match[1] + match[2]);
-                    }
-                    else{
-                        //域名不正确
-                    }
-             }catch(e){}
-    
+   
+          var $node = angular.element(node);
+          var href = $node.attr("href");
+          if(!href) return;
+          href = $node.attr("href").replace(/[\r\n]/g,"");
+          $node.attr("href", "javascript:void(0)");
+          $node.attr("ng-click", "goUrl('"+href +"')");
         });
         return res.innerHTML;
       };
 
       $scope.html = "";
       $scope.raw = "";
+      $scope.goUrl = function(url){
+          $http.post("/indishare/inditraveler.nsf/api.xsp/urlcheck",{
+            method: "getUrlinfo",
+            params:[url],
+          }).then(function(res){
+            if (!res.data||!res.data.result||!res.data.result.flag) {
+                  $ionicPopup.alert({
+                       title: '链接打开失败，稍后再试',
+                  })
+            }else{
+              switch(res.data.result.flag){
+                case "1":
+                  $location.path(res.data.result.value)
+                  break;
+                case "2":
+                  window.open(res.data.result.value,'_system')
+                  break;
+                case "0":
+                      $ionicPopup.alert({
+                           title: res.data.result.value,
+                      })
+                  break;
 
+              }
+
+            }
+
+
+          });
+      };
       if ($scope.uri == "true") {
         $scope.$watch("ref", function(newVal, oldVal) {
           if (!newVal) return;
@@ -416,7 +423,7 @@ angular.module('indiplatform.common.directive', [])
                                   url: $scope.attform.docViewer.htmls[0].htmlURI,
                                   timeout:60000
                                 }).then(function(result){
-                                  console.log(result.data)
+                                  //console.log(result.data)
                                   $scope.attform.noMoreItemsAvailable = false;//第一次运行时loadmore会先将其置为true，放在回调里延迟处理
                                   $scope.attform.htmlsforshowcached[$scope.attform.thisattname]=[{htmlURI:result.data}];
                                   $ionicScrollDelegate.resize();     
@@ -468,7 +475,7 @@ angular.module('indiplatform.common.directive', [])
                               $scope.attform.docViewer.pagesforshow[index+1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index].pagecode].imgURI;
                       }else{//下一页没有，如果不是最后一页再加15页
                          if($scope.attform.docViewer.pagesforshow[index].pagecode<$scope.attform.docViewer.pages[totalpages-1].pagecode){
-                              console.log("addright");
+                              //console.log("addright");
                               $scope.attform.docViewer.pagesforshow=$scope.attform.docViewer.pagesforshow.concat(fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode+1))
                               $http({
                                   method: 'GET',
@@ -487,12 +494,12 @@ angular.module('indiplatform.common.directive', [])
             }
             $scope.addleft = function(index){
                       if($scope.attform.docViewer.pagesforshow[index-1]){//预加载前一页
-                              console.log("预加载left")
+                              //console.log("预加载left")
                              
                               $scope.attform.docViewer.pagesforshow[index-1].imgURI=$scope.attform.docViewer.pages[$scope.attform.docViewer.pagesforshow[index-1].pagecode-1].imgURI;
                       }else{//上一页没有，如果不是第一页再加15页,临界点
                          if($scope.attform.docViewer.pagesforshow[index].pagecode>1){
-                              console.log("发请求加载前面的");
+                              //console.log("发请求加载前面的");
                               adding = true;
                               var prel=fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode-1).length
                               $scope.attform.docViewer.pagesforshow=fnpreSildeboxs(totalpages,$scope.attform.docViewer.pagesforshow[index].pagecode-1).concat($scope.attform.docViewer.pagesforshow);
@@ -519,7 +526,7 @@ angular.module('indiplatform.common.directive', [])
             }
             $scope.slideChanged = function(index){
                        if(adding) return;
-                                 console.log('slideChanged')
+                                 //console.log('slideChanged')
                        $scope.attform.pagecode=$scope.attform.docViewer.pagesforshow[index].pagecode;                             
                       if(!$scope.attform.docViewer.pagesforshow[index].imgURI){//直接跳到该页或临界点取消加载造成该页没有的情况               
                              $http({
@@ -591,7 +598,7 @@ angular.module('indiplatform.common.directive', [])
                   $ionicScrollDelegate.resize();
               }
               $scope.loadMoreHtml = function() {//下拉加载更多 
-                        console.log("laodmore...");                    
+                        //console.log("laodmore...");                    
                          if($scope.attform.htmlsforshowcached[$scope.attform.thisattname]&&$scope.attform.docViewer.htmls[$scope.attform.htmlsforshowcached[$scope.attform.thisattname].length]){
                               $http({
                                 method: 'GET',
@@ -847,51 +854,87 @@ return {
           var res = document.createElement("div");
          $scope.$watch($attrs.yjShow,function(newVal,oldVal){
                   if(!newVal) return;
+                  if(!newVal[0]||newVal[0]=="") return;
+                  if(typeof(newVal)=='string'){
+                    newVal=[newVal]
+                  }
                     newVal.forEach(function(tb){//处理每个意见table
-                           tb=angular.element(tb);
-                           angular.forEach(tb.find('td'),function(i){
-                               if(i.innerHTML.trim() == ""){
-                                 if( i.parentNode.childNodes.length == 1){
-                                   i.parentNode.remove();
-                                 }
-                                 i.remove();
-                                }
-                            })
-                           angular.forEach(tb.find('a'),function(a){//处理附件和图片
-                              if(a.attributes.href&&~a.attributes.href.value.indexOf('OpenMyFile')){
-                                var yjurl=$scope.yjs.filter(function(yj){//从意见里找出匹配附件
-                                  return yj.yjatt&&yj.yjatt.attname==a.attributes.title.value                         
-                                })[0].yjatt.url
-                                var attnode='<div  class="att" ng-click="openFile(\''+yjurl+'\',\'0\');attform.attViewershow=\'\'"><i class="icon" att-tubiao="\''+a.attributes.title.value+'\'" "></i><span class="ng-binding">'+a.attributes.title.value+'</span></div>'
-                                a.parentNode.appendChild(angular.element(attnode)[0]);
-                                a.remove();
-                              }  
-                              if(a.attributes.onclick&&~a.attributes.onclick.value.indexOf('$file')){
+                          if(typeof(tb) === 'string' && tb[0]=="<"){//html标签
+                                  tb=angular.element(tb);
+                                   angular.forEach(tb.find('td'),function(i){
+                                       if(i.innerHTML.trim() == ""){
+                                         if( i.parentNode.childNodes.length == 1){
+                                           i.parentNode.remove();
+                                         }
+                                         i.remove();
+                                        }
+                                    })
+                                   angular.forEach(tb.find('a'),function(a){//处理附件和图片
+                                      if(a.attributes.href&&~a.attributes.href.value.indexOf('OpenMyFile')){
+                                        var yjurl=$scope.yjs.filter(function(yj){//从意见里找出匹配附件
+                                          return yj.yjatt&&yj.yjatt.attname==a.attributes.title.value                         
+                                        })[0].yjatt.url
+                                        var attnode='<div  class="att" ng-click="openFile(\''+yjurl+'\',\'0\');attform.attViewershow=\'\'"><i class="icon" att-tubiao="\''+a.attributes.title.value+'\'" "></i><span class="ng-binding">'+a.attributes.title.value+'</span></div>'
+                                        a.parentNode.appendChild(angular.element(attnode)[0]);
+                                        a.remove();
+                                      }  
+                                      if(a.attributes.onclick&&~a.attributes.onclick.value.indexOf('$file')){
 
-                                var imgpath=a.attributes.onclick.value.match(/"\/.*?"/)[0].split("\"")[1];
-                                imgpath=UrlService.transform("http://"+$scope.fileinfo.domain+imgpath);
-                                var attnode='<img  ng-src='+imgpath+'>'
-                                  a.parentNode.appendChild(angular.element(attnode)[0]);
-                                  a.remove();
-                              }  
-                          })
-                          angular.forEach(tb[0].querySelectorAll(".userName"),function(span){//用户名
-                                span.parentNode.style['padding-right']="5px";
-                                span=angular.element(span);
-                                span[0].innerHTML=$filter('domUser')(span[0].innerHTML)
-                                span.after("<br>");
+                                        var imgpath=a.attributes.onclick.value.match(/"\/.*?"/)[0].split("\"")[1];
+                                        imgpath=UrlService.transform("http://"+$scope.fileinfo.domain+imgpath);
+                                        var attnode='<img  ng-src='+imgpath+'>'
+                                          a.parentNode.appendChild(angular.element(attnode)[0]);
+                                          a.remove();
+                                      }  
+                                  })
+                                  angular.forEach(tb[0].querySelectorAll(".userName"),function(span){//用户名
+                                        span.parentNode.style['padding-right']="5px";
+                                        span=angular.element(span);
+                                        span[0].innerHTML=$filter('domUser')(span[0].innerHTML);
+                                        span[0].innerHTML=$filter('filterUsrNameNumber')(span[0].innerHTML);
+                                        span.after("<br>");
 
-                          })
-                          angular.forEach(tb.find('img'),function(img){////手签名
-                              if(img.attributes.src&&img.attributes.src.value.indexOf('signature')>0){
-                                  img=angular.element(img);
-                                 img.attr('ng-src',UrlService.transform("http://"+$scope.fileinfo.domain+img.attr('src')));
-                                 img.after("<br>");
+                                  })
+                                  angular.forEach(tb.find('img'),function(img){////手签名
+                                      if(img.attributes.src&&img.attributes.src.value.indexOf('signature')>0){
+                                          img=angular.element(img);
+                                         img.attr('ng-src',UrlService.transform("http://"+$scope.fileinfo.domain+img.attr('src')));
+                                         img.after("<br>");
+                                      }
+
+                                  })
+                                  if(tb[0].children.length==0&&tb[0].tagName=='SPAN'){//用户写入域
+                                        tb[0].innerHTML=$filter('domUser')(tb[0].innerHTML);                            
+                                  }
+                                  if(tb[0].children.length==0&&tb[0].tagName=='IMG'){//用户写入域图片
+                                        img=angular.element(tb[0]);
+                                        img.attr('ng-src',UrlService.transform("http://"+$scope.fileinfo.domain+img.attr('src')));     
+                                  }
+                                  res.appendChild(tb[0]);
+                                  if(tb[1]){//用户写入域时间
+                                         res.appendChild( document.createElement("br"))
+                                         res.appendChild(tb[1]);
+                                         res.appendChild( document.createElement("br"))
+                                  }
+                          }else{//用户名
+                              if($attrs.class=="yj-text" ){//流转意见里的意见比较特殊
+                                      tb=tb=="NoAttitude_Handler"?"无":tb;
+                                      var userdiv= document.createElement("div");
+                                      userdiv.innerHTML=tb;
+                                       [].slice.call(userdiv.querySelectorAll("span")).forEach(function(span){
+                                           span.innerHTML=$filter('filterUsrNameNumber')(span.innerHTML); 
+                                       })
+                                       res.appendChild(userdiv);    
+
+                              }else{
+                                  var userspan = document.createElement("span");
+                                  userspan.innerText=$filter('domUser')(tb);
+                                  userspan.innerText=$filter('filterUsrNameNumber')(tb);
+                                  res.appendChild(userspan);    
+                                  res.appendChild( document.createElement("br")) 
                               }
-
-                          })
-                            
-                          res.appendChild(tb[0]);
+                          }
+              
                     })
                     $templateCache.put(templateId, res.innerHTML);
                     $scope.template = templateId;
@@ -901,3 +944,184 @@ return {
   }
 }
 })
+.directive('fileModel', ['$timeout', function ($timeout) {
+    return {
+        restrict: 'A',
+        scope: true,
+        link: function(scope, element, attrs) {
+            scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
+            element.bind('change', function(evt){
+                var canvasWrap = document.getElementById("canvasWrapss"),//canvas容器
+                    cropDiv = canvasWrap.previousElementSibling,//截图容器
+                    saveBtn = canvasWrap.nextElementSibling.querySelectorAll("a")[0],//保存按钮
+                    gesture = {},//手势
+                    touchStart = [],//开始触摸位置
+                    currentTouch = [],//触摸中的位置
+                    fingers,//手指个数
+                    min_width = 256,//canvas最小宽度
+                    max_width = 1024, //canvas最大宽度
+                    initparam = {
+                      getStyle : function(ele,attr){
+                          if(window.getComputedStyle){
+                              return parseFloat(getComputedStyle(ele,null)[attr]);
+                          }else{
+                              return parseFloat(ele.currentStyle[attr]);
+                          }
+                      }
+                    },
+                    winWidth = initparam.getStyle(document.body,'width'),//屏幕宽度
+                    winHeight = initparam.getStyle(canvasWrap.parentNode,'height'),//屏幕高度
+                    cropDiv_width = initparam.getStyle(cropDiv,'width'),//截图容器宽度
+                    cropDiv_height = initparam.getStyle(cropDiv,'height'),//截图容器高度
+                    move_max = (winWidth - cropDiv_width)/2.0,//头像左右移动最大距离
+
+                    file = element[0].files[0],
+                    options = {
+                        maxWidth: parseFloat(getComputedStyle(canvasWrap,null)["width"]),
+                        canvas: true
+                    },
+                    replaceResults = function (img) {
+                        if (!(img.src || img instanceof HTMLCanvasElement)) {
+                            //alert('Loading image file failed');
+                        } else {
+                            canvasWrap.innerHTML = "";//清除上一张图片
+                            canvasWrap.appendChild(img);
+                            // Add events
+                            img.addEventListener('touchstart', startMoving, false);
+                            img.addEventListener('touchmove', moving, false);
+                            img.addEventListener('touchend', endMoving, false);
+                            saveBtn.addEventListener('click', crop, false);
+                        }
+                    },
+                    displayImage = function (file, options) {
+                        currentFile = file;
+                        if (!loadImage(file,replaceResults,options)) {
+                            //alert('Your phone does not support the URL or FileReader API.')
+                        }
+                    },
+                    //触摸开始
+                    startMoving = function(e){
+                      e.preventDefault();
+                      e.stopPropagation();
+                      var touches = e.touches;
+                      fingers = touches.length;
+                      touchStart = getTouches(touches,fingers);
+                    },
+                    //触摸
+                    moving = function(e){
+                      e.preventDefault();
+
+                      var touches = e.touches;
+                      if(touches.length == fingers){
+                        currentTouch = getTouches(touches,fingers);
+                        if(fingers == 2){//双指缩放
+                          var c_distance = parseFloat(distance(currentTouch),10);
+                          var s_distance = parseFloat(distance(touchStart),10);
+                          var diff = s_distance - c_distance;
+                          gesture.pinch_diff = diff;
+                          if(Math.abs(diff) > 20){
+                            var currentWidth = parseFloat(getComputedStyle(e.target,null)["width"]);
+                            if(currentWidth - diff/10.0 >= min_width && currentWidth - diff/10.0 <= max_width){
+                              e.target.style['width'] = currentWidth - diff/10.0 + 'px';
+                            }else{
+                              if(diff > 0){
+                                e.target.style['width'] = min_width + 'px';
+                              }else{
+                                e.target.style['width'] = max_width + 'px';
+                              }
+                              
+                            }
+                          }
+                        }else if(fingers == 1){//单指拖动
+                              movepoix = currentTouch[0].x,
+                              movepoiy = currentTouch[0].y,
+                              startpoix = touchStart[0].x,
+                              startpoiy = touchStart[0].y,
+                              moveX = movepoix - startpoix,//横向移动距离
+                              moveY = movepoiy - startpoiy,//纵向移动距离
+                              currentLeft = initparam.getStyle(e.target,'left'),//图片当前left
+                              currentTop = initparam.getStyle(e.target,'top');//图片当前top
+
+                          e.target.style['left'] = currentLeft + moveX + "px";
+                          e.target.style['top'] = currentTop + moveY + "px";
+                          touchStart = getTouches(touches,fingers);//重置起始位置
+                        }
+                      }else{
+                        gesture = {};
+                        touchStart = [];
+                        fingers = 0;
+                      }
+                    },
+                    //触摸结束
+                    endMoving = function(e){
+                      e.preventDefault();
+                      if(fingers == 2 && Math.abs(gesture.pinch_diff) > 10){
+                          gesture = {};
+                          touchStart = [];
+                          fingers = 0;
+                      }else if(fingers == 1){
+                        touchStart = [];
+                      }
+                    },
+                    //获取触摸坐标
+                    getTouches = function (touches,fingers){
+                      var _result = [];
+                      var i = 0;
+                      while (i < fingers) {
+                        _result.push({
+                          x: touches[i].pageX,
+                          y: touches[i].pageY
+                        });
+                        i++;
+                      }
+                      return _result;
+                    },
+                    //计算双指缩放距离
+                    distance = function (touches_data){
+                      var A, B;
+                      A = touches_data[0];
+                      B = touches_data[1];
+                      return Math.sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
+                    },
+                    //重置图片大小
+                    resizeImage = function(target_canvas){
+                      var width = initparam.getStyle(target_canvas,'width'),
+                          height = initparam.getStyle(target_canvas,'height'),
+                          resize_canvas = document.createElement('canvas');
+                      resize_canvas.width = width;
+                      resize_canvas.height = height;
+                      resize_canvas.getContext('2d').drawImage(target_canvas, 0, 0, width, height); 
+                      return resize_canvas;
+                    },
+                    //canvas截图
+                    crop = function(){
+                      var target_canvas = canvasWrap.querySelectorAll("canvas")[0],
+                          crop_canvas = document.createElement('canvas'),
+                          width = cropDiv_width,
+                          height = cropDiv_height,
+                          left = (winWidth - width)/2.0 - initparam.getStyle(target_canvas,'left'),
+                          top =  (winHeight - height)/2.0 - initparam.getStyle(target_canvas,'top');
+
+                      crop_canvas.width = width;
+                      crop_canvas.height = height;
+                      var resize_canvas = resizeImage(target_canvas);//重置图片大小
+                      crop_canvas.getContext('2d').drawImage(resize_canvas, left, top, width, height, 0, 0, width, height);
+                      scope.person.img = crop_canvas.toDataURL("image/png");
+                      canvasWrap.innerHTML = "";//清除上一张图片
+                      scope.uploadImage();
+                      scope.closeChangeImageModal();
+                    };
+
+                    if (!file) {
+                        return;
+                    }
+                    loadImage.parseMetaData(file, function (data) {
+                        if (data.exif) {
+                            options.orientation = data.exif.get('Orientation');
+                        }
+                        displayImage(file, options);
+                    });
+            });
+        }
+    };
+}]);

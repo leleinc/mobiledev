@@ -49,3 +49,16 @@ angular.module('indiplatform.common.filter', [])
         return newArr;
     }
 })
+.filter('filterUsrNameNumber',function(){ //
+  return function (str){
+	str = str || "";
+    str = str.replace(/;|\^/g,",");
+    var astrName = str.split(",");
+    var strResult = "";
+    for(var i=0;i<astrName.length;i++){
+      var tmpName = astrName[i].replace(/(CN|OU|O|C)=/gi,"");
+      strResult += (strResult==""?"":",") + (tmpName.split("/")[0].replace(/\d+$/g,''));
+    }
+    return strResult;
+  }
+})
